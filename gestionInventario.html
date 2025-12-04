@@ -310,6 +310,42 @@
 			padding: 12px 0 22px 0;
 			border-left: 3px solid transparent;
 		}
+
+		/* Botones y controles (ajuste de tamaño y responsividad) */
+		.row.gtr-uniform .actions {
+			display: flex;
+			gap: 8px;
+			align-items: center;
+			justify-content: flex-end;
+		}
+		.row.gtr-uniform .actions .button {
+			padding: 8px 12px;
+			font-size: 14px;
+			line-height: 1;
+			border-radius: 6px;
+			min-width: 110px;
+		}
+		.row.gtr-uniform .col-4 input,
+		.row.gtr-uniform .col-4 select {
+			width: 100%;
+			padding: 8px 10px;
+			font-size: 14px;
+			box-sizing: border-box;
+		}
+
+		@media screen and (max-width: 720px) {
+			.row.gtr-uniform .actions {
+				flex-direction: column;
+				align-items: stretch;
+				justify-content: flex-start;
+			}
+			.row.gtr-uniform .actions .button {
+				width: 100%;
+				min-width: unset;
+				padding: 10px 14px;
+				font-size: 15px;
+			}
+		}
 	</style>
 </head>
 

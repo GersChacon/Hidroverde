@@ -1,0 +1,704 @@
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<title>Hidroverde</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<noscript>
+		<link rel="stylesheet" href="assets/css/noscript.css" />
+	</noscript>
+</head>
+
+<body class="is-preload">
+
+	<div id="wrapper">
+
+		<header id="header">
+			<a href="index.html" class="logo">Hidroverde</a>
+		</header>
+
+		<nav id="nav">
+			<ul class="links">
+				<li><a href="index.html">Inicio</a></li>
+				<li><a href="registroMovimientos.html">Registro De Movimientos</a></li>
+				<li><a href="PedidosInternos.html">Pedidos Internos</a></li>
+				<li><a href="controlDeLotes.html">Control de Lotes</a></li>
+				<li><a href="reportes.html">Reportes</a></li>
+				<li><a href="UsuarioYRoles.html">Usurio y roles</a></li>
+				<li class="active"><a href="ReportesInternos.html">Reportes Internos</a></li>
+
+			</ul>
+
+
+		</nav>
+
+		<div id="main">
+
+			<section class="post">
+				<header class="major">
+				</header>
+				<section class="post">
+					<header class="major">
+						<h1>Facturación</h1>
+						<p>Gestión de facturas emitidas a clientes y seguimiento de pagos</p>
+					</header>
+
+					<!-- Filtro de búsqueda -->
+					<div class="row gtr-uniform">
+						<div class="col-6 col-12-small">
+							<input type="text" name="buscarCedula" id="buscarCedula"
+								placeholder="Buscar por cédula del cliente..." />
+						</div>
+						<div class="col-6 col-12-small">
+							<ul class="actions">
+								<li><a href="#" class="button primary">Filtrar</a></li>
+							</ul>
+						</div>
+					</div>
+
+					<hr />
+
+					<!-- Tabla de facturas -->
+					<div class="table-wrapper">
+						<table>
+							<thead>
+								<tr>
+									<th>Factura ID</th>
+									<th>Cliente</th>
+									<th>Cédula</th>
+									<th>Fecha</th>
+									<th>Total</th>
+									<th>Metodo de Pago</th>
+
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>F001</td>
+									<td>Juan Pérez</td>
+									<td>1-1234-5678</td>
+									<td>01/12/2025</td>
+									<td>$150.00</td>
+									<td>Efectivo</td>
+									<td>
+										<a href="#" class="btn-ver-orden">Ver orden completa</a>
+									</td>
+
+								</tr>
+								<tr>
+									<td>F002</td>
+									<td>María Gómez</td>
+									<td>2-8765-4321</td>
+									<td>02/12/2025</td>
+									<td>$200.00</td>
+									<td>Tarjeta</td>
+									<td>
+										<a href="#" class="btn-ver-orden">Ver orden completa</a>
+									</td>
+								</tr>
+								<tr>
+									<td>F003</td>
+									<td>Carlos Ruiz</td>
+									<td>3-1122-3344</td>
+									<td>03/12/2025</td>
+									<td>$300.00</td>
+									<td>Sinpemovil</td>
+									<td>
+										<a href="#" class="btn-ver-orden">Ver orden completa</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<!-- Botones de acción -->
+					<ul class="actions fit">
+						<li>
+							<button class="button primary fit" id="abrirModalFactura" type="button">
+								Crear Nueva Factura
+							</button>
+
+						</li>
+						<li><a href="#" class="button fit">Exportar Facturas</a></li>
+					</ul>
+
+					<!-- Modal visual para crear factura -->
+<dialog id="modalFactura">
+    <h2>Crear Nueva Factura</h2>
+    <form method="dialog">
+        <label>Cliente:</label>
+        <input type="text" placeholder="Nombre del cliente"><br><br>
+
+        <label>Cédula:</label>
+        <input type="text" placeholder="Cédula del cliente"><br><br>
+
+        <label>Total:</label>
+        <input type="text" placeholder="Monto total"><br><br>
+
+        <label>Método de Pago:</label>
+        <select>
+            <option value="efectivo">Efectivo</option>
+            <option value="tarjeta">Tarjeta</option>
+            <option value="sinpe">Sinpe</option>
+        </select><br><br>
+
+        <menu>
+            <button>Cerrar</button>
+            <button>Aceptar</button>
+        </menu>
+    </form>
+</dialog>
+
+				</section>
+
+				<section class="post">
+					<header class="major">
+						<h1>Pagos y Balances</h1>
+						<p>Gestión de pagos realizados, saldos pendientes y estado financiero</p>
+					</header>
+
+					<!-- Filtros -->
+					<div class="row gtr-uniform">
+						<div class="col-4 col-12-small">
+							<input type="text" name="buscarCliente" id="buscarCliente"
+								placeholder="Buscar cliente por nombre o cédula..." />
+						</div>
+						<div class="col-4 col-12-small">
+							<select name="estadoPago" id="estadoPago">
+								<option value="">- Estado del pago -</option>
+								<option value="pagado">Pagado</option>
+								<option value="pendiente">Pendiente</option>
+								<option value="atrasado">Atrasado</option>
+							</select>
+						</div>
+						<div class="col-4 col-12-small">
+							<ul class="actions">
+								<li><a href="#" class="button primary">Filtrar</a></li>
+							</ul>
+						</div>
+					</div>
+
+					<hr />
+
+					<!-- Tabla de pagos -->
+					<div class="table-wrapper">
+						<table>
+							<thead>
+								<tr>
+									<th>Factura ID</th>
+									<th>Cliente</th>
+									<th>Monto</th>
+									<th>Fecha de Pago</th>
+									<th>Método</th>
+									<th>Estado</th>
+									<th>Acciones</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>F-0012</td>
+									<td>Juan Pérez</td>
+									<td>₡45,000</td>
+									<td>02/12/2025</td>
+									<td>Sinpe</td>
+									<td>
+										<label class="switch">
+											<input type="checkbox" checked>
+											<span class="slider"></span>
+										</label>
+									</td>
+									<td>
+										<a href="#" class="btn-ver-orden">Ver orden completa</a>
+									</td>
+								</tr>
+								<tr>
+									<td>F-0013</td>
+									<td>María Gómez</td>
+									<td>₡70,500</td>
+									<td>—</td>
+									<td>Efectivo</td>
+									<td>
+										<label class="switch">
+											<input type="checkbox">
+											<span class="slider"></span>
+										</label>
+									</td>
+									<td>
+										<a href="#" class="btn-ver-orden">Ver orden completa</a>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<!-- Resumen financiero -->
+					<div class="box">
+						<h3>Resumen de Balance Financiero</h3>
+						<ul>
+							<li><strong>Total Pagado:</strong> ₡45,000</li>
+							<li><strong>Total Pendiente:</strong> ₡70,500</li>
+							<li><strong>Balance General:</strong> ₡115,500</li>
+						</ul>
+					</div>
+
+					<!-- Botones de acción -->
+					<ul class="actions fit">
+    <li>
+        <button class="button primary fit" type="button" id="abrirModalPago">
+            Registrar Pago
+        </button>
+    </li>
+    <li><a href="#" class="button fit">Exportar Balance</a></li>
+</ul>
+					<!-- Modal visual para registrar pago -->
+<dialog id="modalPago">
+    <h2>Registrar Pago</h2>
+    <form method="dialog">
+        <label>Factura ID:</label>
+        <input type="text" placeholder="Ingrese la factura"><br><br>
+
+        <label>Cliente:</label>
+        <input type="text" placeholder="Nombre del cliente"><br><br>
+
+        <label>Monto:</label>
+        <input type="text" placeholder="Monto del pago"><br><br>
+
+        <label>Fecha de Pago:</label>
+        <input type="date"><br><br>
+
+        <label>Método de Pago:</label>
+        <select>
+            <option value="efectivo">Efectivo</option>
+            <option value="tarjeta">Tarjeta</option>
+            <option value="sinpe">Sinpe</option>
+        </select><br><br>
+
+        <label>Estado:</label>
+        <select>
+            <option value="pagado">Pagado</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="atrasado">Atrasado</option>
+        </select><br><br>
+
+        <menu>
+            <button>Cerrar</button>
+            <button>Aceptar</button>
+        </menu>
+    </form>
+</dialog>
+
+
+				</section>
+
+
+
+
+
+
+
+				<section class="post">
+
+					<header class="major">
+						<h1>Pedidos internos</h1>
+						<p>Gestión de pedidos realizados dentro de la empresa</p>
+					</header>
+
+					<div class="row gtr-uniform">
+						<div class="col-4 col-12-small">
+							<input type="text" name="buscarPedido" id="buscarPedido" placeholder="Buscar pedido..." />
+						</div>
+						<div class="col-4 col-12-small">
+							<select name="empleado" id="empleado">
+								<option value="">- Producto -</option>
+								<option value="juan">Hidroponico A</option>
+								<option value="maria">Fertilizante B</option>
+								<option value="carlos">Semillas C</option>
+							</select>
+						</div>
+						<div class="col-4 col-12-small">
+							<ul class="actions">
+								<li><a href="#" class="button primary">Filtrar</a></li>
+							</ul>
+						</div>
+					</div>
+					<hr />
+
+					<div class="table-wrapper">
+						<table>
+							<thead>
+								<tr>
+									<th>Pedido ID</th>
+									<th>Empleado</th>
+									<th>Fecha</th>
+									<th>Producto</th>
+									<th>Cantidad</th>
+									<th>Proveedor Id</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>5001</td>
+									<td>Juan Pérez</td>
+									<td>01/12/2025</td>
+									<td>Hidroponico A</td>
+									<td>10</td>
+									<td>03</td>
+								</tr>
+								<tr>
+									<td>5002</td>
+									<td>María Gómez</td>
+									<td>02/12/2025</td>
+									<td>Fertilizante B</td>
+									<td>5</td>
+									<td>02</td>
+								</tr>
+								<tr>
+									<td>5003</td>
+									<td>Carlos Ruiz</td>
+									<td>03/12/2025</td>
+									<td>Semillas C</td>
+									<td>20</td>
+									<td>01</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<ul class="actions fit">
+    <li>
+        <button class="button primary fit" type="button" id="abrirModalPedido">
+            Agregar Nuevo Pedido
+        </button>
+    </li>
+    <li><a href="#" class="button fit">Exportar Pedidos</a></li>
+</ul>
+
+					<!-- Modal visual para Agregar Nuevo Pedido -->
+<dialog id="modalPedido">
+    <h2>Agregar Nuevo Pedido</h2>
+    <form method="dialog">
+        <label>Pedido ID:</label>
+        <input type="text" placeholder="Ingrese el ID del pedido"><br><br>
+
+        <label>Empleado:</label>
+        <input type="text" placeholder="Nombre del empleado"><br><br>
+
+        <label>Fecha:</label>
+        <input type="date"><br><br>
+
+        <label>Producto:</label>
+        <input type="text" placeholder="Producto solicitado"><br><br>
+
+        <label>Cantidad:</label>
+        <input type="number" placeholder="Cantidad"><br><br>
+
+        <label>Proveedor ID:</label>
+        <input type="text" placeholder="ID del proveedor"><br><br>
+
+        <menu>
+            <button>Cerrar</button>
+            <button>Aceptar</button>
+        </menu>
+    </form>
+</dialog>
+
+				</section>
+
+
+
+				<section class="post">
+					<header class="major">
+						<h1>Proveedores</h1>
+						<p>Gestión de proveedores de insumos y productos para Hidroverde</p>
+					</header>
+
+					<!-- Filtros de búsqueda -->
+					<div class="row gtr-uniform">
+						<div class="col-4 col-12-small">
+							<input type="text" name="buscarProveedor" id="buscarProveedor"
+								placeholder="Buscar proveedor..." />
+						</div>
+						<div class="col-4 col-12-small">
+							<select name="tipoProveedor" id="tipoProveedor">
+								<option value="">- Tipo de Producto -</option>
+								<option value="semillas">Semillas</option>
+								<option value="fertilizantes">Fertilizantes</option>
+								<option value="equipos">Equipos</option>
+							</select>
+						</div>
+						<div class="col-4 col-12-small">
+							<ul class="actions">
+								<li><a href="#" class="button primary">Filtrar</a></li>
+							</ul>
+						</div>
+					</div>
+
+					<hr />
+
+					<!-- Tabla de proveedores -->
+					<div class="table-wrapper">
+						<table>
+							<thead>
+								<tr>
+									<th>Proveedor ID</th>
+									<th>Nombre</th>
+									<th>Tipo de Producto</th>
+									<th>Contacto</th>
+									<th>Email</th>
+									<th>Numero</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>001</td>
+									<td>AgroSemillas S.A.</td>
+									<td>Semillas</td>
+									<td>Juan Pérez</td>
+									<td>jperez@agrosemillas.com</td>
+									<td>8888-8888</td>
+
+								</tr>
+								<tr>
+									<td>002</td>
+									<td>FertiMax</td>
+									<td>Fertilizantes</td>
+									<td>María Gómez</td>
+									<td>mgomez@fertimax.com</td>
+									<td>8888-8888</td>
+								</tr>
+								<tr>
+									<td>003</td>
+									<td>EcoEquipos</td>
+									<td>Equipos</td>
+									<td>Carlos Ruiz</td>
+									<td>cruiz@ecoequipos.com</td>
+									<td>8888-8888</td>
+
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<!-- Botones de acción -->
+					<ul class="actions fit">
+    <li>
+        <button class="button primary fit" type="button" id="abrirModalProveedor">
+            Agregar Proveedor
+        </button>
+    </li>
+    <li><a href="#" class="button fit">Exportar Lista</a></li>
+</ul>
+
+					<!-- Modal visual para Agregar Proveedor -->
+<dialog id="modalProveedor">
+    <h2>Agregar Nuevo Proveedor</h2>
+    <form method="dialog">
+        <label>Proveedor ID:</label>
+        <input type="text" placeholder="Ingrese el ID del proveedor"><br><br>
+
+        <label>Nombre:</label>
+        <input type="text" placeholder="Nombre del proveedor"><br><br>
+
+        <label>Tipo de Producto:</label>
+        <select>
+            <option value="">- Seleccione -</option>
+            <option value="semillas">Semillas</option>
+            <option value="fertilizantes">Fertilizantes</option>
+            <option value="equipos">Equipos</option>
+        </select><br><br>
+
+        <label>Contacto:</label>
+        <input type="text" placeholder="Nombre del contacto"><br><br>
+
+        <label>Email:</label>
+        <input type="email" placeholder="Correo electrónico"><br><br>
+
+        <label>Teléfono:</label>
+        <input type="text" placeholder="Número de contacto"><br><br>
+
+        <menu>
+            <button>Cerrar</button>
+            <button>Aceptar</button>
+        </menu>
+    </form>
+</dialog>
+
+				</section>
+
+
+		</div>
+
+
+
+		<footer id="footer">
+
+
+			<section class="split contact">
+				<section class="alt">
+					<h3>Direccion</h3>
+					<p>Heredia | Costa Rica<br />
+					</p>
+				</section>
+				<section>
+					<h3>Telefono</h3>
+					<p><a href="#">+506 8888-1234</a></p>
+				</section>
+				<section>
+					<h3>Email</h3>
+					<p><a href="#">hidroverde_hidroponics@gmail.com</a></p>
+				</section>
+				<section>
+					<h3>Social</h3>
+					<ul class="icons alt">
+						<li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
+						<li><a href="#" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a>
+						</li>
+						<li><a href="#" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a>
+						</li>
+						<li><a href="#" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+					</ul>
+				</section>
+			</section>
+		</footer>
+		<div id="copyright">
+			<ul> todos los derechos reservados a <li>&copy; hidroverde.com</li>
+			</ul>
+		</div>
+
+	</div>
+
+
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.scrollex.min.js"></script>
+	<script src="assets/js/jquery.scrolly.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+
+
+
+
+	<!-- MODAL SIMPLE FACTURA -->
+<div id="modalFactura" class="modal-simple">
+    <div class="modal-content">
+        <span class="cerrar" id="cerrarModalFactura">&times;</span>
+        <h2>Nueva Factura</h2>
+
+        <label>Cliente:</label>
+        <input type="text" placeholder="Nombre del cliente">
+
+        <label>Cédula:</label>
+        <input type="text" placeholder="1-234-567">
+
+        <label>Fecha:</label>
+        <input type="date">
+
+        <label>Método de pago:</label>
+        <select>
+            <option>Sinpe</option>
+            <option>Tarjeta</option>
+            <option>Efectivo</option>
+        </select>
+
+        <label>Notas:</label>
+        <textarea placeholder="Detalles de la factura"></textarea>
+
+        <div class="acciones">
+            <button class="button primary">Guardar (solo visual)</button>
+            <button class="button" id="cancelarModalFactura">Cancelar</button>
+        </div>
+    </div>
+</div>
+
+
+</body>
+<style>
+	.switch {
+		position: relative;
+		display: inline-block;
+		width: 50px;
+		height: 24px;
+	}
+
+	.switch input {
+		opacity: 0;
+		width: 0;
+		height: 0;
+	}
+
+	.slider {
+		position: absolute;
+		cursor: pointer;
+		background-color: red;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		transition: 0.4s;
+		border-radius: 24px;
+	}
+
+	.slider:before {
+		position: absolute;
+		content: "";
+		height: 18px;
+		width: 18px;
+		left: 3px;
+		bottom: 3px;
+		background-color: white;
+		transition: 0.4s;
+		border-radius: 50%;
+	}
+
+	input:checked+.slider {
+		background-color: #00b56a;
+	}
+
+	input:checked+.slider:before {
+		transform: translateX(26px);
+	}
+</style>
+<script>
+    const modalFactura = document.getElementById("modalFactura");
+    const btnAbrir = document.getElementById("abrirModalFactura");
+
+    btnAbrir.addEventListener("click", () => {
+        modalFactura.showModal();
+    });
+</script>
+
+<script>
+    const modalPago = document.getElementById("modalPago");
+    const btnAbrirPago = document.getElementById("abrirModalPago");
+
+    btnAbrirPago.addEventListener("click", () => {
+        modalPago.showModal();
+    });
+</script>
+<script>
+    const modalPedido = document.getElementById("modalPedido");
+    const btnAbrirPedido = document.getElementById("abrirModalPedido");
+
+    btnAbrirPedido.addEventListener("click", () => {
+        modalPedido.showModal();
+    });
+</script>
+<script>
+    const modalProveedor = document.getElementById("modalProveedor");
+    const btnAbrirProveedor = document.getElementById("abrirModalProveedor");
+
+    btnAbrirProveedor.addEventListener("click", () => {
+        modalProveedor.showModal();
+    });
+</script>
+
+
+
+
+
+
+</html>

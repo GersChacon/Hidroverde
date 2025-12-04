@@ -1,0 +1,646 @@
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<title>Gestión de Inventario - Hidroverde</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<noscript>
+		<link rel="stylesheet" href="assets/css/noscript.css" />
+	</noscript>
+	<style>
+		.inventory-cards {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+			gap: 20px;
+			margin-bottom: 30px;
+		}
+
+		.card {
+			background: #f5f5f5;
+			padding: 20px;
+			border-radius: 8px;
+			border-left: 4px solid #2e8b57;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+		}
+
+		.card h3 {
+			margin: 0 0 10px 0;
+			font-size: 14px;
+			color: #666;
+			text-transform: uppercase;
+		}
+
+		.card .value {
+			font-size: 28px;
+			font-weight: bold;
+			color: #2e8b57;
+		}
+
+		.card.warning {
+			border-left-color: #ff6b6b;
+		}
+
+		.card.warning .value {
+			color: #ff6b6b;
+		}
+
+		.card.info {
+			border-left-color: #4a90e2;
+		}
+
+		.card.info .value {
+			color: #4a90e2;
+		}
+
+		.card.success {
+			border-left-color: #2e8b57;
+		}
+
+		.alerts-section {
+			background: #fff3cd;
+			border-left: 4px solid #ffc107;
+			padding: 20px;
+			margin-bottom: 30px;
+			border-radius: 4px;
+		}
+
+		.alerts-section h2 {
+			margin-top: 0;
+			color: #856404;
+		}
+
+		.alert-item {
+			background: white;
+			padding: 15px;
+			margin-bottom: 10px;
+			border-radius: 4px;
+			border-left: 3px solid #ffc107;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+		}
+
+		.alert-item:last-child {
+			margin-bottom: 0;
+		}
+
+		.alert-item .product-info {
+			flex: 1;
+		}
+
+		.alert-item .product-info h4 {
+			margin: 0 0 5px 0;
+			color: #333;
+		}
+
+		.alert-item .product-info p {
+			margin: 0;
+			font-size: 12px;
+			color: #666;
+		}
+
+		.alert-item .stock-level {
+			font-weight: bold;
+			color: #ff6b6b;
+			font-size: 16px;
+		}
+
+		.status-badge {
+			display: inline-block;
+			padding: 4px 12px;
+			border-radius: 20px;
+			font-size: 12px;
+			font-weight: bold;
+			text-transform: uppercase;
+		}
+
+		.status-active {
+			background: #d4edda;
+			color: #155724;
+		}
+
+		.status-inactive {
+			background: #f8d7da;
+			color: #721c24;
+		}
+
+		.status-discontinued {
+			background: #e2e3e5;
+			color: #383d41;
+		}
+
+		.table-wrapper {
+			overflow-x: auto;
+			margin-bottom: 30px;
+		}
+
+		.table-wrapper table {
+			width: 100%;
+			border-collapse: collapse;
+		}
+
+		.table-wrapper table thead {
+			background: #2e8b57;
+			color: white;
+		}
+
+		.table-wrapper table th,
+		.table-wrapper table td {
+			padding: 12px 15px;
+			text-align: left;
+			border-bottom: 1px solid #ddd;
+		}
+
+		.table-wrapper table tbody tr:hover {
+			background: #f9f9f9;
+		}
+
+		.table-wrapper table tbody tr:nth-child(even) {
+			background: #f5f5f5;
+		}
+
+		.movement-history {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+			gap: 20px;
+		}
+
+		.movement-card {
+			background: white;
+			border: 1px solid #ddd;
+			border-radius: 6px;
+			padding: 15px;
+			box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+		}
+
+		.movement-card .date {
+			font-size: 12px;
+			color: #999;
+			margin-bottom: 10px;
+		}
+
+		.movement-card h4 {
+			margin: 0 0 8px 0;
+			color: #333;
+		}
+
+		.movement-card p {
+			margin: 0 0 10px 0;
+			font-size: 13px;
+			color: #666;
+		}
+
+		.movement-type {
+			display: inline-block;
+			padding: 4px 12px;
+			border-radius: 4px;
+			font-size: 11px;
+			font-weight: bold;
+			text-transform: uppercase;
+		}
+
+		.movement-entry {
+			background: #d4edda;
+			color: #155724;
+		}
+
+		.movement-exit {
+			background: #f8d7da;
+			color: #721c24;
+		}
+
+		.movement-adjustment {
+			background: #d1ecf1;
+			color: #0c5460;
+		}
+
+		hr {
+			margin: 40px 0;
+			border: none;
+			border-top: 2px solid #ddd;
+		}
+
+		section {
+			margin-bottom: 30px;
+		}
+
+		section > h2 {
+			color: #2e8b57;
+			border-bottom: 2px solid #2e8b57;
+			padding-bottom: 10px;
+		}
+	</style>
+</head>
+
+<body class="is-preload">
+
+	<div id="wrapper">
+
+		<header id="header">
+			<a href="index.html" class="logo">Hidroverde</a>
+		</header>
+
+		<nav id="nav">
+			<ul class="links">
+				<li><a href="index.html">Inicio</a></li>
+				<li><a href="registroMovimientos.html">Registro De Movimientos</a></li>
+				<li><a href="PedidosInternos.html">Pedidos Internos</a></li>
+				<li><a href="controlDeLotes.html">Control de Lotes</a></li>
+				<li><a href="reportes.html">Reportes</a></li>
+				<li><a href="UsuarioYRoles.html">Usuario y roles</a></li>
+				<li class="active"><a href="gestionInventario.html">Gestión de Inventario</a></li>
+				<li><a href="ReportesInternos.html">Reportes Internos</a></li>
+			</ul>
+		</nav>
+
+		<div id="main">
+
+			<section class="post">
+				<header class="major">
+					<h1>Gestión de Inventario<br /></h1>
+					<p>Sistema de control y monitoreo de productos en stock</p>
+				</header>
+
+				<!-- Resumen General de Inventario -->
+				<section>
+					<h2>Resumen General</h2>
+					<div class="inventory-cards">
+						<div class="card success">
+							<h3>Total de Productos</h3>
+							<div class="value">245</div>
+						</div>
+						<div class="card info">
+							<h3>Valor Total Inventario</h3>
+							<div class="value">₡1,250,000</div>
+						</div>
+						<div class="card warning">
+							<h3>Stock Bajo</h3>
+							<div class="value">18</div>
+						</div>
+						<div class="card">
+							<h3>Productos Activos</h3>
+							<div class="value">227</div>
+						</div>
+					</div>
+				</section>
+
+				<hr />
+
+				<!-- Alertas de Stock Bajo -->
+				<section>
+					<h2>Alertas de Stock Bajo</h2>
+					<div class="alerts-section">
+						<h2 style="color: #856404; margin-top: 0;">⚠️ Productos con Stock Crítico</h2>
+						
+						<div class="alert-item">
+							<div class="product-info">
+								<h4>Nutriente NPK 10-10-10</h4>
+								<p><strong>Lote:</strong> NPK-2024-001 | <strong>Stock Mínimo:</strong> 50 kg</p>
+							</div>
+							<div class="stock-level">8 kg</div>
+						</div>
+
+						<div class="alert-item">
+							<div class="product-info">
+								<h4>Filtro de Carbón Activado</h4>
+								<p><strong>Lote:</strong> FCA-2024-015 | <strong>Stock Mínimo:</strong> 20 unidades</p>
+							</div>
+							<div class="stock-level">5 unidades</div>
+						</div>
+
+						<div class="alert-item">
+							<div class="product-info">
+								<h4>Tubing de PVC 1/2"</h4>
+								<p><strong>Lote:</strong> TUB-2024-023 | <strong>Stock Mínimo:</strong> 100 metros</p>
+							</div>
+							<div class="stock-level">32 metros</div>
+						</div>
+
+						<div class="alert-item">
+							<div class="product-info">
+								<h4>Semillas de Lechuga Premium</h4>
+								<p><strong>Lote:</strong> SEM-2024-008 | <strong>Stock Mínimo:</strong> 500 gramos</p>
+							</div>
+							<div class="stock-level">125 gramos</div>
+						</div>
+					</div>
+				</section>
+
+				<hr />
+
+				<!-- Sección de Registro de Productos -->
+				<section>
+					<h2>Registro de Productos</h2>
+					<div class="row gtr-uniform">
+						<div class="col-4 col-12-small">
+							<input type="text" name="buscarProducto" id="buscarProducto" placeholder="Buscar producto..." />
+						</div>
+						<div class="col-4 col-12-small">
+							<select name="tipoMovimiento" id="tipoMovimiento">
+								<option value="">- Tipo de Movimiento -</option>
+								<option value="Entrada">Entrada</option>
+								<option value="Salida">Salida</option>
+								<option value="Traslado Interno">Traslado Interno</option>
+								<option value="Ajuste">Ajuste</option>
+							</select>
+						</div>
+						<div class="col-4 col-12-small">
+							<ul class="actions">
+								<li><a href="#" class="button primary">Filtrar</a></li>
+								<li><a href="#" class="button">Agregar Producto</a></li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<hr />
+
+				<!-- Tabla de Productos en Inventario -->
+				<div class="table-wrapper">
+						<table>
+							<thead>
+								<tr>
+									<th>Nombre del Producto</th>
+									<th>Lote</th>
+									<th>Cantidad</th>
+									<th>Stock Mínimo</th>
+									<th>Fecha Ingreso</th>
+									<th>Fecha Salida</th>
+									<th>Estado</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Nutriente NPK 10-10-10</td>
+									<td>NPK-2024-001</td>
+									<td>8 kg</td>
+									<td>50 kg</td>
+									<td>15/10/2024</td>
+									<td>-</td>
+									<td><span class="status-badge status-active">Activo</span></td>
+								</tr>
+								<tr>
+									<td>Filtro de Carbón Activado</td>
+									<td>FCA-2024-015</td>
+									<td>5 unidades</td>
+									<td>20 unidades</td>
+									<td>22/11/2024</td>
+									<td>-</td>
+									<td><span class="status-badge status-active">Activo</span></td>
+								</tr>
+								<tr>
+									<td>Tubing de PVC 1/2"</td>
+									<td>TUB-2024-023</td>
+									<td>32 metros</td>
+									<td>100 metros</td>
+									<td>01/11/2024</td>
+									<td>-</td>
+									<td><span class="status-badge status-active">Activo</span></td>
+								</tr>
+								<tr>
+									<td>Semillas de Lechuga Premium</td>
+									<td>SEM-2024-008</td>
+									<td>125 gramos</td>
+									<td>500 gramos</td>
+									<td>08/12/2024</td>
+									<td>-</td>
+									<td><span class="status-badge status-active">Activo</span></td>
+								</tr>
+								<tr>
+									<td>Bomba Sumergible 1 HP</td>
+									<td>BOM-2024-045</td>
+									<td>12 unidades</td>
+									<td>8 unidades</td>
+									<td>05/10/2024</td>
+									<td>-</td>
+									<td><span class="status-badge status-active">Activo</span></td>
+								</tr>
+								<tr>
+									<td>Sistema de Riego por Goteo</td>
+									<td>SRG-2024-032</td>
+									<td>45 metros</td>
+									<td>30 metros</td>
+									<td>18/09/2024</td>
+									<td>-</td>
+									<td><span class="status-badge status-active">Activo</span></td>
+								</tr>
+								<tr>
+									<td>pH Metro Digital</td>
+									<td>PHM-2024-011</td>
+									<td>3 unidades</td>
+									<td>5 unidades</td>
+									<td>12/11/2024</td>
+									<td>-</td>
+									<td><span class="status-badge status-active">Activo</span></td>
+								</tr>
+								<tr>
+									<td>Sustrato Hidropónico Premium</td>
+									<td>SUS-2024-067</td>
+									<td>150 kg</td>
+									<td>100 kg</td>
+									<td>03/12/2024</td>
+									<td>-</td>
+									<td><span class="status-badge status-active">Activo</span></td>
+								</tr>
+								<tr>
+									<td>Conectores de PVC 3/4"</td>
+									<td>CON-2024-089</td>
+									<td>8 bolsas</td>
+									<td>20 bolsas</td>
+									<td>25/11/2024</td>
+									<td>-</td>
+									<td><span class="status-badge status-inactive">Bajo Stock</span></td>
+								</tr>
+								<tr>
+									<td>Medidor de EC/TDS</td>
+									<td>MED-2024-005</td>
+									<td>6 unidades</td>
+									<td>4 unidades</td>
+									<td>20/10/2024</td>
+									<td>15/11/2024</td>
+									<td><span class="status-badge status-discontinued">Descontinuado</span></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+				<hr />
+
+				<!-- Historial de Movimientos -->
+				<section>
+					<h2>Historial de Movimientos Recientes</h2>
+					<div class="movement-history">
+						<div class="movement-card">
+							<div class="date">03 de Diciembre, 2024</div>
+							<h4>Entrada de Stock</h4>
+							<p><strong>Producto:</strong> Sustrato Hidropónico Premium</p>
+							<p><strong>Cantidad:</strong> 150 kg</p>
+							<p><strong>Proveedor:</strong> Hidroponía Costa Rica S.A.</p>
+							<p><strong>Referencia:</strong> Factura #F-2024-1250</p>
+							<span class="movement-type movement-entry">Entrada</span>
+						</div>
+
+						<div class="movement-card">
+							<div class="date">02 de Diciembre, 2024</div>
+							<h4>Salida de Producto</h4>
+							<p><strong>Producto:</strong> Bomba Sumergible 1 HP</p>
+							<p><strong>Cantidad:</strong> 2 unidades</p>
+							<p><strong>Destino:</strong> Invernadero Norte</p>
+							<p><strong>Responsable:</strong> Carlos López</p>
+							<span class="movement-type movement-exit">Salida</span>
+						</div>
+
+						<div class="movement-card">
+							<div class="date">01 de Diciembre, 2024</div>
+							<h4>Ajuste de Inventario</h4>
+							<p><strong>Producto:</strong> Nutriente NPK 10-10-10</p>
+							<p><strong>Diferencia:</strong> -5 kg</p>
+							<p><strong>Motivo:</strong> Correccion de inventario físico</p>
+							<p><strong>Revisado por:</strong> María González</p>
+							<span class="movement-type movement-adjustment">Ajuste</span>
+						</div>
+
+						<div class="movement-card">
+							<div class="date">30 de Noviembre, 2024</div>
+							<h4>Entrada de Stock</h4>
+							<p><strong>Producto:</strong> Sistema de Riego por Goteo</p>
+							<p><strong>Cantidad:</strong> 20 metros</p>
+							<p><strong>Proveedor:</strong> Distribuidora Agrícola del Pacífico</p>
+							<p><strong>Referencia:</strong> Factura #F-2024-1235</p>
+							<span class="movement-type movement-entry">Entrada</span>
+						</div>
+
+						<div class="movement-card">
+							<div class="date">29 de Noviembre, 2024</div>
+							<h4>Salida de Producto</h4>
+							<p><strong>Producto:</strong> Filtro de Carbón Activado</p>
+							<p><strong>Cantidad:</strong> 10 unidades</p>
+							<p><strong>Destino:</strong> Sistema de Filtración Central</p>
+							<p><strong>Responsable:</strong> Juan Ramírez</p>
+							<span class="movement-type movement-exit">Salida</span>
+						</div>
+
+						<div class="movement-card">
+							<div class="date">28 de Noviembre, 2024</div>
+							<h4>Entrada de Stock</h4>
+							<p><strong>Producto:</strong> Conectores de PVC 3/4"</p>
+							<p><strong>Cantidad:</strong> 50 bolsas</p>
+							<p><strong>Proveedor:</strong> Materiales de Construcción Ecos</p>
+							<p><strong>Referencia:</strong> Factura #F-2024-1220</p>
+							<span class="movement-type movement-entry">Entrada</span>
+						</div>
+
+						<div class="movement-card">
+							<div class="date">27 de Noviembre, 2024</div>
+							<h4>Salida de Producto</h4>
+							<p><strong>Producto:</strong> pH Metro Digital</p>
+							<p><strong>Cantidad:</strong> 1 unidad</p>
+							<p><strong>Destino:</strong> Laboratorio de Control de Calidad</p>
+							<p><strong>Responsable:</strong> Andrea Mora</p>
+							<span class="movement-type movement-exit">Salida</span>
+						</div>
+
+						<div class="movement-card">
+							<div class="date">26 de Noviembre, 2024</div>
+							<h4>Ajuste de Inventario</h4>
+							<p><strong>Producto:</strong> Semillas de Lechuga Premium</p>
+							<p><strong>Diferencia:</strong> +50 gramos</p>
+							<p><strong>Motivo:</strong> Corrección de lectura anterior</p>
+							<p><strong>Revisado por:</strong> Director de Operaciones</p>
+							<span class="movement-type movement-adjustment">Ajuste</span>
+						</div>
+
+						<div class="movement-card">
+							<div class="date">25 de Noviembre, 2024</div>
+							<h4>Entrada de Stock</h4>
+							<p><strong>Producto:</strong> Tubing de PVC 1/2"</p>
+							<p><strong>Cantidad:</strong> 200 metros</p>
+							<p><strong>Proveedor:</strong> Suministros Hidráulicos Modernos</p>
+							<p><strong>Referencia:</strong> Factura #F-2024-1200</p>
+							<span class="movement-type movement-entry">Entrada</span>
+						</div>
+
+						<div class="movement-card">
+							<div class="date">24 de Noviembre, 2024</div>
+							<h4>Salida de Producto</h4>
+							<p><strong>Producto:</strong> Medidor de EC/TDS</p>
+							<p><strong>Cantidad:</strong> 1 unidad</p>
+							<p><strong>Destino:</strong> Baja - Producto Descontinuado</p>
+							<p><strong>Responsable:</strong> Supervisor de Almacén</p>
+							<span class="movement-type movement-exit">Salida</span>
+						</div>
+
+						<div class="movement-card">
+							<div class="date">23 de Noviembre, 2024</div>
+							<h4>Entrada de Stock</h4>
+							<p><strong>Producto:</strong> Nutriente NPK 10-10-10</p>
+							<p><strong>Cantidad:</strong> 100 kg</p>
+							<p><strong>Proveedor:</strong> Química Agrícola Industrial</p>
+							<p><strong>Referencia:</strong> Factura #F-2024-1185</p>
+							<span class="movement-type movement-entry">Entrada</span>
+						</div>
+					</div>
+				</section>
+
+				<hr />
+
+				<!-- Información Adicional -->
+				<section>
+					<h2>Información del Inventario</h2>
+					<p><strong>Última Actualización:</strong> 03 de Diciembre, 2024 - 14:30</p>
+					<p><strong>Responsable del Inventario:</strong> Ing. Roberto Díaz</p>
+					<p><strong>Próxima Auditoría:</strong> 10 de Diciembre, 2024</p>
+					<p><strong>Ubicación Principal:</strong> Almacén Central, Heredia</p>
+				</section>
+
+			</section>
+
+		</div>
+
+		<footer id="footer">
+
+			<section class="split contact">
+				<section class="alt">
+					<h3>Dirección</h3>
+					<p>Heredia | Costa Rica<br /></p>
+				</section>
+				<section>
+					<h3>Teléfono</h3>
+					<p><a href="#">+506 8888-1234</a></p>
+				</section>
+				<section>
+					<h3>Email</h3>
+					<p><a href="#">hidroverde_hidroponics@gmail.com</a></p>
+				</section>
+				<section>
+					<h3>Social</h3>
+					<ul class="icons alt">
+						<li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
+						<li><a href="#" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li>
+						<li><a href="#" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
+						<li><a href="#" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+					</ul>
+				</section>
+			</section>
+		</footer>
+
+		<div id="copyright">
+			<ul> todos los derechos reservados a <li>&copy; hidroverde.com</li></ul>
+		</div>
+
+	</div>
+
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.scrollex.min.js"></script>
+	<script src="assets/js/jquery.scrolly.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+
+</body>
+
+</html>

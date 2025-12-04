@@ -1,0 +1,120 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Exportaciones - Hidroverde</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+</head>
+<body class="is-preload">
+
+<div id="wrapper">
+
+<header id="header">
+    <a href="index.html" class="logo">Hidroverde</a>
+</header>
+
+<!-- NAV -->
+
+<div id="main">
+<section class="post">
+    <header class="major">
+        <h1>Exportación de Reportes</h1>
+        <p>Selección y descarga de reportes en PDF o Excel según el rol del usuario.</p>
+    </header>
+
+    <form method="post" action="#">
+        <div class="row gtr-uniform">
+            <div class="col-6 col-12-small">
+                <label>Tipo de reporte</label>
+                <select>
+                    <option>Reporte Operativo Diario</option>
+                    <option>Reporte de Producción Mensual</option>
+                    <option>Reporte de Ventas</option>
+                    <option>Reporte Financiero (AFR)</option>
+                    <option>Historial de Alertas</option>
+                </select>
+            </div>
+            <div class="col-3 col-12-small">
+                <label>Formato</label>
+                <select>
+                    <option>PDF</option>
+                    <option>Excel</option>
+                </select>
+            </div>
+            <div class="col-3 col-12-small">
+                <label>Rango de fechas</label>
+                <input type="date" />
+            </div>
+
+            <div class="col-12">
+                <label>Comentario (opcional)</label>
+                <textarea placeholder="Motivo de la exportación o destinatario"></textarea>
+            </div>
+
+            <div class="col-12">
+                <ul class="actions">
+                    <li><input type="submit" value="Generar reporte" class="primary" /></li>
+                </ul>
+            </div>
+        </div>
+    </form>
+
+    <hr />
+
+    <h2>Historial de exportaciones</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Usuario</th>
+                    <th>Tipo de reporte</th>
+                    <th>Formato</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>01/12/2025 10:32</td>
+                    <td>Dueño</td>
+                    <td>Reporte Financiero (AFR)</td>
+                    <td>PDF</td>
+                </tr>
+                <tr>
+                    <td>01/12/2025 16:05</td>
+                    <td>Encargado Producción</td>
+                    <td>Reporte Operativo Diario</td>
+                    <td>Excel</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</section>
+</div>
+
+<footer id="footer">
+    <section class="split contact">
+        <section class="alt">
+            <h3>Dirección</h3>
+            <p>Heredia | Costa Rica</p>
+        </section>
+    </section>
+</footer>
+
+<div id="copyright">
+    <ul><li>todos los derechos reservados a &copy; hidroverde.com</li></ul>
+</div>
+
+</div>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.scrollex.min.js"></script>
+<script src="assets/js/jquery.scrolly.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

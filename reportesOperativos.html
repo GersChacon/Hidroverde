@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Reportes Operativos - Hidroverde</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+</head>
+<body class="is-preload">
+
+<div id="wrapper">
+
+    <header id="header">
+        <a href="index.html" class="logo">Hidroverde</a>
+    </header>
+
+    
+    <!-- NAV -->
+
+    <div id="main">
+        <section class="post">
+            <header class="major">
+                <h1>Reportes Operativos</h1>
+                <p>Resumen del desempeño diario de producción, inventario y desperdicios.</p>
+            </header>
+
+            <!-- Filtros -->
+            <div class="row gtr-uniform">
+                <div class="col-4 col-12-small">
+                    <label>Rango de fechas</label>
+                    <input type="date" />
+                </div>
+                <div class="col-4 col-12-small">
+                    <label>&nbsp;</label>
+                    <input type="date" />
+                </div>
+                <div class="col-4 col-12-small">
+                    <label>Área</label>
+                    <select>
+                        <option value="">Todas las áreas</option>
+                        <option>Producción</option>
+                        <option>Inventario</option>
+                        <option>Calidad</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <ul class="actions">
+                        <li><a href="#" class="button primary">Aplicar filtros</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <hr />
+
+            <!-- Resumen tipo tarjetas -->
+            <div class="row gtr-uniform">
+                <div class="col-4 col-12-small">
+                    <h3>Producción del día</h3>
+                    <p><strong>145 kg</strong> cosechados</p>
+                </div>
+                <div class="col-4 col-12-small">
+                    <h3>Desperdicio</h3>
+                    <p><strong>4.2%</strong> del total producido</p>
+                </div>
+                <div class="col-4 col-12-small">
+                    <h3>Lotes con incidencias</h3>
+                    <p><strong>3</strong> lotes con plagas o problemas</p>
+                </div>
+            </div>
+
+            <hr />
+
+            <!-- Tabla de reportes -->
+            <h2>Detalle de reportes operativos</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo de reporte</th>
+                            <th>Lote / Torre</th>
+                            <th>Resumen</th>
+                            <th>Responsable</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>01/12/2025</td>
+                            <td>Producción</td>
+                            <td>Lote LT-101 / Torre 3</td>
+                            <td>Se cosecharon 45 kg. Rendimiento +5% vs. esperado.</td>
+                            <td>Juan Pérez</td>
+                        </tr>
+                        <tr>
+                            <td>01/12/2025</td>
+                            <td>Inventario</td>
+                            <td>Lote LT-095</td>
+                            <td>Consumo de nutrientes 12% por encima del promedio.</td>
+                            <td>María Gómez</td>
+                        </tr>
+                        <tr>
+                            <td>02/12/2025</td>
+                            <td>Calidad</td>
+                            <td>Lote LT-099</td>
+                            <td>Presencia de plaga leve. Se aplicó tratamiento.</td>
+                            <td>Carlos Ruiz</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <ul class="actions">
+                <li><a href="#" class="button">Exportar a Excel</a></li>
+                <li><a href="#" class="button">Exportar a PDF</a></li>
+            </ul>
+        </section>
+    </div>
+
+    <!-- FOOTER igual que en las otras páginas -->
+    <footer id="footer">
+        <section class="split contact">
+            <section class="alt">
+                <h3>Dirección</h3>
+                <p>Heredia | Costa Rica</p>
+            </section>
+            <section>
+                <h3>Teléfono</h3>
+                <p><a href="#">+506 8888-1234</a></p>
+            </section>
+            <section>
+                <h3>Email</h3>
+                <p><a href="#">hidroverde_hidroponics@gmail.com</a></p>
+            </section>
+        </section>
+    </footer>
+
+    <div id="copyright">
+        <ul><li>todos los derechos reservados a &copy; hidroverde.com</li></ul>
+    </div>
+
+</div>
+
+<script src="assets/js/jquery.min.js"></script>
+<script src="assets/js/jquery.scrollex.min.js"></script>
+<script src="assets/js/jquery.scrolly.min.js"></script>
+<script src="assets/js/browser.min.js"></script>
+<script src="assets/js/breakpoints.min.js"></script>
+<script src="assets/js/util.js"></script>
+<script src="assets/js/main.js"></script>
+
+</body>
+</html>

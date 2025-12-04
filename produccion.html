@@ -1,0 +1,391 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Hidroverde</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<style>
+.accordion {
+    background-color: #ffffff;         
+    color: #2e8b57;                  
+    border: 2px solid #2e8b57;         
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    text-align: left;
+    outline: none;
+    transition: 0.3s ease-in-out;
+    margin-top: 10px;
+    font-size: 16px;
+    border-radius: 8px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.active, 
+.accordion:hover {
+    background-color: #e9f6ef;        
+    border-color: #2e8b57;
+}
+
+.accordion:after {
+    content: '\002B';                  
+    color: #2e8b57;                   
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.active:after {
+    content: "\2212";               
+}
+
+
+    .panel {
+        padding: 0 18px;
+        background-color: white;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.2s ease-out;
+        border: 1px solid #ddd;
+        border-radius: 0 0 5px 5px;
+        margin-bottom: 10px;
+    }
+
+    .panel-content {
+        padding: 20px 0;
+    }
+
+    .accordion:after {
+        content: '\002B';
+        color: white;
+        font-weight: bold;
+
+        margin-left: 10px;
+    }
+
+    .active:after {
+        content: "\2212";
+    }
+
+    .modern-table {
+        border-collapse: collapse;
+        width: 100%;
+        font-size: 0.9rem;
+    }
+
+    .modern-table thead {
+        background: #2e8b57;
+        color: white;
+    }
+
+    .modern-table th, 
+    .modern-table td {
+        padding: 12px;
+        text-align: left;
+    }
+
+    .modern-table tbody tr:nth-child(even) {
+        background: #f1f1f1;
+    }
+
+    .modern-table tbody tr:hover {
+        background: #d8f3dc;
+        transition: 0.2s ease-in-out;
+    }
+</style>
+	</head>
+	<body class="is-preload">
+
+			<div id="wrapper">
+
+					<header id="header">
+						<a href="index.html" class="logo">Hidroverde</a>
+					</header>
+
+		<nav id="nav">
+			<ul class="links">
+				<li ><a href="index.html">Inicio</a></li>
+				<li class="active"><a href="produccion.html">Producción</a></li>
+				<li><a href="gestionInventario.html">Gestión de Inventario</a></li>
+				<li><a href="PedidosInternos.html">Pedidos Internos</a></li>
+				<li><a href="controlDeLotes.html">Control de Lotes</a></li>
+				<li><a href="reportes.html">Reportes</a></li>
+				<li><a href="UsuarioYRoles.html">Usurio y roles</a></li>
+								<li><a href="ReportesInternos.html">Reportes Internos</a></li>
+			</ul>
+
+
+		</nav>
+
+
+					<div id="main">
+
+<section class="post">
+    <header class="major">
+        <h1>Producción</h1>
+        <p>Gestión integral de procesos productivos</p>
+    </header>
+
+    <button class="accordion">Siembra</button>
+    <div class="panel">
+        <div class="panel-content">
+            <h3>Registro de Siembra</h3>
+            <div class="row gtr-uniform">
+                <div class="col-6 col-12-xsmall">
+                    <label for="tipoPlanta">Tipo de Planta</label>
+                    <select name="tipoPlanta" id="tipoPlanta">
+                        <option value="">- Seleccionar -</option>
+                        <option value="lechuga">Lechuga</option>
+                        <option value="espinaca">Espinaca</option>
+                        <option value="albahaca">Albahaca</option>
+                        <option value="tomate">Tomate</option>
+                        <option value="pepino">Pepino</option>
+                    </select>
+                </div>
+                <div class="col-6 col-12-xsmall">
+                    <label for="cantidadSiembra">Cantidad</label>
+                    <input type="number" name="cantidadSiembra" id="cantidadSiembra" placeholder="Ej: 100" />
+                </div>
+                <div class="col-6 col-12-xsmall">
+                    <label for="fechaSiembra">Fecha de Siembra</label>
+                    <input type="date" name="fechaSiembra" id="fechaSiembra" />
+                </div>
+                <div class="col-6 col-12-xsmall">
+                    <label for="responsableSiembra">Responsable</label>
+                    <input type="text" name="responsableSiembra" id="responsableSiembra" placeholder="Nombre del empleado" />
+                </div>
+                <div class="col-12">
+                    <label for="observacionesSiembra">Observaciones</label>
+                    <textarea name="observacionesSiembra" id="observacionesSiembra" rows="2" placeholder="Notas adicionales..."></textarea>
+                </div>
+                <div class="col-12">
+                    <ul class="actions">
+                        <li><a href="#" class="button primary">Registrar Siembra</a></li>
+                        <li><a href="#" class="button">Ver Historial</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<button class="accordion">Cosecha</button>
+<div class="panel">
+    <div class="panel-content">
+     
+
+        <h3 style="margin-top:30px;">Historial de Cosechas</h3>
+        <div class="table-wrapper">
+            <table class="alt modern-table">
+                <thead>
+                    <tr>
+                        <th>Lote</th>
+                        <th>Peso (kg)</th>
+                        <th>Fecha</th>
+                        <th>Calidad</th>
+                        <th>Destino</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Lote A-25</td>
+                        <td>12.5</td>
+                        <td>2025-02-10</td>
+                        <td>Excelente</td>
+                        <td>Venta Directa</td>
+                    </tr>
+                    <tr>
+                        <td>Lote B-12</td>
+                        <td>8.3</td>
+                        <td>2025-02-12</td>
+                        <td>Buena</td>
+                        <td>Almacén</td>
+                    </tr>
+                    <tr>
+                        <td>Lote C-09</td>
+                        <td>15.0</td>
+                        <td>2025-02-14</td>
+                        <td>Regular</td>
+                        <td>Procesamiento</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+
+    <button class="accordion">Control de Plagas</button>
+    <div class="panel">
+        <div class="panel-content">
+            <h3>Monitoreo y Control de Plagas</h3>
+            <div class="row gtr-uniform">
+                <div class="col-6 col-12-xsmall">
+                    <label for="tipoPlaga">Tipo de Plaga/Enfermedad</label>
+                    <select name="tipoPlaga" id="tipoPlaga">
+                        <option value="">- Seleccionar -</option>
+                        <option value="pulgones">Pulgones</option>
+                        <option value="araña_roja">Araña Roja</option>
+                        <option value="mosca_blanca">Mosca Blanca</option>
+                        <option value="mildiu">Mildiu</option>
+                        <option value="oidio">Oídio</option>
+                        <option value="otros">Otros</option>
+                    </select>
+                </div>
+                <div class="col-6 col-12-xsmall">
+                    <label for="gravedadPlaga">Nivel de Gravedad</label>
+                    <select name="gravedadPlaga" id="gravedadPlaga">
+                        <option value="leve">Leve</option>
+                        <option value="moderado">Moderado</option>
+                        <option value="grave">Grave</option>
+                        <option value="critico">Crítico</option>
+                    </select>
+                </div>
+                <div class="col-6 col-12-xsmall">
+                    <label for="fechaDeteccion">Fecha de Detección</label>
+                    <input type="date" name="fechaDeteccion" id="fechaDeteccion" />
+                </div>
+                <div class="col-6 col-12-xsmall">
+                    <label for="loteAfectado">Lote/Torre Afectada</label>
+                    <input type="text" name="loteAfectado" id="loteAfectado" placeholder="Ej: Torre 3, Lote B" />
+                </div>
+                <div class="col-12">
+                    <label for="tratamientoAplicado">Tratamiento Aplicado</label>
+                    <textarea name="tratamientoAplicado" id="tratamientoAplicado" rows="3" placeholder="Describa el tratamiento aplicado..."></textarea>
+                </div>
+                <div class="col-12">
+                    <ul class="actions">
+                        <li><a href="#" class="button primary">Registrar Incidencia</a></li>
+                        <li><a href="#" class="button">Historial de Plagas</a></li>
+                        <li><a href="#" class="button">Alertas Activas</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="accordion">Gestión de Torres</button>
+    <div class="panel">
+        <div class="panel-content">
+            <h3>Estado y Mantenimiento de Torres</h3>
+            <div class="row gtr-uniform">
+                <div class="col-6 col-12-xsmall">
+                    <label for="numeroTorre">Número de Torre</label>
+                    <select name="numeroTorre" id="numeroTorre">
+                        <option value="">- Seleccionar Torre -</option>
+                        <option value="torre1">Torre 1</option>
+                        <option value="torre2">Torre 2</option>
+                        <option value="torre3">Torre 3</option>
+                        <option value="torre4">Torre 4</option>
+                        <option value="torre5">Torre 5</option>
+                    </select>
+                </div>
+                <div class="col-6 col-12-xsmall">
+                    <label for="estadoTorre">Estado Actual</label>
+                    <select name="estadoTorre" id="estadoTorre">
+                        <option value="operativa">Operativa</option>
+                        <option value="mantenimiento">En Mantenimiento</option>
+                        <option value="inactiva">Inactiva</option>
+                        <option value="problemas">Con Problemas</option>
+                    </select>
+                </div>
+                <div class="col-6 col-12-xsmall">
+                    <label for="cultivoActual">Cultivo Actual</label>
+                    <input type="text" name="cultivoActual" id="cultivoActual" placeholder="Ej: Lechuga Romana" />
+                </div>
+                <div class="col-6 col-12-xsmall">
+                    <label for="fechaPlantacionTorre">Fecha de Plantación</label>
+                    <input type="date" name="fechaPlantacionTorre" id="fechaPlantacionTorre" />
+                </div>
+                <div class="col-12">
+                    <label for="notasMantenimiento">Notas de Mantenimiento</label>
+                    <textarea name="notasMantenimiento" id="notasMantenimiento" rows="3" placeholder="Registro de mantenimiento, observaciones..."></textarea>
+                </div>
+                <div class="col-12">
+                    <ul class="actions">
+                        <li><a href="#" class="button primary">Actualizar Estado</a></li>
+                        <li><a href="#" class="button">Ver Todas las Torres</a></li>
+                        <li><a href="#" class="button">Programar Mantenimiento</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr/>
+
+
+
+</section>
+
+					</div>
+
+				<footer id="footer">
+			
+
+			<section class="split contact">
+				<section class="alt">
+					<h3>Direccion</h3>
+					<p>Heredia | Costa Rica<br />
+						</p>
+				</section>
+				<section>
+					<h3>Telefono</h3>
+					<p><a href="#">+506 8888-1234</a></p>
+				</section>
+				<section>
+					<h3>Email</h3>
+					<p><a href="#">hidroverde_hidroponics@gmail.com</a></p>
+				</section>
+				<section>
+					<h3>Social</h3>
+					<ul class="icons alt">
+						<li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
+						<li><a href="#" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a>
+						</li>
+						<li><a href="#" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a>
+						</li>
+						<li><a href="#" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+					</ul>
+				</section>
+			</section>
+		</footer>
+		<div id="copyright">
+			<ul> todos los derechos reservados a <li>&copy; hidroverde.com</li>
+			</ul>
+		</div>
+
+	</div>
+
+	
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.scrollex.min.js"></script>
+	<script src="assets/js/jquery.scrolly.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+
+        <script>
+        const acc = document.querySelectorAll(".accordion");
+        acc.forEach(btn => {
+            btn.addEventListener("click", function () {
+                this.classList.toggle("active");
+                let panel = this.nextElementSibling;
+
+                if (panel.style.maxHeight) {
+                    panel.style.maxHeight = null;
+                } else {
+                    panel.style.maxHeight = panel.scrollHeight + "px";
+                }
+            });
+        });
+    </script>
+
+</body>
+
+</html>

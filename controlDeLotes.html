@@ -1,0 +1,231 @@
+<!DOCTYPE HTML>
+
+<html>
+
+<head>
+	<title>Hidroverde</title>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+	<link rel="stylesheet" href="assets/css/main.css" />
+	<noscript>
+		<link rel="stylesheet" href="assets/css/noscript.css" />
+	</noscript>
+</head>
+
+<body class="is-preload">
+
+	<div id="wrapper">
+
+		<header id="header">
+			<a href="index.html" class="logo">Hidroverde</a>
+		</header>
+
+		<nav id="nav">
+			<ul class="links">
+				<li><a href="index.html">Inicio</a></li>
+				<li><a href="registroMovimientos.html">Registro De Movimientos</a></li>
+				<li><a href="PedidosInternos.html">Pedidos Internos</a></li>
+				<li class="active"><a href="controlDeLotes.html">Control de Lotes</a></li>
+				<li><a href="reportes.html">Reportes</a></li>
+				<li><a href="UsuarioYRoles.html">Usurio y roles</a></li>
+				<li><a href="ReportesInternos.html">Reportes Internos</a></li>
+
+			</ul>
+
+
+		</nav>
+
+		<div id="main">
+
+			<section class="post">
+				<header class="major">
+					<h1>Control de Lotes<br /></h1>
+				</header>
+
+
+
+
+
+				<section class="post">
+					<header class="major">
+						<h1></h1>
+						<p>Gestión de inventario y seguimiento de los lotes de productos</p>
+					</header>
+
+					<div class="row gtr-uniform">
+						<div class="col-4 col-12-small">
+							<input type="text" name="buscarLote" id="buscarLote" placeholder="Buscar lote..." />
+						</div>
+						<div class="col-4 col-12-small">
+							<select name="producto" id="producto">
+								<option value="">- Producto -</option>
+								<option value="hidroponico">Hidroponico</option>
+								<option value="fertilizante">Fertilizante</option>
+								<option value="semillas">Semillas</option>
+							</select>
+						</div>
+						<div class="col-4 col-12-small">
+							<ul class="actions">
+								<li><a href="#" class="button primary">Filtrar</a></li>
+							</ul>
+						</div>
+					</div>
+
+					<hr/>
+
+					<div class="table-wrapper">
+						<table>
+							<thead>
+								<tr>
+									<th>Lote ID</th>
+									<th>Producto</th>
+									<th>Cantidad</th>
+									<th>Fecha de Caducidad</th>
+									<th>Estado</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>1001</td>
+									<td>Hidroponico A</td>
+									<td>150</td>
+									<td>15/03/2026</td>
+									<td>
+										<label class="switch">
+											<input type="checkbox" checked>
+											<span class="slider"></span>
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<td>1002</td>
+									<td>Fertilizante B</td>
+									<td>50</td>
+									<td>10/02/2026</td>
+									<td>
+										<label class="switch">
+											<input type="checkbox">
+											<span class="slider"></span>
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<td>1003</td>
+									<td>Semillas C</td>
+									<td>200</td>
+									<td>01/06/2026</td>
+									<td>
+										<label class="switch">
+											<input type="checkbox" checked>
+											<span class="slider"></span>
+										</label>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+
+					<ul class="actions fit">
+						<li><a href="#" class="button primary fit">Agregar Nuevo Lote</a></li>
+						<li><a href="#" class="button fit">Exportar Lotes</a></li>
+					</ul>
+				</section>
+
+		</div>
+
+		<footer id="footer">
+
+
+			<section class="split contact">
+				<section class="alt">
+					<h3>Direccion</h3>
+					<p>Heredia | Costa Rica<br />
+					</p>
+				</section>
+				<section>
+					<h3>Telefono</h3>
+					<p><a href="#">+506 8888-1234</a></p>
+				</section>
+				<section>
+					<h3>Email</h3>
+					<p><a href="#">hidroverde_hidroponics@gmail.com</a></p>
+				</section>
+				<section>
+					<h3>Social</h3>
+					<ul class="icons alt">
+						<li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
+						<li><a href="#" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a>
+						</li>
+						<li><a href="#" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a>
+						</li>
+						<li><a href="#" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
+					</ul>
+				</section>
+			</section>
+		</footer>
+		<div id="copyright">
+			<ul> todos los derechos reservados a <li>&copy; hidroverde.com</li>
+			</ul>
+		</div>
+
+	</div>
+
+
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.scrollex.min.js"></script>
+	<script src="assets/js/jquery.scrolly.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
+
+</body>
+
+<style>
+	.switch {
+		position: relative;
+		display: inline-block;
+		width: 50px;
+		height: 24px;
+	}
+
+	.switch input {
+		opacity: 0;
+		width: 0;
+		height: 0;
+	}
+
+	.slider {
+		position: absolute;
+		cursor: pointer;
+		background-color: red;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		transition: 0.4s;
+		border-radius: 24px;
+	}
+
+	.slider:before {
+		position: absolute;
+		content: "";
+		height: 18px;
+		width: 18px;
+		left: 3px;
+		bottom: 3px;
+		background-color: white;
+		transition: 0.4s;
+		border-radius: 50%;
+	}
+
+	input:checked+.slider {
+		background-color: #00b56a;
+	}
+
+	input:checked+.slider:before {
+		transform: translateX(26px);
+	}
+</style>
+
+</html>

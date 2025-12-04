@@ -11,6 +11,25 @@
 		<link rel="stylesheet" href="assets/css/noscript.css" />
 	</noscript>
 	<style>
+		.page-title {
+			background: linear-gradient(135deg, #2e8b57 0%, #1a5a3a 100%);
+			color: white;
+			padding: 30px;
+			border-radius: 8px;
+			margin-bottom: 30px;
+			box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+		}
+		.page-title h1 {
+			margin: 0;
+			font-size: 32px;
+			text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+		}
+		.page-title p {
+			margin: 10px 0 0 0;
+			font-size: 14px;
+			opacity: 0.95;
+		}
+
 		.inventory-cards {
 			display: grid;
 			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -232,6 +251,65 @@
 			border-bottom: 2px solid #2e8b57;
 			padding-bottom: 10px;
 		}
+
+		/* Accordion (details/summary) styles */
+		details.accordion {
+			border: 1px solid #e1e1e1;
+			border-radius: 6px;
+			margin-bottom: 20px;
+			overflow: hidden;
+			background: #fff;
+		}
+		summary.section-title {
+			display: block;
+			padding: 18px 20px;
+			cursor: pointer;
+			font-weight: 700;
+			color: #165a3b;
+			background: linear-gradient(90deg, rgba(46,139,87,0.06), rgba(46,139,87,0.02));
+			border-bottom: 1px solid #eee;
+			list-style: none;
+			outline: none;
+		}
+		summary.section-title::-webkit-details-marker { display:none; }
+		summary.section-title:after {
+			content: '\25BC';
+			float: right;
+			transition: transform 0.2s ease;
+			color: #2e8b57;
+		}
+		details.accordion[open] summary.section-title:after {
+			transform: rotate(180deg);
+		}
+		.accordion-content {
+			padding: 18px 20px 22px 20px;
+			background: white;
+		}
+
+		/* Fallback JS-driven toggle titles (for pages where details/summary might not render)
+		   Styles for the clickable framed titles */
+		.toggle-title {
+			display: block;
+			padding: 14px 18px;
+			background: linear-gradient(90deg, rgba(46,139,87,0.06), rgba(46,139,87,0.02));
+			border: 1px solid #e6efe8;
+			border-radius: 6px;
+			color: #165a3b;
+			font-weight: 700;
+			cursor: pointer;
+			margin-bottom: 8px;
+		}
+
+		.toggle-title .caret {
+			float: right;
+			transition: transform 0.2s ease;
+			color: #2e8b57;
+		}
+
+		.toggle-content {
+			padding: 12px 0 22px 0;
+			border-left: 3px solid transparent;
+		}
 	</style>
 </head>
 
@@ -259,14 +337,15 @@
 		<div id="main">
 
 			<section class="post">
-				<header class="major">
+				<header class="major page-title">
 					<h1>Gestión de Inventario<br /></h1>
 					<p>Sistema de control y monitoreo de productos en stock</p>
 				</header>
 
 				<!-- Resumen General de Inventario -->
-				<section>
-					<h2>Resumen General</h2>
+				<details class="accordion" open>
+					<summary class="section-title">Resumen General</summary>
+					<div class="accordion-content">
 					<div class="inventory-cards">
 						<div class="card success">
 							<h3>Total de Productos</h3>
@@ -284,16 +363,18 @@
 							<h3>Productos Activos</h3>
 							<div class="value">227</div>
 						</div>
+						</div>
 					</div>
-				</section>
+				</details>
 
 				<hr />
 
 				<!-- Alertas de Stock Bajo -->
-				<section>
-					<h2>Alertas de Stock Bajo</h2>
+				<details class="accordion" open>
+					<summary class="section-title">Alertas de Stock Bajo</summary>
+					<div class="accordion-content">
 					<div class="alerts-section">
-						<h2 style="color: #856404; margin-top: 0;">⚠️ Productos con Stock Crítico</h2>
+						<h2 style="color: #856404; margin-top: 0;">Productos con Stock Crítico</h2>
 						
 						<div class="alert-item">
 							<div class="product-info">
@@ -326,14 +407,16 @@
 							</div>
 							<div class="stock-level">125 gramos</div>
 						</div>
+						</div>
 					</div>
-				</section>
+				</details>
 
 				<hr />
 
 				<!-- Sección de Registro de Productos -->
-				<section>
-					<h2>Registro de Productos</h2>
+				<details class="accordion" open>
+					<summary class="section-title">Registro de Productos</summary>
+					<div class="accordion-content">
 					<div class="row gtr-uniform">
 						<div class="col-4 col-12-small">
 							<input type="text" name="buscarProducto" id="buscarProducto" placeholder="Buscar producto..." />
@@ -353,13 +436,17 @@
 								<li><a href="#" class="button">Agregar Producto</a></li>
 							</ul>
 						</div>
+						</div>
 					</div>
-				</section>
+				</details>
 
 				<hr />
 
 				<!-- Tabla de Productos en Inventario -->
-				<div class="table-wrapper">
+				<details class="accordion" open>
+					<summary class="section-title">Listado de Productos</summary>
+					<div class="accordion-content">
+					<div class="table-wrapper">
 						<table>
 							<thead>
 								<tr>
@@ -582,19 +669,22 @@
 							<p><strong>Referencia:</strong> Factura #F-2024-1185</p>
 							<span class="movement-type movement-entry">Entrada</span>
 						</div>
+						</div>
 					</div>
-				</section>
+				</details>
 
 				<hr />
 
 				<!-- Información Adicional -->
-				<section>
-					<h2>Información del Inventario</h2>
-					<p><strong>Última Actualización:</strong> 03 de Diciembre, 2024 - 14:30</p>
-					<p><strong>Responsable del Inventario:</strong> Ing. Roberto Díaz</p>
-					<p><strong>Próxima Auditoría:</strong> 10 de Diciembre, 2024</p>
-					<p><strong>Ubicación Principal:</strong> Almacén Central, Heredia</p>
-				</section>
+				<details class="accordion">
+					<summary class="section-title">Información del Inventario</summary>
+					<div class="accordion-content">
+						<p><strong>Última Actualización:</strong> 03 de Diciembre, 2024 - 14:30</p>
+						<p><strong>Responsable del Inventario:</strong> Ing. Roberto Díaz</p>
+						<p><strong>Próxima Auditoría:</strong> 10 de Diciembre, 2024</p>
+						<p><strong>Ubicación Principal:</strong> Almacén Central, Heredia</p>
+					</div>
+				</details>
 
 			</section>
 
@@ -640,6 +730,45 @@
 	<script src="assets/js/breakpoints.min.js"></script>
 	<script src="assets/js/util.js"></script>
 	<script src="assets/js/main.js"></script>
+
+	<!-- JS: transform H2 titles into clickable accordion blocks (FAQ-like) -->
+	<script>
+	document.addEventListener('DOMContentLoaded', function(){
+		const container = document.getElementById('main');
+		if(!container) return;
+		const headings = Array.from(container.querySelectorAll('h2'));
+		headings.forEach((h2, idx) => {
+			// Skip h2 that are inside already handled accordions (summary.section-title)
+			if(h2.closest('details') || h2.classList.contains('section-title')) return;
+			const titleText = h2.innerHTML;
+			const title = document.createElement('div');
+			title.className = 'toggle-title';
+			title.innerHTML = titleText + ' <span class="caret">▾</span>';
+			const content = document.createElement('div');
+			content.className = 'toggle-content';
+			// Move siblings until the next h2 into content
+			let sib = h2.nextElementSibling;
+			const moved = [];
+			while(sib && sib.tagName !== 'H2'){
+				moved.push(sib);
+				sib = sib.nextElementSibling;
+			}
+			moved.forEach(node => content.appendChild(node));
+			// Insert title and content where h2 was
+			h2.parentNode.insertBefore(title, h2);
+			h2.parentNode.insertBefore(content, h2);
+			h2.remove();
+			// Default: keep sections open
+			// Add click handler
+			title.addEventListener('click', function(){
+				const isOpen = content.style.display !== 'none';
+				content.style.display = isOpen ? 'none' : '';
+				const caret = title.querySelector('.caret');
+				if(caret) caret.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+			});
+		});
+	});
+	</script>
 
 </body>
 

@@ -99,6 +99,65 @@
             margin-top: 0.25rem;
             margin-bottom: 0.5rem;
         }
+
+        /* Accordion (details/summary) styles */
+        details.accordion {
+            border: 1px solid #e1e1e1;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            background: #fff;
+        }
+        summary.section-title {
+            display: block;
+            padding: 18px 20px;
+            cursor: pointer;
+            font-weight: 700;
+            color: #165a3b;
+            background: linear-gradient(90deg, rgba(46,139,87,0.06), rgba(46,139,87,0.02));
+            border-bottom: 1px solid #eee;
+            list-style: none;
+            outline: none;
+        }
+        summary.section-title::-webkit-details-marker { display:none; }
+        summary.section-title:after {
+            content: '\25BC';
+            float: right;
+            transition: transform 0.2s ease;
+            color: #2e8b57;
+        }
+        details.accordion[open] summary.section-title:after {
+            transform: rotate(180deg);
+        }
+        .accordion-content {
+            padding: 18px 20px 22px 20px;
+            background: white;
+        }
+
+        /* Fallback JS-driven toggle titles */
+        .toggle-title {
+            display: block;
+            padding: 14px 18px;
+            background: linear-gradient(90deg, rgba(46,139,87,0.06), rgba(46,139,87,0.02));
+            border: 1px solid #e6efe8;
+            border-radius: 6px;
+            color: #165a3b;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+
+        .toggle-title .caret {
+            float: right;
+            transition: transform 0.2s ease;
+            color: #2e8b57;
+        }
+
+        .toggle-content {
+            padding: 12px 0 22px 0;
+            border-left: 3px solid transparent;
+        }
+        }
     </style>
 </head>
 
@@ -699,6 +758,42 @@
 
             // Cerrar modal al guardar
             document.getElementById("modalRegistro").style.display = "none";
+        });
+
+        // Accordion/toggle handler
+        document.addEventListener('DOMContentLoaded', function(){
+            const container = document.getElementById('main');
+            if(!container) return;
+            const headings = Array.from(container.querySelectorAll('h2'));
+            headings.forEach((h2, idx) => {
+                // Skip h2 that are inside already handled accordions (summary.section-title)
+                if(h2.closest('details') || h2.classList.contains('section-title')) return;
+                const titleText = h2.innerHTML;
+                const title = document.createElement('div');
+                title.className = 'toggle-title';
+                title.innerHTML = titleText + ' <span class="caret">▾</span>';
+                const content = document.createElement('div');
+                content.className = 'toggle-content';
+                // Move siblings until the next h2 into content
+                let sib = h2.nextElementSibling;
+                const moved = [];
+                while(sib && sib.tagName !== 'H2'){
+                    moved.push(sib);
+                    sib = sib.nextElementSibling;
+                }
+                moved.forEach(node => content.appendChild(node));
+                // Insert title and content where h2 was
+                h2.parentNode.insertBefore(title, h2);
+                h2.parentNode.insertBefore(content, h2);
+                h2.remove();
+                // Add click handler
+                title.addEventListener('click', function(){
+                    const isOpen = content.style.display !== 'none';
+                    content.style.display = isOpen ? 'none' : '';
+                    const caret = title.querySelector('.caret');
+                    if(caret) caret.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+                });
+            });
         });
     </script>
 

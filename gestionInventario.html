@@ -17,13 +17,15 @@
 			padding: 30px;
 			border-radius: 8px;
 			margin-bottom: 30px;
-			box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 		}
+
 		.page-title h1 {
 			margin: 0;
 			font-size: 32px;
-			text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 		}
+
 		.page-title p {
 			margin: 10px 0 0 0;
 			font-size: 14px;
@@ -42,7 +44,7 @@
 			padding: 20px;
 			border-radius: 8px;
 			border-left: 4px solid #2e8b57;
-			box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 		}
 
 		.card h3 {
@@ -192,7 +194,7 @@
 			border: 1px solid #ddd;
 			border-radius: 6px;
 			padding: 15px;
-			box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 		}
 
 		.movement-card .date {
@@ -246,13 +248,12 @@
 			margin-bottom: 30px;
 		}
 
-		section > h2 {
+		section>h2 {
 			color: #2e8b57;
 			border-bottom: 2px solid #2e8b57;
 			padding-bottom: 10px;
 		}
 
-		/* Accordion (details/summary) styles */
 		details.accordion {
 			border: 1px solid #e1e1e1;
 			border-radius: 6px;
@@ -260,38 +261,43 @@
 			overflow: hidden;
 			background: #fff;
 		}
+
 		summary.section-title {
 			display: block;
 			padding: 18px 20px;
 			cursor: pointer;
 			font-weight: 700;
 			color: #165a3b;
-			background: linear-gradient(90deg, rgba(46,139,87,0.06), rgba(46,139,87,0.02));
+			background: linear-gradient(90deg, rgba(46, 139, 87, 0.06), rgba(46, 139, 87, 0.02));
 			border-bottom: 1px solid #eee;
 			list-style: none;
 			outline: none;
 		}
-		summary.section-title::-webkit-details-marker { display:none; }
+
+		summary.section-title::-webkit-details-marker {
+			display: none;
+		}
+
 		summary.section-title:after {
 			content: '\25BC';
 			float: right;
 			transition: transform 0.2s ease;
 			color: #2e8b57;
 		}
+
 		details.accordion[open] summary.section-title:after {
 			transform: rotate(180deg);
 		}
+
 		.accordion-content {
 			padding: 18px 20px 22px 20px;
 			background: white;
 		}
 
-		/* Fallback JS-driven toggle titles (for pages where details/summary might not render)
-		   Styles for the clickable framed titles */
 		.toggle-title {
 			display: block;
 			padding: 14px 18px;
-			background: linear-gradient(90deg, rgba(46,139,87,0.06), rgba(46,139,87,0.02));
+			background: linear-gradient(90deg, rgba(46, 139, 87, 0.06), rgba(46, 139, 87, 0.02));
 			border: 1px solid #e6efe8;
 			border-radius: 6px;
 			color: #165a3b;
@@ -311,13 +317,13 @@
 			border-left: 3px solid transparent;
 		}
 
-		/* Botones y controles (ajuste de tamaño y responsividad) */
 		.row.gtr-uniform .actions {
 			display: flex;
 			gap: 8px;
 			align-items: center;
 			justify-content: flex-end;
 		}
+
 		.row.gtr-uniform .actions .button {
 			padding: 8px 12px;
 			font-size: 14px;
@@ -325,6 +331,7 @@
 			border-radius: 6px;
 			min-width: 110px;
 		}
+
 		.row.gtr-uniform .col-4 input,
 		.row.gtr-uniform .col-4 select {
 			width: 100%;
@@ -339,6 +346,7 @@
 				align-items: stretch;
 				justify-content: flex-start;
 			}
+
 			.row.gtr-uniform .actions .button {
 				width: 100%;
 				min-width: unset;
@@ -361,12 +369,14 @@
 			<ul class="links">
 				<li><a href="index.html">Inicio</a></li>
 				<li><a href="registroMovimientos.html">Registro De Movimientos</a></li>
-				<li><a href="PedidosInternos.html">Pedidos Internos</a></li>
-				<li><a href="controlDeLotes.html">Control de Lotes</a></li>
-				<li><a href="reportes.html">Reportes</a></li>
-				<li><a href="UsuarioYRoles.html">Usuario y roles</a></li>
 				<li class="active"><a href="gestionInventario.html">Gestión de Inventario</a></li>
-				<li><a href="ReportesInternos.html">Reportes Internos</a></li>
+				<li><a href="produccion.html">Produccion</a></li>
+				<li><a href="pedidosInternos.html">Pedidos Internos</a></li>
+				<li><a href="controlDeLotes.html">Control de Lotes</a></li>				
+				<li><a href="reportes-alertas.html">Reportes y Alertas</a></li>
+				<li><a href="reportes.html">Reportes</a></li>
+				<li><a href="UsuarioYRoles.html">Usurio y roles</a></li>
+
 			</ul>
 		</nav>
 
@@ -382,23 +392,23 @@
 				<details class="accordion" open>
 					<summary class="section-title">Resumen General</summary>
 					<div class="accordion-content">
-					<div class="inventory-cards">
-						<div class="card success">
-							<h3>Total de Productos</h3>
-							<div class="value">245</div>
-						</div>
-						<div class="card info">
-							<h3>Valor Total Inventario</h3>
-							<div class="value">₡1,250,000</div>
-						</div>
-						<div class="card warning">
-							<h3>Stock Bajo</h3>
-							<div class="value">18</div>
-						</div>
-						<div class="card">
-							<h3>Productos Activos</h3>
-							<div class="value">227</div>
-						</div>
+						<div class="inventory-cards">
+							<div class="card success">
+								<h3>Total de Productos</h3>
+								<div class="value">245</div>
+							</div>
+							<div class="card info">
+								<h3>Valor Total Inventario</h3>
+								<div class="value">₡1,250,000</div>
+							</div>
+							<div class="card warning">
+								<h3>Stock Bajo</h3>
+								<div class="value">18</div>
+							</div>
+							<div class="card">
+								<h3>Productos Activos</h3>
+								<div class="value">227</div>
+							</div>
 						</div>
 					</div>
 				</details>
@@ -409,40 +419,43 @@
 				<details class="accordion" open>
 					<summary class="section-title">Alertas de Stock Bajo</summary>
 					<div class="accordion-content">
-					<div class="alerts-section">
-						<h2 style="color: #856404; margin-top: 0;">Productos con Stock Crítico</h2>
-						
-						<div class="alert-item">
-							<div class="product-info">
-								<h4>Nutriente NPK 10-10-10</h4>
-								<p><strong>Lote:</strong> NPK-2024-001 | <strong>Stock Mínimo:</strong> 50 kg</p>
-							</div>
-							<div class="stock-level">8 kg</div>
-						</div>
+						<div class="alerts-section">
+							<h2 style="color: #856404; margin-top: 0;">Productos con Stock Crítico</h2>
 
-						<div class="alert-item">
-							<div class="product-info">
-								<h4>Filtro de Carbón Activado</h4>
-								<p><strong>Lote:</strong> FCA-2024-015 | <strong>Stock Mínimo:</strong> 20 unidades</p>
+							<div class="alert-item">
+								<div class="product-info">
+									<h4>Nutriente NPK 10-10-10</h4>
+									<p><strong>Lote:</strong> NPK-2024-001 | <strong>Stock Mínimo:</strong> 50 kg</p>
+								</div>
+								<div class="stock-level">8 kg</div>
 							</div>
-							<div class="stock-level">5 unidades</div>
-						</div>
 
-						<div class="alert-item">
-							<div class="product-info">
-								<h4>Tubing de PVC 1/2"</h4>
-								<p><strong>Lote:</strong> TUB-2024-023 | <strong>Stock Mínimo:</strong> 100 metros</p>
+							<div class="alert-item">
+								<div class="product-info">
+									<h4>Filtro de Carbón Activado</h4>
+									<p><strong>Lote:</strong> FCA-2024-015 | <strong>Stock Mínimo:</strong> 20 unidades
+									</p>
+								</div>
+								<div class="stock-level">5 unidades</div>
 							</div>
-							<div class="stock-level">32 metros</div>
-						</div>
 
-						<div class="alert-item">
-							<div class="product-info">
-								<h4>Semillas de Lechuga Premium</h4>
-								<p><strong>Lote:</strong> SEM-2024-008 | <strong>Stock Mínimo:</strong> 500 gramos</p>
+							<div class="alert-item">
+								<div class="product-info">
+									<h4>Tubing de PVC 1/2"</h4>
+									<p><strong>Lote:</strong> TUB-2024-023 | <strong>Stock Mínimo:</strong> 100 metros
+									</p>
+								</div>
+								<div class="stock-level">32 metros</div>
 							</div>
-							<div class="stock-level">125 gramos</div>
-						</div>
+
+							<div class="alert-item">
+								<div class="product-info">
+									<h4>Semillas de Lechuga Premium</h4>
+									<p><strong>Lote:</strong> SEM-2024-008 | <strong>Stock Mínimo:</strong> 500 gramos
+									</p>
+								</div>
+								<div class="stock-level">125 gramos</div>
+							</div>
 						</div>
 					</div>
 				</details>
@@ -453,25 +466,26 @@
 				<details class="accordion" open>
 					<summary class="section-title">Registro de Productos</summary>
 					<div class="accordion-content">
-					<div class="row gtr-uniform">
-						<div class="col-4 col-12-small">
-							<input type="text" name="buscarProducto" id="buscarProducto" placeholder="Buscar producto..." />
-						</div>
-						<div class="col-4 col-12-small">
-							<select name="tipoMovimiento" id="tipoMovimiento">
-								<option value="">- Tipo de Movimiento -</option>
-								<option value="Entrada">Entrada</option>
-								<option value="Salida">Salida</option>
-								<option value="Traslado Interno">Traslado Interno</option>
-								<option value="Ajuste">Ajuste</option>
-							</select>
-						</div>
-						<div class="col-4 col-12-small">
-							<ul class="actions">
-								<li><a href="#" class="button primary">Filtrar</a></li>
-								<li><a href="#" class="button">Agregar Producto</a></li>
-							</ul>
-						</div>
+						<div class="row gtr-uniform">
+							<div class="col-4 col-12-small">
+								<input type="text" name="buscarProducto" id="buscarProducto"
+									placeholder="Buscar producto..." />
+							</div>
+							<div class="col-4 col-12-small">
+								<select name="tipoMovimiento" id="tipoMovimiento">
+									<option value="">- Tipo de Movimiento -</option>
+									<option value="Entrada">Entrada</option>
+									<option value="Salida">Salida</option>
+									<option value="Traslado Interno">Traslado Interno</option>
+									<option value="Ajuste">Ajuste</option>
+								</select>
+							</div>
+							<div class="col-4 col-12-small">
+								<ul class="actions">
+									<li><a href="#" class="button primary">Filtrar</a></li>
+									<li><a href="#" class="button">Agregar Producto</a></li>
+								</ul>
+							</div>
 						</div>
 					</div>
 				</details>
@@ -482,246 +496,246 @@
 				<details class="accordion" open>
 					<summary class="section-title">Listado de Productos</summary>
 					<div class="accordion-content">
-					<div class="table-wrapper">
-						<table>
-							<thead>
-								<tr>
-									<th>Nombre del Producto</th>
-									<th>Lote</th>
-									<th>Cantidad</th>
-									<th>Stock Mínimo</th>
-									<th>Fecha Ingreso</th>
-									<th>Fecha Salida</th>
-									<th>Estado</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>Nutriente NPK 10-10-10</td>
-									<td>NPK-2024-001</td>
-									<td>8 kg</td>
-									<td>50 kg</td>
-									<td>15/10/2024</td>
-									<td>-</td>
-									<td><span class="status-badge status-active">Activo</span></td>
-								</tr>
-								<tr>
-									<td>Filtro de Carbón Activado</td>
-									<td>FCA-2024-015</td>
-									<td>5 unidades</td>
-									<td>20 unidades</td>
-									<td>22/11/2024</td>
-									<td>-</td>
-									<td><span class="status-badge status-active">Activo</span></td>
-								</tr>
-								<tr>
-									<td>Tubing de PVC 1/2"</td>
-									<td>TUB-2024-023</td>
-									<td>32 metros</td>
-									<td>100 metros</td>
-									<td>01/11/2024</td>
-									<td>-</td>
-									<td><span class="status-badge status-active">Activo</span></td>
-								</tr>
-								<tr>
-									<td>Semillas de Lechuga Premium</td>
-									<td>SEM-2024-008</td>
-									<td>125 gramos</td>
-									<td>500 gramos</td>
-									<td>08/12/2024</td>
-									<td>-</td>
-									<td><span class="status-badge status-active">Activo</span></td>
-								</tr>
-								<tr>
-									<td>Bomba Sumergible 1 HP</td>
-									<td>BOM-2024-045</td>
-									<td>12 unidades</td>
-									<td>8 unidades</td>
-									<td>05/10/2024</td>
-									<td>-</td>
-									<td><span class="status-badge status-active">Activo</span></td>
-								</tr>
-								<tr>
-									<td>Sistema de Riego por Goteo</td>
-									<td>SRG-2024-032</td>
-									<td>45 metros</td>
-									<td>30 metros</td>
-									<td>18/09/2024</td>
-									<td>-</td>
-									<td><span class="status-badge status-active">Activo</span></td>
-								</tr>
-								<tr>
-									<td>pH Metro Digital</td>
-									<td>PHM-2024-011</td>
-									<td>3 unidades</td>
-									<td>5 unidades</td>
-									<td>12/11/2024</td>
-									<td>-</td>
-									<td><span class="status-badge status-active">Activo</span></td>
-								</tr>
-								<tr>
-									<td>Sustrato Hidropónico Premium</td>
-									<td>SUS-2024-067</td>
-									<td>150 kg</td>
-									<td>100 kg</td>
-									<td>03/12/2024</td>
-									<td>-</td>
-									<td><span class="status-badge status-active">Activo</span></td>
-								</tr>
-								<tr>
-									<td>Conectores de PVC 3/4"</td>
-									<td>CON-2024-089</td>
-									<td>8 bolsas</td>
-									<td>20 bolsas</td>
-									<td>25/11/2024</td>
-									<td>-</td>
-									<td><span class="status-badge status-inactive">Bajo Stock</span></td>
-								</tr>
-								<tr>
-									<td>Medidor de EC/TDS</td>
-									<td>MED-2024-005</td>
-									<td>6 unidades</td>
-									<td>4 unidades</td>
-									<td>20/10/2024</td>
-									<td>15/11/2024</td>
-									<td><span class="status-badge status-discontinued">Descontinuado</span></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-
-				<hr />
-
-				<!-- Historial de Movimientos -->
-				<details class="accordion">
-					<summary class="section-title">Historial de Movimientos Recientes</summary>
-					<div class="accordion-content">
-					<div class="movement-history">
-						<div class="movement-card">
-							<div class="date">03 de Diciembre, 2024</div>
-							<h4>Entrada de Stock</h4>
-							<p><strong>Producto:</strong> Sustrato Hidropónico Premium</p>
-							<p><strong>Cantidad:</strong> 150 kg</p>
-							<p><strong>Proveedor:</strong> Hidroponía Costa Rica S.A.</p>
-							<p><strong>Referencia:</strong> Factura #F-2024-1250</p>
-							<span class="movement-type movement-entry">Entrada</span>
+						<div class="table-wrapper">
+							<table>
+								<thead>
+									<tr>
+										<th>Nombre del Producto</th>
+										<th>Lote</th>
+										<th>Cantidad</th>
+										<th>Stock Mínimo</th>
+										<th>Fecha Ingreso</th>
+										<th>Fecha Salida</th>
+										<th>Estado</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Nutriente NPK 10-10-10</td>
+										<td>NPK-2024-001</td>
+										<td>8 kg</td>
+										<td>50 kg</td>
+										<td>15/10/2024</td>
+										<td>-</td>
+										<td><span class="status-badge status-active">Activo</span></td>
+									</tr>
+									<tr>
+										<td>Filtro de Carbón Activado</td>
+										<td>FCA-2024-015</td>
+										<td>5 unidades</td>
+										<td>20 unidades</td>
+										<td>22/11/2024</td>
+										<td>-</td>
+										<td><span class="status-badge status-active">Activo</span></td>
+									</tr>
+									<tr>
+										<td>Tubing de PVC 1/2"</td>
+										<td>TUB-2024-023</td>
+										<td>32 metros</td>
+										<td>100 metros</td>
+										<td>01/11/2024</td>
+										<td>-</td>
+										<td><span class="status-badge status-active">Activo</span></td>
+									</tr>
+									<tr>
+										<td>Semillas de Lechuga Premium</td>
+										<td>SEM-2024-008</td>
+										<td>125 gramos</td>
+										<td>500 gramos</td>
+										<td>08/12/2024</td>
+										<td>-</td>
+										<td><span class="status-badge status-active">Activo</span></td>
+									</tr>
+									<tr>
+										<td>Bomba Sumergible 1 HP</td>
+										<td>BOM-2024-045</td>
+										<td>12 unidades</td>
+										<td>8 unidades</td>
+										<td>05/10/2024</td>
+										<td>-</td>
+										<td><span class="status-badge status-active">Activo</span></td>
+									</tr>
+									<tr>
+										<td>Sistema de Riego por Goteo</td>
+										<td>SRG-2024-032</td>
+										<td>45 metros</td>
+										<td>30 metros</td>
+										<td>18/09/2024</td>
+										<td>-</td>
+										<td><span class="status-badge status-active">Activo</span></td>
+									</tr>
+									<tr>
+										<td>pH Metro Digital</td>
+										<td>PHM-2024-011</td>
+										<td>3 unidades</td>
+										<td>5 unidades</td>
+										<td>12/11/2024</td>
+										<td>-</td>
+										<td><span class="status-badge status-active">Activo</span></td>
+									</tr>
+									<tr>
+										<td>Sustrato Hidropónico Premium</td>
+										<td>SUS-2024-067</td>
+										<td>150 kg</td>
+										<td>100 kg</td>
+										<td>03/12/2024</td>
+										<td>-</td>
+										<td><span class="status-badge status-active">Activo</span></td>
+									</tr>
+									<tr>
+										<td>Conectores de PVC 3/4"</td>
+										<td>CON-2024-089</td>
+										<td>8 bolsas</td>
+										<td>20 bolsas</td>
+										<td>25/11/2024</td>
+										<td>-</td>
+										<td><span class="status-badge status-inactive">Bajo Stock</span></td>
+									</tr>
+									<tr>
+										<td>Medidor de EC/TDS</td>
+										<td>MED-2024-005</td>
+										<td>6 unidades</td>
+										<td>4 unidades</td>
+										<td>20/10/2024</td>
+										<td>15/11/2024</td>
+										<td><span class="status-badge status-discontinued">Descontinuado</span></td>
+									</tr>
+								</tbody>
+							</table>
 						</div>
 
-						<div class="movement-card">
-							<div class="date">02 de Diciembre, 2024</div>
-							<h4>Salida de Producto</h4>
-							<p><strong>Producto:</strong> Bomba Sumergible 1 HP</p>
-							<p><strong>Cantidad:</strong> 2 unidades</p>
-							<p><strong>Destino:</strong> Invernadero Norte</p>
-							<p><strong>Responsable:</strong> Carlos López</p>
-							<span class="movement-type movement-exit">Salida</span>
-						</div>
+						<hr />
 
-						<div class="movement-card">
-							<div class="date">01 de Diciembre, 2024</div>
-							<h4>Ajuste de Inventario</h4>
-							<p><strong>Producto:</strong> Nutriente NPK 10-10-10</p>
-							<p><strong>Diferencia:</strong> -5 kg</p>
-							<p><strong>Motivo:</strong> Correccion de inventario físico</p>
-							<p><strong>Revisado por:</strong> María González</p>
-							<span class="movement-type movement-adjustment">Ajuste</span>
-						</div>
+						<!-- Historial de Movimientos -->
+						<details class="accordion">
+							<summary class="section-title">Historial de Movimientos Recientes</summary>
+							<div class="accordion-content">
+								<div class="movement-history">
+									<div class="movement-card">
+										<div class="date">03 de Diciembre, 2024</div>
+										<h4>Entrada de Stock</h4>
+										<p><strong>Producto:</strong> Sustrato Hidropónico Premium</p>
+										<p><strong>Cantidad:</strong> 150 kg</p>
+										<p><strong>Proveedor:</strong> Hidroponía Costa Rica S.A.</p>
+										<p><strong>Referencia:</strong> Factura #F-2024-1250</p>
+										<span class="movement-type movement-entry">Entrada</span>
+									</div>
 
-						<div class="movement-card">
-							<div class="date">30 de Noviembre, 2024</div>
-							<h4>Entrada de Stock</h4>
-							<p><strong>Producto:</strong> Sistema de Riego por Goteo</p>
-							<p><strong>Cantidad:</strong> 20 metros</p>
-							<p><strong>Proveedor:</strong> Distribuidora Agrícola del Pacífico</p>
-							<p><strong>Referencia:</strong> Factura #F-2024-1235</p>
-							<span class="movement-type movement-entry">Entrada</span>
-						</div>
+									<div class="movement-card">
+										<div class="date">02 de Diciembre, 2024</div>
+										<h4>Salida de Producto</h4>
+										<p><strong>Producto:</strong> Bomba Sumergible 1 HP</p>
+										<p><strong>Cantidad:</strong> 2 unidades</p>
+										<p><strong>Destino:</strong> Invernadero Norte</p>
+										<p><strong>Responsable:</strong> Carlos López</p>
+										<span class="movement-type movement-exit">Salida</span>
+									</div>
 
-						<div class="movement-card">
-							<div class="date">29 de Noviembre, 2024</div>
-							<h4>Salida de Producto</h4>
-							<p><strong>Producto:</strong> Filtro de Carbón Activado</p>
-							<p><strong>Cantidad:</strong> 10 unidades</p>
-							<p><strong>Destino:</strong> Sistema de Filtración Central</p>
-							<p><strong>Responsable:</strong> Juan Ramírez</p>
-							<span class="movement-type movement-exit">Salida</span>
-						</div>
+									<div class="movement-card">
+										<div class="date">01 de Diciembre, 2024</div>
+										<h4>Ajuste de Inventario</h4>
+										<p><strong>Producto:</strong> Nutriente NPK 10-10-10</p>
+										<p><strong>Diferencia:</strong> -5 kg</p>
+										<p><strong>Motivo:</strong> Correccion de inventario físico</p>
+										<p><strong>Revisado por:</strong> María González</p>
+										<span class="movement-type movement-adjustment">Ajuste</span>
+									</div>
 
-						<div class="movement-card">
-							<div class="date">28 de Noviembre, 2024</div>
-							<h4>Entrada de Stock</h4>
-							<p><strong>Producto:</strong> Conectores de PVC 3/4"</p>
-							<p><strong>Cantidad:</strong> 50 bolsas</p>
-							<p><strong>Proveedor:</strong> Materiales de Construcción Ecos</p>
-							<p><strong>Referencia:</strong> Factura #F-2024-1220</p>
-							<span class="movement-type movement-entry">Entrada</span>
-						</div>
+									<div class="movement-card">
+										<div class="date">30 de Noviembre, 2024</div>
+										<h4>Entrada de Stock</h4>
+										<p><strong>Producto:</strong> Sistema de Riego por Goteo</p>
+										<p><strong>Cantidad:</strong> 20 metros</p>
+										<p><strong>Proveedor:</strong> Distribuidora Agrícola del Pacífico</p>
+										<p><strong>Referencia:</strong> Factura #F-2024-1235</p>
+										<span class="movement-type movement-entry">Entrada</span>
+									</div>
 
-						<div class="movement-card">
-							<div class="date">27 de Noviembre, 2024</div>
-							<h4>Salida de Producto</h4>
-							<p><strong>Producto:</strong> pH Metro Digital</p>
-							<p><strong>Cantidad:</strong> 1 unidad</p>
-							<p><strong>Destino:</strong> Laboratorio de Control de Calidad</p>
-							<p><strong>Responsable:</strong> Andrea Mora</p>
-							<span class="movement-type movement-exit">Salida</span>
-						</div>
+									<div class="movement-card">
+										<div class="date">29 de Noviembre, 2024</div>
+										<h4>Salida de Producto</h4>
+										<p><strong>Producto:</strong> Filtro de Carbón Activado</p>
+										<p><strong>Cantidad:</strong> 10 unidades</p>
+										<p><strong>Destino:</strong> Sistema de Filtración Central</p>
+										<p><strong>Responsable:</strong> Juan Ramírez</p>
+										<span class="movement-type movement-exit">Salida</span>
+									</div>
 
-						<div class="movement-card">
-							<div class="date">26 de Noviembre, 2024</div>
-							<h4>Ajuste de Inventario</h4>
-							<p><strong>Producto:</strong> Semillas de Lechuga Premium</p>
-							<p><strong>Diferencia:</strong> +50 gramos</p>
-							<p><strong>Motivo:</strong> Corrección de lectura anterior</p>
-							<p><strong>Revisado por:</strong> Director de Operaciones</p>
-							<span class="movement-type movement-adjustment">Ajuste</span>
-						</div>
+									<div class="movement-card">
+										<div class="date">28 de Noviembre, 2024</div>
+										<h4>Entrada de Stock</h4>
+										<p><strong>Producto:</strong> Conectores de PVC 3/4"</p>
+										<p><strong>Cantidad:</strong> 50 bolsas</p>
+										<p><strong>Proveedor:</strong> Materiales de Construcción Ecos</p>
+										<p><strong>Referencia:</strong> Factura #F-2024-1220</p>
+										<span class="movement-type movement-entry">Entrada</span>
+									</div>
 
-						<div class="movement-card">
-							<div class="date">25 de Noviembre, 2024</div>
-							<h4>Entrada de Stock</h4>
-							<p><strong>Producto:</strong> Tubing de PVC 1/2"</p>
-							<p><strong>Cantidad:</strong> 200 metros</p>
-							<p><strong>Proveedor:</strong> Suministros Hidráulicos Modernos</p>
-							<p><strong>Referencia:</strong> Factura #F-2024-1200</p>
-							<span class="movement-type movement-entry">Entrada</span>
-						</div>
+									<div class="movement-card">
+										<div class="date">27 de Noviembre, 2024</div>
+										<h4>Salida de Producto</h4>
+										<p><strong>Producto:</strong> pH Metro Digital</p>
+										<p><strong>Cantidad:</strong> 1 unidad</p>
+										<p><strong>Destino:</strong> Laboratorio de Control de Calidad</p>
+										<p><strong>Responsable:</strong> Andrea Mora</p>
+										<span class="movement-type movement-exit">Salida</span>
+									</div>
 
-						<div class="movement-card">
-							<div class="date">24 de Noviembre, 2024</div>
-							<h4>Salida de Producto</h4>
-							<p><strong>Producto:</strong> Medidor de EC/TDS</p>
-							<p><strong>Cantidad:</strong> 1 unidad</p>
-							<p><strong>Destino:</strong> Baja - Producto Descontinuado</p>
-							<p><strong>Responsable:</strong> Supervisor de Almacén</p>
-							<span class="movement-type movement-exit">Salida</span>
-						</div>
+									<div class="movement-card">
+										<div class="date">26 de Noviembre, 2024</div>
+										<h4>Ajuste de Inventario</h4>
+										<p><strong>Producto:</strong> Semillas de Lechuga Premium</p>
+										<p><strong>Diferencia:</strong> +50 gramos</p>
+										<p><strong>Motivo:</strong> Corrección de lectura anterior</p>
+										<p><strong>Revisado por:</strong> Director de Operaciones</p>
+										<span class="movement-type movement-adjustment">Ajuste</span>
+									</div>
 
-						<div class="movement-card">
-							<div class="date">23 de Noviembre, 2024</div>
-							<h4>Entrada de Stock</h4>
-							<p><strong>Producto:</strong> Nutriente NPK 10-10-10</p>
-							<p><strong>Cantidad:</strong> 100 kg</p>
-							<p><strong>Proveedor:</strong> Química Agrícola Industrial</p>
-							<p><strong>Referencia:</strong> Factura #F-2024-1185</p>
-							<span class="movement-type movement-entry">Entrada</span>
-						</div>
-						</div>
-					</div>
-				</details>
+									<div class="movement-card">
+										<div class="date">25 de Noviembre, 2024</div>
+										<h4>Entrada de Stock</h4>
+										<p><strong>Producto:</strong> Tubing de PVC 1/2"</p>
+										<p><strong>Cantidad:</strong> 200 metros</p>
+										<p><strong>Proveedor:</strong> Suministros Hidráulicos Modernos</p>
+										<p><strong>Referencia:</strong> Factura #F-2024-1200</p>
+										<span class="movement-type movement-entry">Entrada</span>
+									</div>
 
-				<hr />
+									<div class="movement-card">
+										<div class="date">24 de Noviembre, 2024</div>
+										<h4>Salida de Producto</h4>
+										<p><strong>Producto:</strong> Medidor de EC/TDS</p>
+										<p><strong>Cantidad:</strong> 1 unidad</p>
+										<p><strong>Destino:</strong> Baja - Producto Descontinuado</p>
+										<p><strong>Responsable:</strong> Supervisor de Almacén</p>
+										<span class="movement-type movement-exit">Salida</span>
+									</div>
 
-				<!-- Información Adicional -->
-				<details class="accordion">
-					<summary class="section-title">Información del Inventario</summary>
-					<div class="accordion-content">
-						<p><strong>Última Actualización:</strong> 03 de Diciembre, 2024 - 14:30</p>
-						<p><strong>Responsable del Inventario:</strong> Ing. Roberto Díaz</p>
-						<p><strong>Próxima Auditoría:</strong> 10 de Diciembre, 2024</p>
-						<p><strong>Ubicación Principal:</strong> Almacén Central, Heredia</p>
-					</div>
-				</details>
+									<div class="movement-card">
+										<div class="date">23 de Noviembre, 2024</div>
+										<h4>Entrada de Stock</h4>
+										<p><strong>Producto:</strong> Nutriente NPK 10-10-10</p>
+										<p><strong>Cantidad:</strong> 100 kg</p>
+										<p><strong>Proveedor:</strong> Química Agrícola Industrial</p>
+										<p><strong>Referencia:</strong> Factura #F-2024-1185</p>
+										<span class="movement-type movement-entry">Entrada</span>
+									</div>
+								</div>
+							</div>
+						</details>
+
+						<hr />
+
+						<!-- Información Adicional -->
+						<details class="accordion">
+							<summary class="section-title">Información del Inventario</summary>
+							<div class="accordion-content">
+								<p><strong>Última Actualización:</strong> 03 de Diciembre, 2024 - 14:30</p>
+								<p><strong>Responsable del Inventario:</strong> Ing. Roberto Díaz</p>
+								<p><strong>Próxima Auditoría:</strong> 10 de Diciembre, 2024</p>
+								<p><strong>Ubicación Principal:</strong> Almacén Central, Heredia</p>
+							</div>
+						</details>
 
 			</section>
 
@@ -746,8 +760,10 @@
 					<h3>Social</h3>
 					<ul class="icons alt">
 						<li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
-						<li><a href="#" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a></li>
-						<li><a href="#" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a></li>
+						<li><a href="#" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a>
+						</li>
+						<li><a href="#" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a>
+						</li>
 						<li><a href="#" class="icon brands alt fa-github"><span class="label">GitHub</span></a></li>
 					</ul>
 				</section>
@@ -755,7 +771,8 @@
 		</footer>
 
 		<div id="copyright">
-			<ul> todos los derechos reservados a <li>&copy; hidroverde.com</li></ul>
+			<ul> todos los derechos reservados a <li>&copy; hidroverde.com</li>
+			</ul>
 		</div>
 
 	</div>
@@ -770,41 +787,41 @@
 
 	<!-- JS: transform H2 titles into clickable accordion blocks (FAQ-like) -->
 	<script>
-	document.addEventListener('DOMContentLoaded', function(){
-		const container = document.getElementById('main');
-		if(!container) return;
-		const headings = Array.from(container.querySelectorAll('h2'));
-		headings.forEach((h2, idx) => {
-			// Skip h2 that are inside already handled accordions (summary.section-title)
-			if(h2.closest('details') || h2.classList.contains('section-title')) return;
-			const titleText = h2.innerHTML;
-			const title = document.createElement('div');
-			title.className = 'toggle-title';
-			title.innerHTML = titleText + ' <span class="caret">▾</span>';
-			const content = document.createElement('div');
-			content.className = 'toggle-content';
-			// Move siblings until the next h2 into content
-			let sib = h2.nextElementSibling;
-			const moved = [];
-			while(sib && sib.tagName !== 'H2'){
-				moved.push(sib);
-				sib = sib.nextElementSibling;
-			}
-			moved.forEach(node => content.appendChild(node));
-			// Insert title and content where h2 was
-			h2.parentNode.insertBefore(title, h2);
-			h2.parentNode.insertBefore(content, h2);
-			h2.remove();
-			// Default: keep sections open
-			// Add click handler
-			title.addEventListener('click', function(){
-				const isOpen = content.style.display !== 'none';
-				content.style.display = isOpen ? 'none' : '';
-				const caret = title.querySelector('.caret');
-				if(caret) caret.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+		document.addEventListener('DOMContentLoaded', function () {
+			const container = document.getElementById('main');
+			if (!container) return;
+			const headings = Array.from(container.querySelectorAll('h2'));
+			headings.forEach((h2, idx) => {
+				// Skip h2 that are inside already handled accordions (summary.section-title)
+				if (h2.closest('details') || h2.classList.contains('section-title')) return;
+				const titleText = h2.innerHTML;
+				const title = document.createElement('div');
+				title.className = 'toggle-title';
+				title.innerHTML = titleText + ' <span class="caret">▾</span>';
+				const content = document.createElement('div');
+				content.className = 'toggle-content';
+				// Move siblings until the next h2 into content
+				let sib = h2.nextElementSibling;
+				const moved = [];
+				while (sib && sib.tagName !== 'H2') {
+					moved.push(sib);
+					sib = sib.nextElementSibling;
+				}
+				moved.forEach(node => content.appendChild(node));
+				// Insert title and content where h2 was
+				h2.parentNode.insertBefore(title, h2);
+				h2.parentNode.insertBefore(content, h2);
+				h2.remove();
+				// Default: keep sections open
+				// Add click handler
+				title.addEventListener('click', function () {
+					const isOpen = content.style.display !== 'none';
+					content.style.display = isOpen ? 'none' : '';
+					const caret = title.querySelector('.caret');
+					if (caret) caret.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+				});
 			});
 		});
-	});
 	</script>
 
 </body>

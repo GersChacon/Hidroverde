@@ -17,13 +17,15 @@
 			padding: 30px;
 			border-radius: 8px;
 			margin-bottom: 30px;
-			box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 		}
+
 		.page-title h1 {
 			margin: 0;
 			font-size: 32px;
-			text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+			text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
 		}
+
 		.page-title p {
 			margin: 10px 0 0 0;
 			font-size: 14px;
@@ -38,27 +40,34 @@
 			overflow: hidden;
 			background: #fff;
 		}
+
 		summary.section-title {
 			display: block;
 			padding: 18px 20px;
 			cursor: pointer;
 			font-weight: 700;
 			color: #165a3b;
-			background: linear-gradient(90deg, rgba(46,139,87,0.06), rgba(46,139,87,0.02));
+			background: linear-gradient(90deg, rgba(46, 139, 87, 0.06), rgba(46, 139, 87, 0.02));
 			border-bottom: 1px solid #eee;
 			list-style: none;
 			outline: none;
 		}
-		summary.section-title::-webkit-details-marker { display:none; }
+
+		summary.section-title::-webkit-details-marker {
+			display: none;
+		}
+
 		summary.section-title:after {
 			content: '\25BC';
 			float: right;
 			transition: transform 0.2s ease;
 			color: #2e8b57;
 		}
+
 		details.accordion[open] summary.section-title:after {
 			transform: rotate(180deg);
 		}
+
 		.accordion-content {
 			padding: 18px 20px 22px 20px;
 			background: white;
@@ -68,7 +77,7 @@
 		.toggle-title {
 			display: block;
 			padding: 14px 18px;
-			background: linear-gradient(90deg, rgba(46,139,87,0.06), rgba(46,139,87,0.02));
+			background: linear-gradient(90deg, rgba(46, 139, 87, 0.06), rgba(46, 139, 87, 0.02));
 			border: 1px solid #e6efe8;
 			border-radius: 6px;
 			color: #165a3b;
@@ -102,243 +111,240 @@
 			<ul class="links">
 				<li><a href="index.html">Inicio</a></li>
 				<li><a href="registroMovimientos.html">Registro De Movimientos</a></li>
-				<li><a href="PedidosInternos.html">Pedidos Internos</a></li>
+				<li><a href="gestionInventario.html">Gestión de Inventario</a></li>
+				<li><a href="produccion.html">Produccion</a></li>
+				<li><a href="pedidosInternos.html">Pedidos Internos</a></li>
 				<li><a href="controlDeLotes.html">Control de Lotes</a></li>
+				<li><a href="reportes-alertas.html">Reportes y Alertas</a></li>
 				<li class="active"><a href="reportes.html">Reportes</a></li>
 				<li><a href="UsuarioYRoles.html">Usurio y roles</a></li>
-				<li><a href="gestionInventario.html">Gestión de Inventario</a></li>
-				<li><a href="ReportesInternos.html">Reportes Internos</a></li>
+
 			</ul>
-
-
 		</nav>
 
 		<div id="main">
 
-		<section class="post">
-			<header class="major page-title">
-				<h1>Reportes Creados<br /></h1>
-				<p>Análisis y visualización de datos del sistema</p>
-			</header>
+			<section class="post">
+				<header class="major page-title">
+					<h1>Reportes Creados<br /></h1>
+					<p>Análisis y visualización de datos del sistema</p>
+				</header>
 
 
 				<details class="accordion" open>
 					<summary class="section-title">Tabla de Reportes</summary>
 					<div class="accordion-content">
-					<table>
-						<thead>
-							<tr>
-								<th>Nombre </th>
-								<th>Problema</th>
-								<th>Numero de telefono</th>
-								<th>Estado</th> 
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>Persona 1</td>
-								<td>Ante turpis integer aliquet porttitor.</td>
-								<td>8888-8888</td>
-								<td>
-									<label class="switch">
-										<input type="checkbox">
-										<span class="slider"></span>
-									</label>
-								</td>
-							</tr>
-							<tr>
-								<td>Persona 2</td>
-								<td>Ante turpis integer aliquet porttitor.</td>
-								<td>8888-8888</td>
-								<td>
-									<label class="switch">
-										<input type="checkbox">
-										<span class="slider"></span>
-									</label>
-								</td>
-							</tr>
-							<tr>
-								<td>Persona 3</td>
-								<td>Ante turpis integer aliquet porttitor.</td>
-								<td>8888-8888</td>
-								<td>
-									<label class="switch">
-										<input type="checkbox">
-										<span class="slider"></span>
-									</label>
-								</td>
-							</tr>
-							<tr>
-								<td>Persona 4</td>
-								<td>Ante turpis integer aliquet porttitor.</td>
-								<td>8888-8888</td>
-								<td>
-									<label class="switch">
-										<input type="checkbox">
-										<span class="slider"></span>
-									</label>
-								</td>
-							</tr>
-							<tr>
-								<td>Persona 5</td>
-								<td>Ante turpis integer aliquet porttitor.</td>
-								<td>8888-8888</td>
-								<td>
-									<label class="switch">
-										<input type="checkbox">
-										<span class="slider"></span>
-									</label>
-								</td>
-							</tr>
-						</tbody>
-						<tfoot>
-							<tr>
-								<td colspan="2"></td>
-								<td></td>
-							</tr>
-						</tfoot>
-					</table>
-				</div>
+						<table>
+							<thead>
+								<tr>
+									<th>Nombre </th>
+									<th>Problema</th>
+									<th>Numero de telefono</th>
+									<th>Estado</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Persona 1</td>
+									<td>Ante turpis integer aliquet porttitor.</td>
+									<td>8888-8888</td>
+									<td>
+										<label class="switch">
+											<input type="checkbox">
+											<span class="slider"></span>
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<td>Persona 2</td>
+									<td>Ante turpis integer aliquet porttitor.</td>
+									<td>8888-8888</td>
+									<td>
+										<label class="switch">
+											<input type="checkbox">
+											<span class="slider"></span>
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<td>Persona 3</td>
+									<td>Ante turpis integer aliquet porttitor.</td>
+									<td>8888-8888</td>
+									<td>
+										<label class="switch">
+											<input type="checkbox">
+											<span class="slider"></span>
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<td>Persona 4</td>
+									<td>Ante turpis integer aliquet porttitor.</td>
+									<td>8888-8888</td>
+									<td>
+										<label class="switch">
+											<input type="checkbox">
+											<span class="slider"></span>
+										</label>
+									</td>
+								</tr>
+								<tr>
+									<td>Persona 5</td>
+									<td>Ante turpis integer aliquet porttitor.</td>
+									<td>8888-8888</td>
+									<td>
+										<label class="switch">
+											<input type="checkbox">
+											<span class="slider"></span>
+										</label>
+									</td>
+								</tr>
+							</tbody>
+							<tfoot>
+								<tr>
+									<td colspan="2"></td>
+									<td></td>
+								</tr>
+							</tfoot>
+						</table>
 					</div>
-				</details>
+		</div>
+		</details>
 
-				<hr />
-
-
-
-				<footer id="footer">
+		<hr />
 
 
-					<section class="split contact">
-						<section class="alt">
-							<h3>Direccion</h3>
-							<p>Heredia | Costa Rica<br />
-							</p>
-						</section>
-						<section>
-							<h3>Telefono</h3>
-							<p><a href="#">+506 8888-1234</a></p>
-						</section>
-						<section>
-							<h3>Email</h3>
-							<p><a href="#">hidroverde_hidroponics@gmail.com</a></p>
-						</section>
-						<section>
-							<h3>Social</h3>
-							<ul class="icons alt">
-								<li><a href="#" class="icon brands alt fa-twitter"><span
-											class="label">Twitter</span></a></li>
-								<li><a href="#" class="icon brands alt fa-facebook-f"><span
-											class="label">Facebook</span></a>
-								</li>
-								<li><a href="#" class="icon brands alt fa-instagram"><span
-											class="label">Instagram</span></a>
-								</li>
-								<li><a href="#" class="icon brands alt fa-github"><span class="label">GitHub</span></a>
-								</li>
-							</ul>
-						</section>
-					</section>
-				</footer>
-				<div id="copyright">
-					<ul> todos los derechos reservados a <li>&copy; hidroverde.com</li>
+
+		<footer id="footer">
+
+
+			<section class="split contact">
+				<section class="alt">
+					<h3>Direccion</h3>
+					<p>Heredia | Costa Rica<br />
+					</p>
+				</section>
+				<section>
+					<h3>Telefono</h3>
+					<p><a href="#">+506 8888-1234</a></p>
+				</section>
+				<section>
+					<h3>Email</h3>
+					<p><a href="#">hidroverde_hidroponics@gmail.com</a></p>
+				</section>
+				<section>
+					<h3>Social</h3>
+					<ul class="icons alt">
+						<li><a href="#" class="icon brands alt fa-twitter"><span class="label">Twitter</span></a></li>
+						<li><a href="#" class="icon brands alt fa-facebook-f"><span class="label">Facebook</span></a>
+						</li>
+						<li><a href="#" class="icon brands alt fa-instagram"><span class="label">Instagram</span></a>
+						</li>
+						<li><a href="#" class="icon brands alt fa-github"><span class="label">GitHub</span></a>
+						</li>
 					</ul>
-				</div>
-
+				</section>
+			</section>
+		</footer>
+		<div id="copyright">
+			<ul> todos los derechos reservados a <li>&copy; hidroverde.com</li>
+			</ul>
 		</div>
 
+	</div>
 
-		<script src="assets/js/jquery.min.js"></script>
-		<script src="assets/js/jquery.scrollex.min.js"></script>
-		<script src="assets/js/jquery.scrolly.min.js"></script>
-		<script src="assets/js/browser.min.js"></script>
-		<script src="assets/js/breakpoints.min.js"></script>
-		<script src="assets/js/util.js"></script>
-		<script src="assets/js/main.js"></script>
+
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/jquery.scrollex.min.js"></script>
+	<script src="assets/js/jquery.scrolly.min.js"></script>
+	<script src="assets/js/browser.min.js"></script>
+	<script src="assets/js/breakpoints.min.js"></script>
+	<script src="assets/js/util.js"></script>
+	<script src="assets/js/main.js"></script>
 
 	<!-- JS: transform H2 titles into clickable accordion blocks (FAQ-like) -->
 	<script>
-	document.addEventListener('DOMContentLoaded', function(){
-		const container = document.getElementById('main');
-		if(!container) return;
-		const headings = Array.from(container.querySelectorAll('h2'));
-		headings.forEach((h2, idx) => {
-			// Skip h2 that are inside already handled accordions (summary.section-title)
-			if(h2.closest('details') || h2.classList.contains('section-title')) return;
-			const titleText = h2.innerHTML;
-			const title = document.createElement('div');
-			title.className = 'toggle-title';
-			title.innerHTML = titleText + ' <span class="caret">▾</span>';
-			const content = document.createElement('div');
-			content.className = 'toggle-content';
-			// Move siblings until the next h2 into content
-			let sib = h2.nextElementSibling;
-			const moved = [];
-			while(sib && sib.tagName !== 'H2'){
-				moved.push(sib);
-				sib = sib.nextElementSibling;
-			}
-			moved.forEach(node => content.appendChild(node));
-			// Insert title and content where h2 was
-			h2.parentNode.insertBefore(title, h2);
-			h2.parentNode.insertBefore(content, h2);
-			h2.remove();
-			// Default: keep sections open
-			// Add click handler
-			title.addEventListener('click', function(){
-				const isOpen = content.style.display !== 'none';
-				content.style.display = isOpen ? 'none' : '';
-				const caret = title.querySelector('.caret');
-				if(caret) caret.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+		document.addEventListener('DOMContentLoaded', function () {
+			const container = document.getElementById('main');
+			if (!container) return;
+			const headings = Array.from(container.querySelectorAll('h2'));
+			headings.forEach((h2, idx) => {
+				// Skip h2 that are inside already handled accordions (summary.section-title)
+				if (h2.closest('details') || h2.classList.contains('section-title')) return;
+				const titleText = h2.innerHTML;
+				const title = document.createElement('div');
+				title.className = 'toggle-title';
+				title.innerHTML = titleText + ' <span class="caret">▾</span>';
+				const content = document.createElement('div');
+				content.className = 'toggle-content';
+				// Move siblings until the next h2 into content
+				let sib = h2.nextElementSibling;
+				const moved = [];
+				while (sib && sib.tagName !== 'H2') {
+					moved.push(sib);
+					sib = sib.nextElementSibling;
+				}
+				moved.forEach(node => content.appendChild(node));
+				// Insert title and content where h2 was
+				h2.parentNode.insertBefore(title, h2);
+				h2.parentNode.insertBefore(content, h2);
+				h2.remove();
+				// Default: keep sections open
+				// Add click handler
+				title.addEventListener('click', function () {
+					const isOpen = content.style.display !== 'none';
+					content.style.display = isOpen ? 'none' : '';
+					const caret = title.querySelector('.caret');
+					if (caret) caret.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+				});
 			});
 		});
-	});
 	</script>
-<style>
-	.switch {
-		position: relative;
-		display: inline-block;
-		width: 50px;
-		height: 24px;
-	}
+	<style>
+		.switch {
+			position: relative;
+			display: inline-block;
+			width: 50px;
+			height: 24px;
+		}
 
-	.switch input {
-		opacity: 0;
-		width: 0;
-		height: 0;
-	}
+		.switch input {
+			opacity: 0;
+			width: 0;
+			height: 0;
+		}
 
-	.slider {
-		position: absolute;
-		cursor: pointer;
-		background-color: red;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		transition: 0.4s;
-		border-radius: 24px;
-	}
+		.slider {
+			position: absolute;
+			cursor: pointer;
+			background-color: red;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			transition: 0.4s;
+			border-radius: 24px;
+		}
 
-	.slider:before {
-		position: absolute;
-		content: "";
-		height: 18px;
-		width: 18px;
-		left: 3px;
-		bottom: 3px;
-		background-color: white;
-		transition: 0.4s;
-		border-radius: 50%;
-	}
+		.slider:before {
+			position: absolute;
+			content: "";
+			height: 18px;
+			width: 18px;
+			left: 3px;
+			bottom: 3px;
+			background-color: white;
+			transition: 0.4s;
+			border-radius: 50%;
+		}
 
-	input:checked+.slider {
-		background-color: #00b56a;
-	}
+		input:checked+.slider {
+			background-color: #00b56a;
+		}
 
-	input:checked+.slider:before {
-		transform: translateX(26px);
-	}
-</style>
+		input:checked+.slider:before {
+			transform: translateX(26px);
+		}
+	</style>
 
 </html>

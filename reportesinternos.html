@@ -1,0 +1,400 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title>Reportes Internos - Hidroverde</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript>
+        <link rel="stylesheet" href="assets/css/noscript.css" />
+    </noscript>
+
+    <!-- Estilos básicos para el modal y los switches -->
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            padding-top: 80px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: auto;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 600px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        /* Switch tipo toggle */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #5cb85c;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        .modal-content label {
+            display: block;
+            margin-top: 0.75rem;
+        }
+
+        .modal-content input,
+        .modal-content select {
+            width: 100%;
+            margin-top: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Accordion (details/summary) styles */
+        details.accordion {
+            border: 1px solid #e1e1e1;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            background: #fff;
+        }
+        summary.section-title {
+            display: block;
+            padding: 18px 20px;
+            cursor: pointer;
+            font-weight: 700;
+            color: #165a3b;
+            background: linear-gradient(90deg, rgba(46,139,87,0.06), rgba(46,139,87,0.02));
+            border-bottom: 1px solid #eee;
+            list-style: none;
+            outline: none;
+        }
+        summary.section-title::-webkit-details-marker { display:none; }
+        summary.section-title:after {
+            content: '\25BC';
+            float: right;
+            transition: transform 0.2s ease;
+            color: #2e8b57;
+        }
+        details.accordion[open] summary.section-title:after {
+            transform: rotate(180deg);
+        }
+        .accordion-content {
+            padding: 18px 20px 22px 20px;
+            background: white;
+        }
+
+        /* Fallback JS-driven toggle titles */
+        .toggle-title {
+            display: block;
+            padding: 14px 18px;
+            background: linear-gradient(90deg, rgba(46,139,87,0.06), rgba(46,139,87,0.02));
+            border: 1px solid #e6efe8;
+            border-radius: 6px;
+            color: #165a3b;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 8px;
+        }
+
+        .toggle-title .caret {
+            float: right;
+            transition: transform 0.2s ease;
+            color: #2e8b57;
+        }
+
+        .toggle-content {
+            padding: 12px 0 22px 0;
+            border-left: 3px solid transparent;
+        }
+        }
+    </style>
+</head>
+
+<body class="is-preload">
+
+    <div id="wrapper">
+
+        <!-- HEADER -->
+        <header id="header">
+            <a href="index.html" class="logo">Hidroverde</a>
+        </header>
+
+        <!-- NAV PRINCIPAL (igual que en las demás vistas) -->
+        <nav id="nav">
+            <ul class="links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="registroMovimientos.html">Registro de Movimientos</a></li>
+                <li><a href="gestionInventario.html">Gestión de Inventario</a></li>
+                <li><a href="PedidosInternos.html">Pedidos Internos</a></li>
+                <li><a href="controlDeLotes.html">Control de Lotes</a></li>
+                <li class="active"><a href="reportes-alertas.html">Reportes y Alertas</a></li>
+                <li><a href="UsuarioYRoles.html">Usuario y Roles</a></li>
+            </ul>
+        </nav>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <div id="main">
+            <section class="post">
+                <header class="major">
+                    <h1>Reportes Internos</h1>
+                    <p>Seguimiento de checklist diario, incidentes y mantenimiento de hidroponía.</p>
+                </header>
+
+                <!-- FILTROS GENERALES (opcionales) -->
+                <div class="row gtr-uniform">
+                    <div class="col-4 col-12-small">
+                        <input type="text" placeholder="Buscar por actividad, incidente o empleado..." />
+                    </div>
+                    <div class="col-4 col-12-small">
+                        <select>
+                            <option value="">- Tipo -</option>
+                            <option>Checklist</option>
+                            <option>Incidente</option>
+                            <option>Mantenimiento</option>
+                        </select>
+                    </div>
+                    <div class="col-4 col-12-small">
+                        <select>
+                            <option value="">- Estado -</option>
+                            <option>Pendiente</option>
+                            <option>En proceso</option>
+                            <option>Listo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <ul class="actions">
+                    <li><a href="#" class="button primary">Filtrar</a></li>
+                    <li><a href="#" class="button primary" id="btnNuevoRegistro">Agregar nuevo registro</a></li>
+                </ul>
+
+                <hr />
+
+                <!-- 1) CHECKLIST DE ACTIVIDADES DE HIDROPONÍA -->
+                <section>
+                    <header class="major">
+                        <h2>Checklist diario de hidroponía</h2>
+                        <p>Actividades operativas que se deben completar cada día.</p>
+                    </header>
+
+                    <div class="table-wrapper">
+                        <table id="checklistTabla">
+                            <thead>
+                                <tr>
+                                    <th>Actividad</th>
+                                    <th>Área / Torre</th>
+                                    <th>Responsable</th>
+                                    <th>Frecuencia</th>
+                                    <th>Listo</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Preparación de insumos (semillas, sustrato, nutrientes)</td>
+                                    <td>Zona de preparación</td>
+                                    <td>Fiorella</td>
+                                    <td>Diaria</td>
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Plantación / trasplante en torres</td>
+                                    <td>Torres 1–4</td>
+                                    <td>Asistente</td>
+                                    <td>Diaria</td>
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Revisión y programación del riego</td>
+                                    <td>Sistema NFT / Tanques</td>
+                                    <td>Diego</td>
+                                    <td>Diaria</td>
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Quitar hojas secas / dañadas</td>
+                                    <td>Todas las torres</td>
+                                    <td>Operación</td>
+                                    <td>Diaria</td>
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Encender / revisar abanicos y extracción</td>
+                                    <td>Invernadero</td>
+                                    <td>Diego</td>
+                                    <td>Diaria (mañana / tarde)</td>
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Agregar producto (nutriente) según receta</td>
+                                    <td>Tanques principales</td>
+                                    <td>Fiorella</td>
+                                    <td>Según plan de riego</td>
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Llenar tanques de solución nutritiva</td>
+                                    <td>Tanques A/B</td>
+                                    <td>Operación</td>
+                                    <td>3 veces por semana</td>
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Vaciar y purgar tanques</td>
+                                    <td>Tanques A/B</td>
+                                    <td>Diego</td>
+                                    <td>Semanal</td>
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Medir y registrar pH</td>
+                                    <td>Tanques / líneas de riego</td>
+                                    <td>Fiorella</td>
+                                    <td>Diaria (mañana)</td>
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Medir y registrar EC (conductividad)</td>
+                                    <td>Tanques</td>
+                                    <td>Operación</td>
+                                    <td>Diaria</td>
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Revisión de plagas / enfermedades</td>
+                                    <td>Todo el cultivo</td>
+                                    <td>Asistente</td>
+                                    <td>Diaria</td>
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Registro de producción cosechada</td>
+                                    <td>Área de cosecha</td>
+                                    <td>Fiorella</td>
+                                    <td>Según cosecha</td>
+                                    <td>
+                                        <label class="switch">
+                                            <input type="checkbox">
+                                            <span class="slider"></span>
+                                        </label>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <hr />
+
+                <!-- 2) INCIDENTES -->
+                <section>
+                    <header class="major">
+                        <h2>Incidentes</h2>
+                        <p>Eventos no planificados que afectan la operación (fugas, fallas de bomba, cortes eléctricos,
+                            etc.).</p>
+                    </header>

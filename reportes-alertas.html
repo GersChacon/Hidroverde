@@ -6,6 +6,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <link rel="stylesheet" href="assets/css/main.css" />
     <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+    <style>
+        /* Page-title frame (consistent with other pages) */
+        .page-title {
+            background: linear-gradient(135deg, #2e8b57 0%, #1a5a3a 100%);
+            color: #fff;
+            padding: 26px 28px;
+            border-radius: 8px;
+            margin-bottom: 22px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+        }
+        .page-title h1 {
+            margin: 0;
+            font-size: 28px;
+            line-height: 1.1;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.12);
+            display: inline-block;
+        }
+        .page-title p { margin: 8px 0 0 0; opacity: 0.95; }
+        .qa-badge {
+            display: inline-block;
+            margin-left: 12px;
+            background: #fff;
+            color: #1a5a3a;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 14px;
+            font-size: 12px;
+            vertical-align: middle;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+        }
+
+        /* QA-like card appearance for the listings */
+        .posts article {
+            background: #fff;
+            border: 1px solid #e6efe8;
+            border-left: 4px solid #2e8b57;
+            border-radius: 8px;
+            padding: 14px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.04);
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+            margin-bottom: 16px;
+        }
+        .posts article:hover { transform: translateY(-3px); box-shadow: 0 6px 14px rgba(0,0,0,0.07); }
+        .posts article header h2 a { color: #165a3b; font-weight: 700; }
+        .posts article p { color: #444; }
+    </style>
 </head>
 
 <body class="is-preload">
@@ -22,7 +68,7 @@
 				<li><a href="registroMovimientos.html">Registro De Movimientos</a></li>
 				<li><a href="gestionInventario.html">Gestión de Inventario</a></li>
 				<li><a href="produccion.html">Produccion</a></li>
-				<li><a href="pedidosInternos.html">Pedidos Internos</a></li>
+                <li><a href="PedidosInternos.html">Pedidos Internos</a></li>
 				<li><a href="controlDeLotes.html">Control de Lotes</a></li>
 				<li class="active"><a href="reportes-alertas.html">Reportes y Alertas</a></li>
 				<li><a href="reportes.html">Reportes</a></li>
@@ -34,8 +80,8 @@
         <div id="main">
 
             <section class="post">
-                <header class="major">
-                    <h1>Reportes y Alertas</h1>
+                <header class="major page-title">
+                    <h1>Reportes y Alertas <span class="qa-badge">QA</span></h1>
                     <p>Selecciona el tipo de reporte o sección para consultar la información.</p>
                 </header>
 

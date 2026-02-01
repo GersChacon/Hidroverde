@@ -1,5 +1,84 @@
 [
   {
+    "ContainingType": "API.Controllers.TipoCultivoController",
+    "Method": "Agregar",
+    "RelativePath": "api/TipoCultivo",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tipoCultivo",
+        "Type": "Abstracciones.Modelos.TipoCultivoRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.TipoCultivoController",
+    "Method": "Obtener",
+    "RelativePath": "api/TipoCultivo",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.TipoCultivoController",
+    "Method": "Editar",
+    "RelativePath": "api/TipoCultivo/{tipoCultivoId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tipoCultivoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "tipoCultivo",
+        "Type": "Abstracciones.Modelos.TipoCultivoRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.TipoCultivoController",
+    "Method": "Eliminar",
+    "RelativePath": "api/TipoCultivo/{tipoCultivoId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tipoCultivoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.TipoCultivoController",
+    "Method": "Obtener",
+    "RelativePath": "api/TipoCultivo/{tipoCultivoId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "tipoCultivoId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "API.Controllers.UnidadMedidaController",
     "Method": "Agregar",
     "RelativePath": "api/UnidadMedida",

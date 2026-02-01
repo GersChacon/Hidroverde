@@ -1,4 +1,6 @@
-﻿CREATE PROCEDURE [dbo].[AgregarTipoCultivo]
+﻿
+-- Modificar AgregarTipoCultivo
+CREATE PROCEDURE [dbo].[AgregarTipoCultivo]
     @codigo nvarchar(30),
     @nombre nvarchar(50),
     @descripcion nvarchar(max) = NULL,
@@ -14,6 +16,6 @@ BEGIN
         VALUES 
         (@codigo, @nombre, @descripcion, @requisitos, @activo)
         
-        SELECT SCOPE_IDENTITY() AS tipo_cultivo_id
+        SELECT SCOPE_IDENTITY() AS TipoCultivoId
     COMMIT TRANSACTION
 END

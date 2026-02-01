@@ -1,4 +1,6 @@
-﻿CREATE PROCEDURE [dbo].[EliminarTipoCultivo]
+﻿
+-- Modificar EliminarTipoCultivo
+CREATE PROCEDURE [dbo].[EliminarTipoCultivo]
     @tipo_cultivo_id int
 AS
 BEGIN
@@ -8,6 +10,6 @@ BEGIN
         DELETE FROM [dbo].[Tipos_Cultivo]
         WHERE tipo_cultivo_id = @tipo_cultivo_id
         
-        SELECT @tipo_cultivo_id AS tipo_cultivo_id
+        SELECT @tipo_cultivo_id AS TipoCultivoId
     COMMIT TRANSACTION
 END

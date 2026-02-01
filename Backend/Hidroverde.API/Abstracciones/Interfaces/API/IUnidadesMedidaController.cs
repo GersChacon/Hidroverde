@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Abstracciones.Interfaces.API
 {
-    public interface IUnidadMedidaController
+    public interface ITipoCultivoController
     {
         Task<IActionResult> Obtener();
-        Task<IActionResult> Obtener(int unidadId);
-        Task<IActionResult> Agregar(UnidadMedidaRequest unidadMedida);
-        Task<IActionResult> Editar(int unidadId, UnidadMedidaRequest unidadMedida);
-        Task<IActionResult> Eliminar(int unidadId);
+        Task<IActionResult> Obtener(int tipoCultivoId);
+        Task<IActionResult> Agregar(TipoCultivoRequest tipoCultivo);
+        Task<IActionResult> Editar(int tipoCultivoId, TipoCultivoRequest tipoCultivo);
+        Task<IActionResult> Eliminar(int tipoCultivoId);
     }
 }

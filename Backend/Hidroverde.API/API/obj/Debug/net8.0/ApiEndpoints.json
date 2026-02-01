@@ -1,0 +1,81 @@
+[
+  {
+    "ContainingType": "API.Controllers.UnidadMedidaController",
+    "Method": "Agregar",
+    "RelativePath": "api/UnidadMedida",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "unidadMedida",
+        "Type": "Abstracciones.Modelos.UnidadMedidaRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.UnidadMedidaController",
+    "Method": "Obtener",
+    "RelativePath": "api/UnidadMedida",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.UnidadMedidaController",
+    "Method": "Editar",
+    "RelativePath": "api/UnidadMedida/{unidadId}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "unidadId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "unidadMedida",
+        "Type": "Abstracciones.Modelos.UnidadMedidaRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.UnidadMedidaController",
+    "Method": "Eliminar",
+    "RelativePath": "api/UnidadMedida/{unidadId}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "unidadId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.UnidadMedidaController",
+    "Method": "Obtener",
+    "RelativePath": "api/UnidadMedida/{unidadId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "unidadId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

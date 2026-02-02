@@ -1,5 +1,5 @@
 ﻿
--- Eliminar Variedad
+-- Modificar EliminarVariedad con alias
 CREATE PROCEDURE [dbo].[EliminarVariedad]
     @variedad_id int
 AS
@@ -10,6 +10,6 @@ BEGIN
         DELETE FROM [dbo].[Variedades]
         WHERE variedad_id = @variedad_id
         
-        SELECT @variedad_id AS variedad_id
+        SELECT @variedad_id AS VariedadId
     COMMIT TRANSACTION
 END

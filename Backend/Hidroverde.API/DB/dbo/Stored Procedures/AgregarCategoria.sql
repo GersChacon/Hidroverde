@@ -1,4 +1,4 @@
-﻿-- Agregar Categoria
+﻿-- Modificar AgregarCategoria con alias
 CREATE PROCEDURE [dbo].[AgregarCategoria]
     @tipo_cultivo_id int,
     @nombre nvarchar(100),
@@ -17,6 +17,6 @@ BEGIN
         (@tipo_cultivo_id, @nombre, @descripcion, 
          @requiere_seguimiento, @activa, GETDATE())
         
-        SELECT SCOPE_IDENTITY() AS categoria_id
+        SELECT SCOPE_IDENTITY() AS CategoriaId
     COMMIT TRANSACTION
 END

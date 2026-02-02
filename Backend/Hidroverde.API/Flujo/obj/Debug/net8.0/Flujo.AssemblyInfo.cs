@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Flujo")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8edcf20812e85c129543a7ddacf5b6f3b9de26dd")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dfbd9f8e48f55f751a4ace386aea01a9081b83da")]
 [assembly: System.Reflection.AssemblyProductAttribute("Flujo")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Flujo")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

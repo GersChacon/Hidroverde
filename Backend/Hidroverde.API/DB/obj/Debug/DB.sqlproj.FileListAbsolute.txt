@@ -4,3 +4,7 @@ C:\Users\User\OneDrive - Universidad Fidélitas\Documentos\GitHub\2025\Hidroverd
 C:\Users\User\OneDrive - Universidad Fidélitas\Documentos\GitHub\2025\Hidroverde\Backend\Hidroverde.API\DB\obj\Debug\DB.sqlproj.AssemblyReference.cache
 C:\Users\User\OneDrive - Universidad Fidélitas\Documentos\GitHub\2025\Hidroverde\Backend\Hidroverde.API\DB\obj\Debug\DB.dll
 C:\Users\User\OneDrive - Universidad Fidélitas\Documentos\GitHub\2025\Hidroverde\Backend\Hidroverde.API\DB\obj\Debug\DB.pdb
+C:\Users\User\OneDrive - Universidad Fidélitas\Documentos\GitHub\2025\Hidroverde\Backend\Hidroverde.API\DB\obj\Debug\Model.xml
+C:\Users\User\OneDrive - Universidad Fidélitas\Documentos\GitHub\2025\Hidroverde\Backend\Hidroverde.API\DB\obj\Debug\refactor.xml
+C:\Users\User\OneDrive - Universidad Fidélitas\Documentos\GitHub\2025\Hidroverde\Backend\Hidroverde.API\DB\obj\Debug\postdeploy.sql
+C:\Users\User\OneDrive - Universidad Fidélitas\Documentos\GitHub\2025\Hidroverde\Backend\Hidroverde.API\DB\obj\Debug\predeploy.sql

@@ -19,6 +19,12 @@ builder.Services.AddScoped<IUnidadMedidaDA, UnidadMedidaDA>();
 builder.Services.AddScoped<IUnidadMedidaFlujo, UnidadMedidaFlujo>();
 builder.Services.AddScoped<ITipoCultivoFlujo, TipoCultivoFlujo>();
 builder.Services.AddScoped<ITipoCultivoDA, TipoCultivoDA>();
+builder.Services.AddScoped<ICategoriaFlujo, CategoriaFlujo>();
+builder.Services.AddScoped<ICategoriaDA, CategoriaDA>();
+builder.Services.AddScoped<IVariedadFlujo, VariedadFlujo>();
+builder.Services.AddScoped<IVariedadDA, VariedadDA>();
+builder.Services.AddScoped<IProductoFlujo, ProductoFlujo>();
+builder.Services.AddScoped<IProductoDA, ProductoDA>();
 
 
 // Después de builder.Services.AddControllers();

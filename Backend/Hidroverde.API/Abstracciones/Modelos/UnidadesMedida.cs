@@ -1,5 +1,4 @@
-﻿using System;
-
+﻿
 namespace Abstracciones.Modelos
 {
     public class TipoCultivoBase

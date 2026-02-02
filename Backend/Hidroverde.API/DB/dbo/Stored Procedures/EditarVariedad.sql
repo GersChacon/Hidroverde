@@ -1,5 +1,5 @@
 ﻿
--- Editar Variedad
+-- Modificar EditarVariedad con alias
 CREATE PROCEDURE [dbo].[EditarVariedad]
     @variedad_id int,
     @categoria_id int,
@@ -36,6 +36,6 @@ BEGIN
             [activa] = @activa
         WHERE variedad_id = @variedad_id
         
-        SELECT @variedad_id AS variedad_id
+        SELECT @variedad_id AS VariedadId
     COMMIT TRANSACTION
 END

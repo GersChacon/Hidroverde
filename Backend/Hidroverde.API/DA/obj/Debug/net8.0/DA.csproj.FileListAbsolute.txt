@@ -14,3 +14,19 @@ C:\Users\User\OneDrive - Universidad Fidélitas\Documentos\GitHub\2025\Hidroverd
 C:\Users\User\OneDrive - Universidad Fidélitas\Documentos\GitHub\2025\Hidroverde\Backend\Hidroverde.API\DA\obj\Debug\net8.0\refint\DA.dll
 C:\Users\User\OneDrive - Universidad Fidélitas\Documentos\GitHub\2025\Hidroverde\Backend\Hidroverde.API\DA\obj\Debug\net8.0\DA.pdb
 C:\Users\User\OneDrive - Universidad Fidélitas\Documentos\GitHub\2025\Hidroverde\Backend\Hidroverde.API\DA\obj\Debug\net8.0\ref\DA.dll
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DA\bin\Debug\net8.0\DA.deps.json
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DA\bin\Debug\net8.0\DA.dll
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DA\bin\Debug\net8.0\DA.pdb
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DA\bin\Debug\net8.0\Abstracciones.dll
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DA\bin\Debug\net8.0\Abstracciones.pdb
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DA\obj\Debug\net8.0\DA.csproj.AssemblyReference.cache
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DA\obj\Debug\net8.0\DA.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DA\obj\Debug\net8.0\DA.AssemblyInfoInputs.cache
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DA\obj\Debug\net8.0\DA.AssemblyInfo.cs
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DA\obj\Debug\net8.0\DA.csproj.CoreCompileInputs.cache
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DA\obj\Debug\net8.0\DA.sourcelink.json
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DA\obj\Debug\net8.0\DA.csproj.Up2Date
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DA\obj\Debug\net8.0\DA.dll
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DA\obj\Debug\net8.0\refint\DA.dll
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DA\obj\Debug\net8.0\DA.pdb
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DA\obj\Debug\net8.0\ref\DA.dll

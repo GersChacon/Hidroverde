@@ -8,3 +8,13 @@ C:\Users\User\OneDrive - Universidad Fidélitas\Documentos\GitHub\2025\Hidroverd
 C:\Users\User\OneDrive - Universidad Fidélitas\Documentos\GitHub\2025\Hidroverde\Backend\Hidroverde.API\DB\obj\Debug\refactor.xml
 C:\Users\User\OneDrive - Universidad Fidélitas\Documentos\GitHub\2025\Hidroverde\Backend\Hidroverde.API\DB\obj\Debug\postdeploy.sql
 C:\Users\User\OneDrive - Universidad Fidélitas\Documentos\GitHub\2025\Hidroverde\Backend\Hidroverde.API\DB\obj\Debug\predeploy.sql
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DB\bin\Debug\DB.dacpac
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DB\bin\Debug\DB.dll
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DB\bin\Debug\DB.pdb
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DB\obj\Debug\DB.sqlproj.AssemblyReference.cache
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DB\obj\Debug\Model.xml
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DB\obj\Debug\refactor.xml
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DB\obj\Debug\postdeploy.sql
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DB\obj\Debug\predeploy.sql
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DB\obj\Debug\DB.dll
+C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DB\obj\Debug\DB.pdb

@@ -25,6 +25,8 @@ builder.Services.AddScoped<IVariedadFlujo, VariedadFlujo>();
 builder.Services.AddScoped<IVariedadDA, VariedadDA>();
 builder.Services.AddScoped<IProductoFlujo, ProductoFlujo>();
 builder.Services.AddScoped<IProductoDA, ProductoDA>();
+builder.Services.AddScoped<IAlertasDA, AlertasDA>();
+builder.Services.AddScoped<IAlertasFlujo, AlertasFlujo>();
 
 
 // Después de builder.Services.AddControllers();

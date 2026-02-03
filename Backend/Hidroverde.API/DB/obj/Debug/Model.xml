@@ -12,7 +12,7 @@
 		</CustomData>
 		<CustomData Category="Reference" Type="Assembly">
 			<Metadata Name="LogicalName" Value="DB.dll" />
-			<Metadata Name="FileName" Value="C:\USERS\USER\ONEDRIVE - UNIVERSIDAD FIDÉLITAS\DOCUMENTOS\GITHUB\2025\HIDROVERDE\BACKEND\HIDROVERDE.API\DB\OBJ\DEBUG\DB.DLL" />
+			<Metadata Name="FileName" Value="C:\USERS\MARIA\SOURCE\REPOS\HIDROVERDE\BACKEND\HIDROVERDE.API\DB\OBJ\DEBUG\DB.DLL" />
 			<Metadata Name="AssemblyName" Value="DB" />
 			<Metadata Name="PermissionSet" Value="SAFE" />
 			<Metadata Name="Owner" Value="" />
@@ -20,7 +20,7 @@
 			<Metadata Name="IsVisible" Value="True" />
 			<Metadata Name="IsModelAware" Value="True" />
 			<Metadata Name="SkipCreationIfEmpty" Value="True" />
-			<Metadata Name="AssemblySymbolsName" Value="C:\Users\User\OneDrive - Universidad Fidélitas\Documentos\GitHub\2025\Hidroverde\Backend\Hidroverde.API\DB\obj\Debug\DB.pdb" />
+			<Metadata Name="AssemblySymbolsName" Value="C:\Users\maria\source\repos\Hidroverde\Backend\Hidroverde.API\DB\obj\Debug\DB.pdb" />
 		</CustomData>
 		<CustomData Category="SqlCmdVariables" Type="SqlCmdVariable" />
 	</Header>

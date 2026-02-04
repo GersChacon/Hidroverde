@@ -1,4 +1,4 @@
-using Abstracciones.Interfaces.DA;
+﻿using Abstracciones.Interfaces.DA;
 using Abstracciones.Interfaces.Flujo;
 using Flujo;
 using DA;
@@ -27,9 +27,17 @@ builder.Services.AddScoped<IProductoFlujo, ProductoFlujo>();
 builder.Services.AddScoped<IProductoDA, ProductoDA>();
 builder.Services.AddScoped<IAlertasDA, AlertasDA>();
 builder.Services.AddScoped<IAlertasFlujo, AlertasFlujo>();
+builder.Services.AddScoped<IRepositorioDapper, RepositorioDapper>();
 
+builder.Services.AddScoped<ICiclosDA, CiclosDA>();
+builder.Services.AddScoped<ITiposRecursoDA, TiposRecursoDA>();
+builder.Services.AddScoped<IConsumosDA, ConsumosDA>();
 
-// Despu�s de builder.Services.AddControllers();
+builder.Services.AddScoped<ICiclosFlujo, CiclosFlujo>();
+builder.Services.AddScoped<ITiposRecursoFlujo, TiposRecursoFlujo>();
+builder.Services.AddScoped<IConsumosFlujo, ConsumosFlujo>();
+
+// Después de builder.Services.AddControllers();
 
 
 var app = builder.Build();
@@ -42,6 +50,10 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// 👉 IMPORTANTE: archivos estáticos primero
+app.UseDefaultFiles(); // permite que / cargue index.html
+app.UseStaticFiles();  // habilita wwwroot
 
 app.UseAuthorization();
 

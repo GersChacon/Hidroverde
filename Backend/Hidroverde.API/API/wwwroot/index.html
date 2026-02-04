@@ -1,0 +1,488 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hidroverde Digital — Inicio</title>
+  <style>
+    :root{
+      --bg:#0b1220; --card:#101a2f; --muted:#8aa0c7; --text:#e7eefc;
+      --line:rgba(255,255,255,.12); --accent:#56d364; --warn:#f2cc60;
+      --btn:#1f2d4d;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text)}
+    header{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;gap:14px;align-items:center}
+    .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#2bb673);display:grid;place-items:center;color:#0b1220;font-weight:800}
+    h1{font-size:18px;margin:0}
+    .sub{color:var(--muted);font-size:12px;margin-top:2px}
+    main{padding:18px 22px;max-width:1100px;margin:0 auto}
+
+    /* Tabs */
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+    .tabbtn{
+      border:1px solid var(--line); background:transparent; color:var(--text);
+      padding:10px 12px;border-radius:12px; cursor:pointer; font-weight:600;
+    }
+    .tabbtn[aria-selected="true"]{background:var(--btn); border-color:rgba(86,211,100,.45)}
+    .tab{display:none}
+    .tab.active{display:block}
+
+    /* Cards / tables */
+    .grid{display:grid;grid-template-columns:1fr;gap:14px}
+    .card{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:14px}
+    .card h2{margin:0 0 10px 0;font-size:14px}
+    .muted{color:var(--muted); font-size:12px}
+    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    a{color:var(--accent); text-decoration:none}
+    a:hover{text-decoration:underline}
+    code{background:rgba(255,255,255,.06); padding:2px 6px;border-radius:8px}
+
+    table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:14px}
+    th,td{border-bottom:1px solid var(--line); padding:10px 10px; text-align:left; font-size:13px}
+    th{color:#cfe0ff;background:rgba(255,255,255,.04);font-size:12px;letter-spacing:.02em;text-transform:uppercase}
+    tr:hover td{background:rgba(255,255,255,.03)}
+    .pill{display:inline-block;padding:4px 8px;border-radius:999px;font-size:12px;border:1px solid var(--line)}
+    .pill.ok{border-color:rgba(86,211,100,.45);color:var(--accent)}
+    .pill.warn{border-color:rgba(242,204,96,.45);color:var(--warn)}
+    .btn{
+      background:var(--btn); color:var(--text); border:1px solid var(--line);
+      padding:10px 12px;border-radius:12px; cursor:pointer; font-weight:700;
+    }
+    .btn:hover{filter:brightness(1.05)}
+    .input{
+      background:transparent;color:var(--text); border:1px solid var(--line);
+      padding:10px 12px;border-radius:12px; min-width:180px;
+    }
+    .right{margin-left:auto}
+    footer{padding:18px 22px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);margin-top:18px}
+    .small{font-size:12px}
+    .danger{color:#ff7b72}
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="logo">HV</div>
+  <div>
+    <h1>Hidroverde Digital</h1>
+    <div class="sub">Inicio — panel técnico (API) · <span id="env"></span></div>
+  </div>
+  <div class="right row">
+    <a class="pill ok" href="/swagger" target="_blank">Abrir Swagger</a>
+  </div>
+</header>
+
+<main>
+  <div class="tabs" role="tablist" aria-label="Navegación principal">
+    <button class="tabbtn" role="tab" aria-selected="true" data-tab="inicio">Inicio</button>
+    <button class="tabbtn" role="tab" aria-selected="false" data-tab="ciclos">Ciclos</button>
+    <button class="tabbtn" role="tab" aria-selected="false" data-tab="consumos">Consumos</button>
+    <button class="tabbtn" role="tab" aria-selected="false" data-tab="catalogos">Catálogos</button>
+    <button class="tabbtn" role="tab" aria-selected="false" data-tab="util">Utilidades</button>
+  </div>
+
+  <!-- TAB: INICIO -->
+  <section id="tab-inicio" class="tab active">
+    <div class="grid">
+      <div class="card">
+        <h2>Accesos rápidos</h2>
+        <div class="row">
+          <a href="/swagger" target="_blank">Swagger</a>
+          <span class="muted">·</span>
+          <a href="/api/ciclos/activos" target="_blank">GET /api/ciclos/activos</a>
+          <span class="muted">·</span>
+          <a href="/api/recursos-tipo" target="_blank">GET /api/recursos-tipo</a>
+          <span class="muted">·</span>
+          <a href="/api/consumos/reporte-diario?cicloId=1" target="_blank">GET /api/consumos/reporte-diario</a>
+          <span class="muted">·</span>
+          <a href="/api/consumos/reporte-diario/export/csv?cicloId=1" target="_blank">Export CSV</a>
+        </div>
+        <p class="muted small" style="margin-top:10px">
+          Esta página es estática (wwwroot) y consume tu API por fetch. No es MVC/Razor.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>Estado del backend</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Servicio</th>
+              <th>Ruta</th>
+              <th>Estado</th>
+              <th>Detalle</th>
+            </tr>
+          </thead>
+          <tbody id="healthRows">
+            <tr>
+              <td>API</td>
+              <td><code>/api/ciclos/activos</code></td>
+              <td><span class="pill warn">pendiente</span></td>
+              <td class="muted">Cargando…</td>
+            </tr>
+            <tr>
+              <td>Catálogo</td>
+              <td><code>/api/recursos-tipo</code></td>
+              <td><span class="pill warn">pendiente</span></td>
+              <td class="muted">Cargando…</td>
+            </tr>
+            <tr>
+              <td>Reporte</td>
+              <td><code>/api/consumos/reporte-diario</code></td>
+              <td><span class="pill warn">pendiente</span></td>
+              <td class="muted">Cargando…</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB: CICLOS -->
+  <section id="tab-ciclos" class="tab">
+    <div class="card">
+      <div class="row" style="margin-bottom:10px">
+        <h2 style="margin:0">Ciclos activos</h2>
+        <span class="muted">Fuente:</span> <code>/api/ciclos/activos</code>
+        <button class="btn right" onclick="cargarCiclos()">Refrescar</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>CicloId</th>
+            <th>ProductoId</th>
+            <th>TorreId</th>
+            <th>Estado</th>
+            <th>Siembra</th>
+            <th>Cosecha Est.</th>
+            <th>Plantas</th>
+            <th>Responsable</th>
+          </tr>
+        </thead>
+        <tbody id="ciclosBody">
+          <tr><td colspan="8" class="muted">Cargando…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- TAB: CONSUMOS -->
+  <section id="tab-consumos" class="tab">
+    <div class="grid">
+      <div class="card">
+        <h2>Reporte diario de consumos (comparativo)</h2>
+        <div class="row" style="margin-bottom:10px">
+          <label class="muted">CicloId</label>
+          <input id="repCicloId" class="input" type="number" value="1" min="1" />
+          <label class="muted">Fecha desde</label>
+          <input id="repDesde" class="input" type="date" />
+          <label class="muted">Fecha hasta</label>
+          <input id="repHasta" class="input" type="date" />
+          <label class="muted">TipoRecursoId</label>
+          <input id="repTipo" class="input" type="number" min="1" placeholder="(opcional)" />
+          <button class="btn" onclick="cargarReporte()">Ver</button>
+          <button class="btn" onclick="exportarCsv()">Export CSV</button>
+        </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>CicloId</th>
+              <th>TipoRecursoId</th>
+              <th>Código</th>
+              <th>Recurso</th>
+              <th>Unidad</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody id="reporteBody">
+            <tr><td colspan="7" class="muted">Ejecutá “Ver” para cargar datos.</td></tr>
+          </tbody>
+        </table>
+
+        <p class="muted small" style="margin-top:10px">
+          Endpoints: <code>/api/consumos/reporte-diario</code> y <code>/api/consumos/reporte-diario/export/csv</code>
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>Consum os (consulta base)</h2>
+        <div class="muted small">
+          Para pruebas rápidas, abrí: <a href="/api/consumos?cicloId=1" target="_blank">/api/consumos?cicloId=1</a>
+          y el historial: <a href="/api/consumos/1/historial" target="_blank">/api/consumos/1/historial</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB: CATALOGOS -->
+  <section id="tab-catalogos" class="tab">
+    <div class="card">
+      <div class="row" style="margin-bottom:10px">
+        <h2 style="margin:0">Tipos de recurso</h2>
+        <span class="muted">Fuente:</span> <code>/api/recursos-tipo</code>
+        <button class="btn right" onclick="cargarTiposRecurso()">Refrescar</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>TipoRecursoId</th>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Unidad</th>
+            <th>Activo</th>
+          </tr>
+        </thead>
+        <tbody id="tiposBody">
+          <tr><td colspan="6" class="muted">Cargando…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- TAB: UTIL -->
+  <section id="tab-util" class="tab">
+    <div class="card">
+      <h2>Utilidades</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Módulo</th>
+            <th>Descripción</th>
+            <th>API</th>
+            <th>Abrir</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Swagger</td>
+            <td class="muted">Documentación y pruebas</td>
+            <td><code>/swagger</code></td>
+            <td><a href="/swagger" target="_blank">Abrir</a></td>
+          </tr>
+          <tr>
+            <td>Ciclos</td>
+            <td class="muted">Listado de ciclos activos</td>
+            <td><code>/api/ciclos/activos</code></td>
+            <td><a href="/api/ciclos/activos" target="_blank">Abrir</a></td>
+          </tr>
+          <tr>
+            <td>Tipos de recurso</td>
+            <td class="muted">Catálogo de recursos</td>
+            <td><code>/api/recursos-tipo</code></td>
+            <td><a href="/api/recursos-tipo" target="_blank">Abrir</a></td>
+          </tr>
+          <tr>
+            <td>Reporte diario</td>
+            <td class="muted">Comparativo por día</td>
+            <td><code>/api/consumos/reporte-diario</code></td>
+            <td><a href="/api/consumos/reporte-diario?cicloId=1" target="_blank">Abrir</a></td>
+          </tr>
+          <tr>
+            <td>Export CSV</td>
+            <td class="muted">Descarga CSV</td>
+            <td><code>/api/consumos/reporte-diario/export/csv</code></td>
+            <td><a href="/api/consumos/reporte-diario/export/csv?cicloId=1" target="_blank">Descargar</a></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="muted small" style="margin-top:10px">
+        Si luego agregás módulos (alertas, inventario, ventas), solo añadimos filas aquí.
+      </p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Hidroverde Digital · Panel técnico (estático) · <span class="muted">Tip:</span>
+  si VS te abre Swagger, cambia <code>launchUrl</code> en <code>Properties/launchSettings.json</code> a <code>""</code> o <code>"/"</code>.
+</footer>
+
+<script>
+  // Tabs
+  const btns = document.querySelectorAll('.tabbtn');
+  function activarTab(nombre){
+    btns.forEach(b => b.setAttribute('aria-selected', b.dataset.tab === nombre ? 'true' : 'false'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('tab-' + nombre).classList.add('active');
+    // carga perezosa básica
+    if(nombre === 'ciclos') cargarCiclos();
+    if(nombre === 'catalogos') cargarTiposRecurso();
+  }
+  btns.forEach(b => b.addEventListener('click', () => activarTab(b.dataset.tab)));
+
+  // Helpers
+  const fmtDate = (s) => (s ? String(s).substring(0,10) : '');
+  const safe = (v) => (v === null || v === undefined) ? '' : v;
+
+  async function fetchJson(url){
+    const r = await fetch(url);
+    if(!r.ok) throw new Error(`${r.status} ${r.statusText}`);
+    return await r.json();
+  }
+
+  // Inicio: mini health
+  async function cargarHealth(){
+    const rows = document.getElementById('healthRows');
+    const checks = [
+      {name:'API', url:'/api/ciclos/activos', hint:'Ciclos activos'},
+      {name:'Catálogo', url:'/api/recursos-tipo', hint:'Tipos de recurso'},
+      {name:'Reporte', url:'/api/consumos/reporte-diario?cicloId=1', hint:'Reporte diario'}
+    ];
+
+    rows.innerHTML = '';
+    for(const c of checks){
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${c.name}</td>
+        <td><code>${c.url}</code></td>
+        <td><span class="pill warn">pendiente</span></td>
+        <td class="muted">${c.hint}</td>
+      `;
+      rows.appendChild(tr);
+
+      try{
+        const data = await fetchJson(c.url);
+        tr.children[2].innerHTML = `<span class="pill ok">ok</span>`;
+        tr.children[3].innerHTML = `<span class="muted">Respuesta: ${Array.isArray(data) ? data.length + ' filas' : 'OK'}</span>`;
+      }catch(e){
+        tr.children[2].innerHTML = `<span class="pill warn">error</span>`;
+        tr.children[3].innerHTML = `<span class="danger small">${e.message}</span>`;
+      }
+    }
+  }
+
+  // Ciclos
+  async function cargarCiclos(){
+    const body = document.getElementById('ciclosBody');
+    body.innerHTML = `<tr><td colspan="8" class="muted">Cargando…</td></tr>`;
+    try{
+      const data = await fetchJson('/api/ciclos/activos');
+      if(!Array.isArray(data) || data.length === 0){
+        body.innerHTML = `<tr><td colspan="8" class="muted">No hay ciclos activos.</td></tr>`;
+        return;
+      }
+      body.innerHTML = '';
+      for(const c of data){
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${c.cicloId}</td>
+          <td>${c.productoId}</td>
+          <td>${c.torreId}</td>
+          <td>${safe(c.estadoNombre)}</td>
+          <td>${fmtDate(c.fechaSiembra)}</td>
+          <td>${fmtDate(c.fechaCosechaEstimada)}</td>
+          <td>${safe(c.cantidadPlantas)}</td>
+          <td>${safe(c.responsableNombre)}</td>
+        `;
+        body.appendChild(tr);
+      }
+    }catch(e){
+      body.innerHTML = `<tr><td colspan="8" class="danger">Error: ${e.message}</td></tr>`;
+    }
+  }
+
+  // Tipos recurso
+  async function cargarTiposRecurso(){
+    const body = document.getElementById('tiposBody');
+    body.innerHTML = `<tr><td colspan="6" class="muted">Cargando…</td></tr>`;
+    try{
+      const data = await fetchJson('/api/recursos-tipo');
+      if(!Array.isArray(data) || data.length === 0){
+        body.innerHTML = `<tr><td colspan="6" class="muted">No hay tipos de recurso.</td></tr>`;
+        return;
+      }
+      body.innerHTML = '';
+      for(const r of data){
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${r.tipoRecursoId}</td>
+          <td>${safe(r.codigo)}</td>
+          <td>${safe(r.nombre)}</td>
+          <td>${safe(r.categoria)}</td>
+          <td>${safe(r.unidad)}</td>
+          <td>${r.activo ? 'Sí' : 'No'}</td>
+        `;
+        body.appendChild(tr);
+      }
+    }catch(e){
+      body.innerHTML = `<tr><td colspan="6" class="danger">Error: ${e.message}</td></tr>`;
+    }
+  }
+
+  // Reporte diario
+  function buildReporteUrl(){
+    const cicloId = document.getElementById('repCicloId').value;
+    const desde = document.getElementById('repDesde').value;
+    const hasta = document.getElementById('repHasta').value;
+    const tipo = document.getElementById('repTipo').value;
+
+    const qs = new URLSearchParams();
+    if(cicloId) qs.set('cicloId', cicloId);
+    if(desde) qs.set('fechaDesde', desde);
+    if(hasta) qs.set('fechaHasta', hasta);
+    if(tipo) qs.set('tipoRecursoId', tipo);
+
+    return '/api/consumos/reporte-diario?' + qs.toString();
+  }
+
+  async function cargarReporte(){
+    const body = document.getElementById('reporteBody');
+    body.innerHTML = `<tr><td colspan="7" class="muted">Cargando…</td></tr>`;
+    try{
+      const url = buildReporteUrl();
+      const data = await fetchJson(url);
+
+      if(!Array.isArray(data) || data.length === 0){
+        body.innerHTML = `<tr><td colspan="7" class="muted">Sin resultados con esos filtros.</td></tr>`;
+        return;
+      }
+      body.innerHTML = '';
+      for(const r of data){
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${fmtDate(r.fecha)}</td>
+          <td>${r.cicloId}</td>
+          <td>${r.tipoRecursoId}</td>
+          <td>${safe(r.codigo)}</td>
+          <td>${safe(r.recursoNombre)}</td>
+          <td>${safe(r.unidad)}</td>
+          <td>${safe(r.totalCantidad)}</td>
+        `;
+        body.appendChild(tr);
+      }
+    }catch(e){
+      body.innerHTML = `<tr><td colspan="7" class="danger">Error: ${e.message}</td></tr>`;
+    }
+  }
+
+  function exportarCsv(){
+    const cicloId = document.getElementById('repCicloId').value;
+    const desde = document.getElementById('repDesde').value;
+    const hasta = document.getElementById('repHasta').value;
+    const tipo = document.getElementById('repTipo').value;
+
+    const qs = new URLSearchParams();
+    if(cicloId) qs.set('cicloId', cicloId);
+    if(desde) qs.set('fechaDesde', desde);
+    if(hasta) qs.set('fechaHasta', hasta);
+    if(tipo) qs.set('tipoRecursoId', tipo);
+
+    window.location.href = '/api/consumos/reporte-diario/export/csv?' + qs.toString();
+  }
+
+  // Defaults
+  document.getElementById('env').textContent = window.location.origin;
+
+  // precargar inicio
+  cargarHealth();
+</script>
+
+</body>
+</html>

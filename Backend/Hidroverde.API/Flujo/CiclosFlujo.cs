@@ -1,6 +1,7 @@
 ﻿using Abstracciones.Interfaces.DA;
 using Abstracciones.Interfaces.Flujo;
 using Abstracciones.Modelos;
+using Hidroverde.Abstracciones.Modelos.Ciclos;
 
 namespace Flujo
 {
@@ -13,9 +14,13 @@ namespace Flujo
             _ciclosDA = ciclosDA;
         }
 
-        public async Task<IEnumerable<CicloActivoResponse>> ObtenerActivos()
+        public Task<IEnumerable<CicloActivoResponse>> ObtenerActivos()
+            => _ciclosDA.ObtenerActivos();
+
+        public async Task<RegistrarSiembraResponse> RegistrarSiembraAsync(RegistrarSiembraRequest request, int responsableId)
         {
-            return await _ciclosDA.ObtenerActivos();
+            var cicloId = await _ciclosDA.RegistrarSiembraAsync(request, responsableId);
+            return new RegistrarSiembraResponse { CicloIdCreado = cicloId };
         }
     }
 }

@@ -1,0 +1,54 @@
+﻿<div class="card">
+    <div class="row">
+        <h2>Ciclos activos</h2>
+        <span class="muted">/api/ciclos/activos</span>
+
+        <button class="btn green" id="btnNuevaSiembra">+ Nueva siembra</button>
+        <button class="btn" id="btnRefrescarCiclos">Refrescar</button>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>CicloId</th>
+                <th>ProductoId</th>
+                <th>TorreId</th>
+                <th>Estado</th>
+                <th>Siembra</th>
+                <th>Cosecha Est.</th>
+                <th>Plantas</th>
+                <th>Responsable</th>
+            </tr>
+        </thead>
+        <tbody id="ciclosBody">
+            <tr><td colspan="8" class="muted">Cargando…</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal (form) -->
+<div class="modal" id="modalSiembra" hidden>
+    <div class="modalCard">
+        <div class="row">
+            <h3>Iniciar siembra</h3>
+            <button class="btn" id="btnCerrarModal">Cerrar</button>
+        </div>
+
+        <div class="grid2">
+            <label>ProductoId <input id="siProductoId" type="number"></label>
+            <label>VariedadId <input id="siVariedadId" type="number"></label>
+            <label>TorreId <input id="siTorreId" type="number"></label>
+            <label>Estado (código) <input id="siEstado" value="SIEMBRA"></label>
+            <label>Fecha siembra <input id="siFechaSiembra" type="date"></label>
+            <label>Fecha cosecha estimada <input id="siFechaCosecha" type="date"></label>
+            <label>Cantidad plantas <input id="siCantidad" type="number"></label>
+            <label>Lote semilla <input id="siLote"></label>
+            <label style="grid-column:1/-1">Notas <input id="siNotas"></label>
+        </div>
+
+        <div class="row">
+            <button class="btn green" id="btnGuardarSiembra">Guardar</button>
+            <span class="muted" id="siMsg"></span>
+        </div>
+    </div>
+</div>

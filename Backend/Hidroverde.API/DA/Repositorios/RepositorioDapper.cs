@@ -6,18 +6,16 @@ namespace DA.Repositorios
 {
     public class RepositorioDapper : IRepositorioDapper
     {
-        private readonly IConfiguration _configuracion;
-        private readonly SqlConnection _conexionBaseDatos;
+        private readonly IConfiguration _config;
 
-        public RepositorioDapper(IConfiguration configuracion)
+        public RepositorioDapper(IConfiguration config)
         {
-            _configuracion = configuracion;
-            _conexionBaseDatos = new SqlConnection(_configuracion.GetConnectionString("BD"));
+            _config = config;
         }
 
         public SqlConnection ObtenerRepositorio()
         {
-            return _conexionBaseDatos;
+            return new SqlConnection(_config.GetConnectionString("BD"));
         }
     }
 }

@@ -1,4 +1,11 @@
-﻿-- Modificar AgregarVariedad con alias
+﻿
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	CRUD para Variedades
+-- =============================================
+
+-- Agregar Variedad
 CREATE PROCEDURE [dbo].[AgregarVariedad]
     @categoria_id int,
     @nombre_variedad nvarchar(100),
@@ -29,6 +36,6 @@ BEGIN
          @ph_maximo, @ec_minimo, @ec_maximo, @instrucciones_especiales, 
          @activa, GETDATE())
         
-        SELECT SCOPE_IDENTITY() AS VariedadId
+        SELECT SCOPE_IDENTITY() AS variedad_id
     COMMIT TRANSACTION
 END

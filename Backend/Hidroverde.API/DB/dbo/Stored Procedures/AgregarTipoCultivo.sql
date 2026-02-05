@@ -1,5 +1,11 @@
 ﻿
--- Modificar AgregarTipoCultivo
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	CRUD para Tipos_Cultivo
+-- =============================================
+
+-- Agregar Tipo de Cultivo
 CREATE PROCEDURE [dbo].[AgregarTipoCultivo]
     @codigo nvarchar(30),
     @nombre nvarchar(50),
@@ -16,6 +22,6 @@ BEGIN
         VALUES 
         (@codigo, @nombre, @descripcion, @requisitos, @activo)
         
-        SELECT SCOPE_IDENTITY() AS TipoCultivoId
+        SELECT SCOPE_IDENTITY() AS tipo_cultivo_id
     COMMIT TRANSACTION
 END

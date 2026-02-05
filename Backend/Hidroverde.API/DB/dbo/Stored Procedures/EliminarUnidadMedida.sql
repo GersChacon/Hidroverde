@@ -1,4 +1,6 @@
-﻿CREATE PROCEDURE [dbo].[EliminarUnidadMedida]
+﻿
+-- Eliminar Unidad de Medida
+CREATE PROCEDURE [dbo].[EliminarUnidadMedida]
     @unidad_id int
 AS
 BEGIN

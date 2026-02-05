@@ -101,6 +101,21 @@
     <Build Include="dbo\Stored Procedures\sp_Venta_AgregarDetalle_DescontarInventario.sql" />
     <Build Include="dbo\Stored Procedures\sp_Ciclo_RegistrarSiembra.sql" />
     <Build Include="dbo\Stored Procedures\sp_Ciclo_Cosechar.sql" />
+    <Build Include="notif\Stored Procedures\sp_Alertas_StockBajo_GenerarYListar.sql" />
+    <Build Include="notif\Stored Procedures\sp_Alertas_ListarActivas.sql" />
+    <Build Include="notif\Stored Procedures\sp_Alertas_Badge.sql" />
+    <Build Include="notif\Stored Procedures\sp_Alertas_Aceptar.sql" />
+    <Build Include="Security\notif.sql" />
+    <Build Include="dbo\Tables\Tipos_Recurso.sql" />
+    <Build Include="dbo\Tables\Consumos.sql" />
+    <Build Include="dbo\Tables\Consumo_Version.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Consumos_ReporteDiario.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Consumos_ReporteComparativo.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Consumos_Listar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Consumo_Registrar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Consumo_Historial.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Consumo_Editar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Ciclos_ListarActivos.sql" />
     <Build Include="dbo\Stored Procedures\ObtenerVariedades.sql" />
     <Build Include="dbo\Stored Procedures\ObtenerVariedad.sql" />
     <Build Include="dbo\Stored Procedures\ObtenerUnidadMedida.sql" />
@@ -126,10 +141,5 @@
     <Build Include="dbo\Stored Procedures\AgregarTipoCultivo.sql" />
     <Build Include="dbo\Stored Procedures\AgregarProducto.sql" />
     <Build Include="dbo\Stored Procedures\AgregarCategoria.sql" />
-    <Build Include="notif\Stored Procedures\sp_Alertas_StockBajo_GenerarYListar.sql" />
-    <Build Include="notif\Stored Procedures\sp_Alertas_ListarActivas.sql" />
-    <Build Include="notif\Stored Procedures\sp_Alertas_Badge.sql" />
-    <Build Include="notif\Stored Procedures\sp_Alertas_Aceptar.sql" />
-    <Build Include="Security\notif.sql" />
   </ItemGroup>
 </Project>

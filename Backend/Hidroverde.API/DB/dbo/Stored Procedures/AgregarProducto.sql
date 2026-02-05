@@ -1,4 +1,10 @@
 ﻿
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	CRUD para Productos
+-- =============================================
+
 -- Agregar Producto
 CREATE PROCEDURE [dbo].[AgregarProducto]
     @codigo nvarchar(30),

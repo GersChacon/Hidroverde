@@ -1,4 +1,11 @@
-﻿CREATE PROCEDURE [dbo].[AgregarUnidadMedida]
+﻿-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	CRUD para Unidades_Medida
+-- =============================================
+
+-- Agregar Unidad de Medida
+CREATE PROCEDURE [dbo].[AgregarUnidadMedida]
     @codigo nvarchar(20),
     @nombre nvarchar(50),
     @simbolo nvarchar(10) = NULL,

@@ -1,15 +1,11 @@
-﻿CREATE PROCEDURE [dbo].[ObtenerUnidadesMedida]
+﻿
+-- Obtener Todas las Unidades de Medida
+CREATE PROCEDURE [dbo].[ObtenerUnidadesMedida]
 AS
 BEGIN
     SET NOCOUNT ON;
     
-    SELECT 
-        unidad_id AS UnidadId,
-        codigo AS Codigo,
-        nombre AS Nombre,
-        simbolo AS Simbolo,
-        tipo AS Tipo,
-        activo AS Activo
+    SELECT *
     FROM [dbo].[Unidades_Medida]
     ORDER BY nombre
 END

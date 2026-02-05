@@ -1,5 +1,5 @@
 ﻿
--- Modificar EditarCategoria con alias
+-- Editar Categoria
 CREATE PROCEDURE [dbo].[EditarCategoria]
     @categoria_id int,
     @tipo_cultivo_id int,
@@ -20,6 +20,6 @@ BEGIN
             [activa] = @activa
         WHERE categoria_id = @categoria_id
         
-        SELECT @categoria_id AS CategoriaId
+        SELECT @categoria_id AS categoria_id
     COMMIT TRANSACTION
 END

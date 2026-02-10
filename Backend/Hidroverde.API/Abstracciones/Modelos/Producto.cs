@@ -6,11 +6,11 @@
         public int VariedadId { get; set; }
         public int UnidadId { get; set; }
         public string NombreProducto { get; set; }
-        public string Descripcion { get; set; }
+        public string? Descripcion { get; set; }
         public decimal PrecioBase { get; set; }
         public int DiasCaducidad { get; set; }
         public bool RequiereRefrigeracion { get; set; }
-        public string ImagenUrl { get; set; }
+        public string? ImagenUrl { get; set; }
         public bool Activo { get; set; }
         public int? StockMinimo { get; set; }
     }

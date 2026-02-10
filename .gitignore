@@ -16,3 +16,6 @@ obj/
 
 # Logs
 *.log
+
+*.dbmdl
+*.jfm

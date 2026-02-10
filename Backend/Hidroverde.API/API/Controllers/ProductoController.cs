@@ -54,7 +54,8 @@ namespace API.Controllers
         public async Task<IActionResult> Obtener(int productoId)
         {
             var result = await _productoFlujo.Obtener(productoId);
-            return Ok(result);
+            return result == null ? NotFound() : Ok(result);
         }
+
     }
 }

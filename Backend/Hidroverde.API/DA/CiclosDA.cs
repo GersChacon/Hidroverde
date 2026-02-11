@@ -39,8 +39,43 @@ namespace DA
             p.Add("@notas", request.Notas, DbType.String);
 
             // Tu SP devuelve: SELECT SCOPE_IDENTITY() AS ciclo_id_creado;
-            var row = await _conn.QueryFirstAsync<dynamic>(sp, p, commandType: CommandType.StoredProcedure);
-            return (int)row.ciclo_id_creado;
+            var id = await _conn.ExecuteScalarAsync<int>(sp, p, commandType: CommandType.StoredProcedure);
+            return id;
         }
+        public async Task<CosecharCicloResponse> CosecharAsync(int cicloId, CosecharCicloRequest request, int usuarioId)
+        {
+            const string sp = "dbo.sp_Ciclo_Cosechar";
+
+            var p = new DynamicParameters();
+            p.Add("@ciclo_id", cicloId, DbType.Int32);
+            p.Add("@ubicacion_id", request.UbicacionId, DbType.Int32);
+            p.Add("@estado_calidad_codigo", request.EstadoCalidadCodigo, DbType.String);
+            p.Add("@usuario_id", usuarioId, DbType.Int32);
+            p.Add("@motivo", (object?)request.Motivo ?? DBNull.Value, DbType.String);
+
+            // El SP devuelve: inventario_id_creado, lote_generado
+            var row = await _conn.QueryFirstAsync(sp, p, commandType: CommandType.StoredProcedure);
+
+            return new CosecharCicloResponse
+            {
+                InventarioIdCreado = (int)row.inventario_id_creado,
+                LoteGenerado = (string)row.lote_generado
+            };
+        }
+        public async Task<int> CancelarAsync(int cicloId, int usuarioId, string? motivo)
+        {
+            const string sp = "dbo.sp_Ciclo_Cancelar";
+
+            var p = new DynamicParameters();
+            p.Add("@ciclo_id", cicloId, DbType.Int32);
+            p.Add("@usuario_id", usuarioId, DbType.Int32);
+            p.Add("@motivo", (object?)motivo ?? DBNull.Value, DbType.String);
+
+            var row = await _conn.QueryFirstAsync(sp, p, commandType: CommandType.StoredProcedure);
+
+            return (int)row.ciclo_id_cancelado;
+        }
+
+
     }
 }

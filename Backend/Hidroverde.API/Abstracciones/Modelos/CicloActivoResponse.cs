@@ -24,5 +24,13 @@ namespace Abstracciones.Modelos
 
         public int? ResponsableId { get; set; }
         public string? ResponsableNombre { get; set; }
+        public string? ProductoCodigo { get; set; }
+        public string? ProductoNombre { get; set; }
+
+        public int? VariedadId { get; set; }
+        public string? VariedadNombre { get; set; }
+
+        public string? TorreCodigo { get; set; }
     }
+
 }

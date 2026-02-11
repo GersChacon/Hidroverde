@@ -22,5 +22,12 @@ namespace Flujo
             var cicloId = await _ciclosDA.RegistrarSiembraAsync(request, responsableId);
             return new RegistrarSiembraResponse { CicloIdCreado = cicloId };
         }
-    }
+        public Task<CosecharCicloResponse> CosecharAsync(int cicloId, CosecharCicloRequest request, int usuarioId)
+    => _ciclosDA.CosecharAsync(cicloId, request, usuarioId);
+
+     
+        public Task<int> CancelarAsync(int cicloId, int usuarioId, string? motivo)
+        => _ciclosDA.CancelarAsync(cicloId, usuarioId, motivo);
+
+        }
 }

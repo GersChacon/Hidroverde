@@ -279,3 +279,60 @@ tbody tr:hover td {
         grid-template-columns: 1fr
     }
 }
+/* ===== Ciclos: modal scoped (no afecta otros modales) ===== */
+.page-ciclos .modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+    .page-ciclos .modal.is-open {
+        display: flex;
+    }
+
+.page-ciclos .modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+}
+
+.page-ciclos .modal__content {
+    position: relative;
+    background: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    width: min(900px, 94vw);
+    max-height: 86vh;
+    overflow: auto;
+    padding: 16px;
+    z-index: 1;
+}
+
+.page-ciclos .modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.page-ciclos .modal__footer {
+    margin-top: 14px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.page-ciclos .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+    .page-ciclos .field input,
+    .page-ciclos .field textarea {
+        width: 100%;
+    }

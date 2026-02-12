@@ -32,6 +32,7 @@ builder.Services.AddScoped<IRepositorioDapper, RepositorioDapper>();
 builder.Services.AddScoped<ICiclosDA, CiclosDA>();
 builder.Services.AddScoped<ITiposRecursoDA, TiposRecursoDA>();
 builder.Services.AddScoped<IConsumosDA, ConsumosDA>();
+builder.Services.AddScoped<IConsumosDA, ConsumosDA>();
 
 builder.Services.AddScoped<ICiclosFlujo, CiclosFlujo>();
 builder.Services.AddScoped<ITiposRecursoFlujo, TiposRecursoFlujo>();

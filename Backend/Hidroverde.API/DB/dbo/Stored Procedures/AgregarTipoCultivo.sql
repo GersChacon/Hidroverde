@@ -8,7 +8,7 @@
 -- Agregar Tipo de Cultivo
 CREATE PROCEDURE [dbo].[AgregarTipoCultivo]
     @codigo nvarchar(30),
-    @nombre nvarchar(50),
+    @nombre nvarchar(51),
     @descripcion nvarchar(max) = NULL,
     @requisitos nvarchar(max) = NULL,
     @activo bit = 1

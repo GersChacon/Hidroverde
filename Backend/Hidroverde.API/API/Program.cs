@@ -15,8 +15,6 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IRepositorioDapper, RepositorioDapper>();
 
-builder.Services.AddScoped<IUnidadMedidaDA, UnidadMedidaDA>();
-builder.Services.AddScoped<IUnidadMedidaFlujo, UnidadMedidaFlujo>();
 builder.Services.AddScoped<ITipoCultivoFlujo, TipoCultivoFlujo>();
 builder.Services.AddScoped<ITipoCultivoDA, TipoCultivoDA>();
 builder.Services.AddScoped<ICategoriaFlujo, CategoriaFlujo>();

@@ -46,7 +46,6 @@ namespace DA
                 {
                     codigo = producto.Codigo,
                     variedad_id = producto.VariedadId,
-                    unidad_id = producto.UnidadId,
                     nombre_producto = producto.NombreProducto,
                     descripcion = producto.Descripcion,
                     precio_base = producto.PrecioBase,
@@ -54,7 +53,8 @@ namespace DA
                     requiere_refrigeracion = producto.RequiereRefrigeracion,
                     imagen_url = producto.ImagenUrl,
                     activo = producto.Activo,
-                    stock_minimo = producto.StockMinimo
+                    stock_minimo = producto.StockMinimo,
+                    peso_gramos = producto.PesoGramos
                 },
                 commandType: CommandType.StoredProcedure
             );
@@ -73,7 +73,6 @@ namespace DA
                     producto_id = productoId,
                     codigo = producto.Codigo,
                     variedad_id = producto.VariedadId,
-                    unidad_id = producto.UnidadId,
                     nombre_producto = producto.NombreProducto,
                     descripcion = producto.Descripcion,
                     precio_base = producto.PrecioBase,
@@ -81,7 +80,8 @@ namespace DA
                     requiere_refrigeracion = producto.RequiereRefrigeracion,
                     imagen_url = producto.ImagenUrl,
                     activo = producto.Activo,
-                    stock_minimo = producto.StockMinimo
+                    stock_minimo = producto.StockMinimo,
+                    peso_gramos = producto.PesoGramos
                 },
                 commandType: CommandType.StoredProcedure
             );
@@ -106,7 +106,7 @@ namespace DA
         {
             var producto = await Obtener(productoId);
             if (producto == null)
-                throw new Exception("No se encontró el producto");
+                throw new KeyNotFoundException($"No se encontró el producto con ID {productoId}");
         }
     }
 }

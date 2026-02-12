@@ -118,8 +118,6 @@
     <Build Include="dbo\Stored Procedures\sp_Ciclos_ListarActivos.sql" />
     <Build Include="dbo\Stored Procedures\ObtenerVariedades.sql" />
     <Build Include="dbo\Stored Procedures\ObtenerVariedad.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerUnidadMedida.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerUnidadesMedida.sql" />
     <Build Include="dbo\Stored Procedures\ObtenerTiposCultivo.sql" />
     <Build Include="dbo\Stored Procedures\ObtenerTipoCultivo.sql" />
     <Build Include="dbo\Stored Procedures\ObtenerProductos.sql" />
@@ -127,21 +125,17 @@
     <Build Include="dbo\Stored Procedures\ObtenerCategorias.sql" />
     <Build Include="dbo\Stored Procedures\ObtenerCategoria.sql" />
     <Build Include="dbo\Stored Procedures\EliminarVariedad.sql" />
-    <Build Include="dbo\Stored Procedures\EliminarUnidadMedida.sql" />
     <Build Include="dbo\Stored Procedures\EliminarTipoCultivo.sql" />
     <Build Include="dbo\Stored Procedures\EliminarProducto.sql" />
     <Build Include="dbo\Stored Procedures\EliminarCategoria.sql" />
     <Build Include="dbo\Stored Procedures\EditarVariedad.sql" />
-    <Build Include="dbo\Stored Procedures\EditarUnidadMedida.sql" />
     <Build Include="dbo\Stored Procedures\EditarTipoCultivo.sql" />
     <Build Include="dbo\Stored Procedures\EditarProducto.sql" />
     <Build Include="dbo\Stored Procedures\EditarCategoria.sql" />
     <Build Include="dbo\Stored Procedures\AgregarVariedad.sql" />
-    <Build Include="dbo\Stored Procedures\AgregarUnidadMedida.sql" />
     <Build Include="dbo\Stored Procedures\AgregarTipoCultivo.sql" />
     <Build Include="dbo\Stored Procedures\AgregarProducto.sql" />
     <Build Include="dbo\Stored Procedures\AgregarCategoria.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Unidades_Listar.sql" />
     <Build Include="dbo\Stored Procedures\sp_Ciclo_Cancelar.sql" />
   </ItemGroup>
 </Project>

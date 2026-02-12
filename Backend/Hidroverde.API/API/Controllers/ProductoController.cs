@@ -22,7 +22,7 @@ namespace API.Controllers
         public async Task<IActionResult> Agregar(ProductoRequest producto)
         {
             var result = await _productoFlujo.Agregar(producto);
-            return CreatedAtAction(nameof(Obtener), new { productoId = result }, null);
+            return CreatedAtAction(nameof(Obtener), new { productoId = result }, result);
         }
 
         [HttpPut("{productoId}")]
@@ -43,10 +43,6 @@ namespace API.Controllers
         public async Task<IActionResult> Obtener()
         {
             var result = await _productoFlujo.Obtener();
-            if (!result.Any())
-            {
-                return NoContent();
-            }
             return Ok(result);
         }
 
@@ -56,6 +52,5 @@ namespace API.Controllers
             var result = await _productoFlujo.Obtener(productoId);
             return result == null ? NotFound() : Ok(result);
         }
-
     }
 }

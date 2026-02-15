@@ -1,5 +1,7 @@
 ﻿
--- Eliminar Producto
+-- =============================================
+-- ELIMINAR PRODUCTO (sin cambios, solo se actualiza el GO)
+-- =============================================
 CREATE PROCEDURE [dbo].[EliminarProducto]
     @producto_id int
 AS

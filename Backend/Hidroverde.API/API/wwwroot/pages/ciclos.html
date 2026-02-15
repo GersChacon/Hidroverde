@@ -1,0 +1,103 @@
+﻿<section class="page page-ciclos">
+    <header class="page__header">
+        <div>
+            <h1>Ciclos activos</h1>
+            <p class="muted">Listado de ciclos en estado activo.</p>
+        </div>
+
+        <div class="page__actions">
+            <button class="btn btn-primary" id="btnNuevaSiembra">+ Nueva siembra</button>
+            <button class="btn" id="btnRefrescarCiclos">Refrescar</button>
+        </div>
+    </header>
+
+    <div class="card">
+        <div class="card__body">
+            <table class="table" id="tblCiclos">
+                <thead>
+                    <tr>
+                        <th>CicloId</th>
+                        <th>ProductoId</th>
+                        <th>TorreId</th>
+                        <th>Estado</th>
+                        <th>Siembra</th>
+                        <th>Cosecha Est.</th>
+                        <th>Plantas</th>
+                        <th>Responsable</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tblCiclosBody">
+                    <tr><td colspan="8" class="muted">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal Nueva Siembra -->
+    <div class="modal" id="modalSiembra" aria-hidden="true">
+        <div class="modal__backdrop" data-close="modalSiembra"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h2>Nueva siembra</h2>
+                <button class="icon-btn" data-close="modalSiembra">✕</button>
+            </div>
+
+            <div class="modal__body">
+                <form id="frmSiembra">
+                    <div class="grid">
+                        <label class="field">
+                            <span>ProductoId *</span>
+                            <input type="number" id="productoId" min="1" required />
+                        </label>
+
+                        <label class="field">
+                            <span>VariedadId *</span>
+                            <input type="number" id="variedadId" min="1" required />
+                        </label>
+
+                        <label class="field">
+                            <span>TorreId *</span>
+                            <input type="number" id="torreId" min="1" required />
+                        </label>
+
+                        <label class="field">
+                            <span>EstadoCicloCodigo *</span>
+                            <input type="text" id="estadoCicloCodigo" value="SIEMBRA" required />
+                        </label>
+
+                        <label class="field">
+                            <span>Fecha siembra *</span>
+                            <input type="date" id="fechaSiembra" required />
+                        </label>
+
+                        <label class="field">
+                            <span>Fecha cosecha estimada *</span>
+                            <input type="date" id="fechaCosechaEstimada" required />
+                        </label>
+
+                        <label class="field">
+                            <span>Cantidad plantas *</span>
+                            <input type="number" id="cantidadPlantas" min="1" required />
+                        </label>
+
+                        <label class="field">
+                            <span>Lote semilla</span>
+                            <input type="text" id="loteSemilla" />
+                        </label>
+
+                        <label class="field field--full">
+                            <span>Notas</span>
+                            <textarea id="notas" rows="3"></textarea>
+                        </label>
+                    </div>
+
+                    <div class="modal__footer">
+                        <button type="button" class="btn" data-close="modalSiembra">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>

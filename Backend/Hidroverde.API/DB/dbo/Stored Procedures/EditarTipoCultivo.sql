@@ -1,5 +1,5 @@
 ﻿
--- Modificar EditarTipoCultivo
+-- Editar Tipo de Cultivo
 CREATE PROCEDURE [dbo].[EditarTipoCultivo]
     @tipo_cultivo_id int,
     @codigo nvarchar(30),
@@ -20,6 +20,6 @@ BEGIN
             [activo] = @activo
         WHERE tipo_cultivo_id = @tipo_cultivo_id
         
-        SELECT @tipo_cultivo_id AS TipoCultivoId
+        SELECT @tipo_cultivo_id AS tipo_cultivo_id
     COMMIT TRANSACTION
 END

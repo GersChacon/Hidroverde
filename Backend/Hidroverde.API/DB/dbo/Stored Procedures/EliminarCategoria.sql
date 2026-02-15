@@ -1,5 +1,5 @@
 ﻿
--- Modificar EliminarCategoria con alias
+-- Eliminar Categoria
 CREATE PROCEDURE [dbo].[EliminarCategoria]
     @categoria_id int
 AS
@@ -10,6 +10,6 @@ BEGIN
         DELETE FROM [dbo].[Categorias]
         WHERE categoria_id = @categoria_id
         
-        SELECT @categoria_id AS CategoriaId
+        SELECT @categoria_id AS categoria_id
     COMMIT TRANSACTION
 END

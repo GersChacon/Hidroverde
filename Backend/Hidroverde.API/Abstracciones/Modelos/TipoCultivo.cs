@@ -1,21 +1,21 @@
 ﻿
 namespace Abstracciones.Modelos
 {
-    public class UnidadMedidaBase
+    public class TipoCultivoBase
     {
         public string Codigo { get; set; }
         public string Nombre { get; set; }
-        public string Simbolo { get; set; }
-        public string Tipo { get; set; }
+        public string Descripcion { get; set; }
+        public string Requisitos { get; set; }
         public bool Activo { get; set; }
     }
 
-    public class UnidadMedidaRequest : UnidadMedidaBase
+    public class TipoCultivoRequest : TipoCultivoBase
     {
     }
 
-    public class UnidadMedidaResponse : UnidadMedidaBase
+    public class TipoCultivoResponse : TipoCultivoBase
     {
-        public int UnidadId { get; set; }
+        public int TipoCultivoId { get; set; }
     }
 }

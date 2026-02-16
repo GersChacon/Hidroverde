@@ -1,16 +1,79 @@
-﻿<div class="card">
-    <div class="row">
-        <h2>Panel técnico</h2>
-        <span class="muted" id="inicioEnv"></span>
+﻿<link rel="stylesheet" href="/assets/css/pages/inicio.css">
+
+<section class="page-inicio">
+    <div class="row" style="justify-content:space-between; align-items:flex-end;">
+        <div>
+            <h2>¡Hola!</h2>
+            <div class="muted">Resumen de tu sistema hidropónico</div>
+        </div>
+        <div class="badge" id="badgeAlertas" title="Alertas activas">
+            Alertas <span class="dot">0</span>
+        </div>
     </div>
 
-    <div class="row" style="margin-top:10px; gap:12px; flex-wrap:wrap;">
-        <a class="link" href="/swagger" target="_blank">Swagger</a>
-        <a class="link" href="/api/ciclos/activos" target="_blank">GET /api/ciclos/activos</a>
-        <a class="link" href="/api/recursos-tipo" target="_blank">GET /api/recursos-tipo</a>
-        <a class="link" href="/api/alertas/activas" target="_blank">GET /api/alertas/activas</a>
-        <a class="link" href="/api/alertas/badge" target="_blank">GET /api/alertas/badge</a>
-        <a class="link" href="/api/consumos/reporte-diario?cicloId=1" target="_blank">GET /api/consumos/reporte-diario</a>
-        <a class="link" href="/api/consumos/reporte-diario/export/csv?cicloId=1" target="_blank">Export CSV</a>
+    <div class="grid" style="margin-top:14px;">
+        <div class="card kpi">
+            <div class="kpiTop">
+                <div class="muted kpiLabel">Ciclos activos</div>
+                <span class="kpiIcon">🌱</span>
+            </div>
+            <div class="kpiValue" id="kpiCiclos">—</div>
+            <div class="muted kpiHint" id="kpiCiclosHint">Cargando...</div>
+        </div>
+
+        <div class="card kpi">
+            <div class="kpiTop">
+                <div class="muted kpiLabel">Alertas activas</div>
+                <span class="kpiIcon">🔔</span>
+            </div>
+            <div class="kpiValue" id="kpiAlertas">—</div>
+            <div class="muted kpiHint">Revisa stock bajo y notificaciones</div>
+        </div>
+
+        <div class="card kpi">
+            <div class="kpiTop">
+                <div class="muted kpiLabel">Consumos hoy</div>
+                <span class="kpiIcon">💧</span>
+            </div>
+            <div class="kpiValue" id="kpiConsumosHoy">—</div>
+            <div class="muted kpiHint" id="kpiConsumosHint">Pendiente de reporte</div>
+        </div>
     </div>
-</div>
+
+    <div class="grid actions" style="margin-top:14px;">
+        <button class="card actionCard" type="button" id="goCiclos">
+            <div class="actionIcon">↪️</div>
+            <div>
+                <div class="actionTitle">Ver ciclos activos</div>
+                <div class="muted">Gestiona tus cultivos en curso</div>
+            </div>
+        </button>
+
+        <button class="card actionCard" type="button" id="goConsumos">
+            <div class="actionIcon">🧪</div>
+            <div>
+                <div class="actionTitle">Registrar consumo</div>
+                <div class="muted">Agrega un nuevo consumo de recursos</div>
+            </div>
+        </button>
+
+        <button class="card actionCard" type="button" id="goAlertas">
+            <div class="actionIcon">⚠️</div>
+            <div>
+                <div class="actionTitle">Revisar alertas</div>
+                <div class="muted">Stock bajo y notificaciones</div>
+            </div>
+        </button>
+    </div>
+
+    <div class="card" style="margin-top:14px;">
+        <div class="row" style="justify-content:space-between;">
+            <div>
+                <h3>Estado</h3>
+                <div class="muted" id="inicioStatus">Listo</div>
+            </div>
+
+            <a class="link" href="/swagger" target="_blank">Swagger ↗</a>
+        </div>
+    </div>
+</section>

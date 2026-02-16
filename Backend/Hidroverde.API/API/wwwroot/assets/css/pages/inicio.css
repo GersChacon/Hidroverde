@@ -1,0 +1,137 @@
+﻿/* =========================================================
+   SOLO afecta a la página inicio
+   ========================================================= */
+
+.page-inicio .grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0,1fr));
+    gap: 18px; /* antes 12 */
+}
+
+/* =========================================================
+   KPIs
+   ========================================================= */
+
+.page-inicio .kpi {
+    grid-column: span 4;
+    display: flex;
+    flex-direction: column;
+    gap: 14px; /* antes 10 */
+    padding: 20px; /* más aire */
+}
+
+.page-inicio .kpiTop {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.page-inicio .kpiLabel {
+    font-weight: 900;
+    font-size: 14px; /* antes 12 */
+    letter-spacing: .04em;
+}
+
+.page-inicio .kpiValue {
+    font-size: 36px; /* antes 28 */
+    font-weight: 950;
+}
+
+.page-inicio .kpiHint {
+    font-size: 14px; /* antes 12 */
+}
+
+/* =========================================================
+   Action Cards
+   ========================================================= */
+
+.page-inicio .actions .actionCard {
+    grid-column: span 4;
+}
+
+.page-inicio .actionCard {
+    display: flex;
+    align-items: center;
+    gap: 16px; /* antes 12 */
+    cursor: pointer;
+    text-align: left;
+    width: 100%;
+    padding: 18px 20px; /* más grande */
+    border-radius: 16px;
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+    .page-inicio .actionCard:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow2);
+    }
+
+/* Icono más grande */
+.page-inicio .actionIcon {
+    width: 56px; /* antes 42 */
+    height: 56px;
+    display: grid;
+    place-items: center;
+    border-radius: 16px;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,.05);
+    font-size: 22px; /* antes 18 */
+}
+
+.page-inicio .actionTitle {
+    font-weight: 950;
+    font-size: 16px;
+}
+
+.page-inicio .actionDesc {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+/* =========================================================
+   Badge alertas
+   ========================================================= */
+
+.page-inicio .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px; /* antes 10 */
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,.05);
+    padding: 10px 16px; /* más grande */
+    border-radius: 999px;
+    font-weight: 900;
+    font-size: 14px;
+}
+
+    .page-inicio .badge .dot {
+        min-width: 28px; /* antes 24 */
+        height: 28px;
+        border-radius: 999px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--line);
+        background: rgba(255,255,255,.06);
+        font-size: 13px;
+    }
+
+    .page-inicio .badge.badge-red {
+        border-color: rgba(255,123,114,.55);
+        background: rgba(255,123,114,.14);
+    }
+
+        .page-inicio .badge.badge-red .dot {
+            border-color: rgba(255,123,114,.55);
+            background: rgba(255,123,114,.18);
+        }
+
+/* =========================================================
+   Responsive
+   ========================================================= */
+
+@media (max-width: 900px) {
+    .page-inicio .kpi,
+    .page-inicio .actions .actionCard {
+        grid-column: span 12;
+    }
+}

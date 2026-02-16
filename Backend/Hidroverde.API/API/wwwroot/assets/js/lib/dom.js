@@ -1,4 +1,5 @@
-﻿export const $ = (sel, root = document) => root.querySelector(sel);
+﻿export const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
 
 export function escapeHtml(val) {
     const s = String(val ?? "");
@@ -15,7 +16,7 @@ export function setText(idOrEl, text) {
     if (el) el.textContent = text ?? "";
 }
 
-export function setValue(id, val) {
-    const el = document.getElementById(id);
+export function setValue(idOrEl, val) {
+    const el = typeof idOrEl === "string" ? document.getElementById(idOrEl) : idOrEl;
     if (el) el.value = val ?? "";
 }

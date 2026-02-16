@@ -1,7 +1,4 @@
-﻿-- =============================================
--- AGREGAR PRODUCTO (sin unidad_id, con peso_gramos)
--- =============================================
-CREATE PROCEDURE [dbo].[AgregarProducto]
+﻿CREATE PROCEDURE [dbo].[AgregarProducto]
     @codigo nvarchar(30),
     @variedad_id int,
     @nombre_producto nvarchar(200),

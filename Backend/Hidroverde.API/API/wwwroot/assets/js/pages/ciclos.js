@@ -2,38 +2,42 @@
 let CICLOS = [];
 
 export function init() {
-    // botones
+    // Buscador
+    document.getElementById("txtBuscarCiclos")?.addEventListener("input", (e) => {
+        const q = (e.target.value || "").toLowerCase().trim();
+        renderTablaFiltrada(q);
+    });
+
+    // Botones
     document.getElementById("btnRefrescarCiclos")?.addEventListener("click", cargarActivos);
     document.getElementById("btnNuevaSiembra")?.addEventListener("click", () => abrirModal("modalSiembra"));
 
-    // modal close (click en backdrop o botón X)
+    // Modal close (backdrop o X o Cancelar)
     document.querySelectorAll('[data-close="modalSiembra"]').forEach(el => {
         el.addEventListener("click", () => cerrarModal("modalSiembra"));
     });
 
-    // form submit
+    // Form submit
     document.getElementById("frmSiembra")?.addEventListener("submit", async (e) => {
         e.preventDefault();
         await guardarSiembra();
     });
 
-    // defaults fecha
+    // Defaults fecha
     setFechasDefault();
 
-    // carga inicial
+    // Carga inicial
     cargarActivos();
 
-    // acciones tabla (cosechar / cancelar)
+    // Acciones tabla (delegación)
     document.addEventListener("click", async (e) => {
-        // ==========================
         // CANCELAR
-        // ==========================
         const btnCancelar = e.target.closest(".btn-cancelar");
         if (btnCancelar) {
             const cicloId = btnCancelar.dataset.id;
 
             const motivo = prompt("Motivo de cancelación (opcional):", "Creado por error");
-            if (motivo === null) return; // canceló el prompt
+            if (motivo === null) return;
 
             if (!confirm("¿Seguro que deseas cancelar este ciclo?")) return;
 
@@ -57,13 +61,10 @@ export function init() {
             } catch (err) {
                 alert(err?.message || "Error cancelando ciclo");
             }
-
-            return; // importante: no seguir con cosechar
+            return;
         }
 
-        // ==========================
         // COSECHAR
-        // ==========================
         const btnCosechar = e.target.closest(".btn-cosechar");
         if (!btnCosechar) return;
 
@@ -74,11 +75,8 @@ export function init() {
 
         // Validar fecha estimada
         if (ciclo?.fechaCosechaEstimada) {
-            const hoy = new Date();
-            hoy.setHours(0, 0, 0, 0);
-
-            const est = new Date(ciclo.fechaCosechaEstimada);
-            est.setHours(0, 0, 0, 0);
+            const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+            const est = new Date(ciclo.fechaCosechaEstimada); est.setHours(0, 0, 0, 0);
 
             if (hoy < est) {
                 const ok = confirm("Esta cosecha aún no está lista (fecha estimada no se cumple). ¿Estás seguro de que quieres cosechar?");
@@ -86,7 +84,6 @@ export function init() {
             }
         }
 
-        // Confirmación normal
         if (!confirm("¿Desea cosechar este ciclo?")) return;
 
         try {
@@ -104,18 +101,40 @@ export function init() {
             });
 
             if (!res.ok) {
-                const txt = await res.text();
-                throw new Error(txt);
+                const txt = await res.text().catch(() => "");
+                throw new Error(txt || `Error HTTP ${res.status}`);
             }
 
-            const data = await res.json();
-            alert(`Cosecha exitosa.\nLote: ${data.loteGenerado}`);
+            const data = await res.json().catch(() => ({}));
+            alert(`Cosecha exitosa.\nLote: ${data.loteGenerado ?? "-"}`);
 
-            await cargarActivos(); // refrescar tabla
+            await cargarActivos();
         } catch (err) {
             alert(err?.message || "Error cosechando");
         }
     });
+}
+
+/* =========================
+   Render / filtro
+   ========================= */
+function renderTablaFiltrada(q) {
+    const tbody = document.getElementById("tblCiclosBody");
+    if (!tbody) return;
+
+    const data = !q ? CICLOS : CICLOS.filter(c => {
+        const cultivo = `${c.productoCodigo ?? ""} ${c.productoNombre ?? ""} ${c.variedadNombre ?? ""}`.toLowerCase();
+        const torre = `${c.torreCodigo ?? ""} ${c.torreId ?? ""}`.toLowerCase();
+        const estado = `${c.estadoNombre ?? ""}`.toLowerCase();
+        return cultivo.includes(q) || torre.includes(q) || estado.includes(q) || String(c.cicloId).includes(q);
+    });
+
+    if (!data.length) {
+        tbody.innerHTML = `<tr><td colspan="7" class="muted">Sin resultados.</td></tr>`;
+        return;
+    }
+
+    tbody.innerHTML = data.map(rowHtml).join("");
 }
 
 function setFechasDefault() {
@@ -133,74 +152,105 @@ async function cargarActivos() {
     const tbody = document.getElementById("tblCiclosBody");
     if (!tbody) return;
 
-    // ahora son 9 columnas (incluye Acciones)
-    tbody.innerHTML = `<tr><td colspan="9" class="muted">Cargando...</td></tr>`;
+    // Tabla nueva: 7 columnas
+    tbody.innerHTML = `<tr><td colspan="7" class="muted">Cargando...</td></tr>`;
 
     try {
         const res = await fetch("/api/ciclos/activos");
 
         if (res.status === 204) {
-            tbody.innerHTML = `<tr><td colspan="9" class="muted">No hay ciclos activos.</td></tr>`;
+            CICLOS = [];
+            tbody.innerHTML = `<tr><td colspan="7" class="muted">No hay ciclos activos.</td></tr>`;
             return;
         }
 
         if (!res.ok) {
-            const txt = await res.text();
+            const txt = await res.text().catch(() => "");
             throw new Error(txt || `Error HTTP ${res.status}`);
         }
 
-        const data = await res.json();
-        CICLOS = data;
+        const data = await res.json().catch(() => []);
+        CICLOS = Array.isArray(data) ? data : [];
 
-        if (!Array.isArray(data) || data.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="9" class="muted">No hay ciclos activos.</td></tr>`;
+        if (!CICLOS.length) {
+            tbody.innerHTML = `<tr><td colspan="7" class="muted">No hay ciclos activos.</td></tr>`;
             return;
         }
 
-        tbody.innerHTML = data.map(rowHtml).join("");
+        const q = (document.getElementById("txtBuscarCiclos")?.value || "").toLowerCase().trim();
+        renderTablaFiltrada(q);
     } catch (err) {
         console.error(err);
-        tbody.innerHTML = `<tr><td colspan="9" class="muted">Error cargando ciclos.</td></tr>`;
+        CICLOS = [];
+        tbody.innerHTML = `<tr><td colspan="7" class="muted">Error cargando ciclos.</td></tr>`;
         alert("Error cargando ciclos. Revisá consola.");
     }
 }
 
+/* =========================
+   Row Lovable-like
+   ========================= */
 function rowHtml(c) {
-    const siembra = fmtDate(c.fechaSiembra);
-    const cosechaEst = fmtDate(c.fechaCosechaEstimada);
-    const responsable = c.responsableNombre ?? "-";
+    const inicio = fmtDate(c.fechaSiembra);
+    const fin = fmtDate(c.fechaCosechaEstimada);
 
-    const cultivo = `${c.productoCodigo ?? ""} - ${c.productoNombre ?? ""}`;
-    const variedad = c.variedadNombre ?? "-";
-    const torre = c.torreCodigo ?? `#${c.torreId}`;
+    const cultivo = `${c.productoCodigo ?? ""} ${c.productoNombre ?? ""}`.trim() || "-";
+    const nombre = `Ciclo #${c.cicloId}`;
+
+    const pct = calcProgresoPct(c.fechaSiembra, c.fechaCosechaEstimada);
+
+    const estadoTxt = c.esActivo ? "Activo" : (c.estadoNombre ?? "Inactivo");
+    const estadoClass = c.esActivo ? "pill green" : "pill";
 
     const btnCosechar = c.esActivo
-        ? `<button class="btn-cosechar" data-id="${c.cicloId}">🌾 Cosechar</button>`
+        ? `<button class="btn small btn-primary btn-cosechar" data-id="${safe(c.cicloId)}">Cosechar</button>`
         : ``;
 
     const btnCancelar = c.esActivo
-        ? `<button class="btn-cancelar" data-id="${c.cicloId}">🗑️ Cancelar</button>`
+        ? `<button class="btn small danger btn-cancelar" data-id="${safe(c.cicloId)}">Cancelar</button>`
         : ``;
 
     return `
   <tr>
-    <td>${safe(c.cicloId)}</td>
+    <td><strong>${safe(nombre)}</strong></td>
+    <td>${safe(cultivo)}</td>
+    <td>${safe(inicio)}</td>
+    <td>${safe(fin)}</td>
     <td>
-      <div><strong>${safe(cultivo)}</strong></div>
-      <div class="muted small">${safe(variedad)}</div>
+      <div class="progressWrap">
+        <div class="progressBar">
+          <div class="progressFill" style="width:${pct}%"></div>
+        </div>
+        <span class="progressPct">${pct}%</span>
+      </div>
     </td>
-    <td>${safe(torre)}</td>
-    <td>${safe(c.estadoNombre)}</td>
-    <td>${safe(siembra)}</td>
-    <td>${safe(cosechaEst)}</td>
-    <td>${safe(c.cantidadPlantas)}</td>
-    <td>${safe(responsable)}</td>
+    <td><span class="${estadoClass}">${safe(estadoTxt)}</span></td>
     <td>
-      ${btnCosechar}
-      ${btnCancelar}
+      <div class="actionsCell">
+        ${btnCosechar}
+        ${btnCancelar}
+      </div>
     </td>
   </tr>
 `;
+}
+
+function calcProgresoPct(fechaInicio, fechaFin) {
+    const a = new Date(fechaInicio);
+    const b = new Date(fechaFin);
+    if (isNaN(a.getTime()) || isNaN(b.getTime())) return 0;
+
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    a.setHours(0, 0, 0, 0);
+    b.setHours(0, 0, 0, 0);
+
+    const total = b - a;
+    if (total <= 0) return 0;
+
+    const trans = hoy - a;
+    const pct = Math.round((trans / total) * 100);
+    return Math.max(0, Math.min(100, pct));
 }
 
 function fmtDate(v) {
@@ -213,8 +263,10 @@ function fmtDate(v) {
     return `${yyyy}-${mm}-${dd}`;
 }
 
+/* =========================
+   Siembra / modal
+   ========================= */
 async function guardarSiembra() {
-    // leer inputs
     const productoId = num("productoId");
     const variedadId = num("variedadId");
     const torreId = num("torreId");
@@ -225,7 +277,6 @@ async function guardarSiembra() {
     const loteSemilla = emptyToNull(val("loteSemilla"));
     const notas = emptyToNull(val("notas"));
 
-    // validaciones mínimas
     if (productoId <= 0 || variedadId <= 0 || torreId <= 0) {
         alert("ProductoId, VariedadId y TorreId deben ser mayores a 0.");
         return;
@@ -276,11 +327,10 @@ async function guardarSiembra() {
                 const txt = await res.text().catch(() => "");
                 msg = txt || msg;
             }
-
             throw new Error(msg);
         }
 
-        const data = await res.json();
+        const data = await res.json().catch(() => ({}));
         alert(`Siembra registrada. CicloId: ${data?.cicloIdCreado ?? "?"}`);
 
         cerrarModal("modalSiembra");
@@ -294,17 +344,20 @@ async function guardarSiembra() {
 function abrirModal(id) {
     const m = document.getElementById(id);
     if (!m) return;
+    m.hidden = false;
     m.setAttribute("aria-hidden", "false");
-    m.classList.add("is-open");
 }
 
 function cerrarModal(id) {
     const m = document.getElementById(id);
     if (!m) return;
+    m.hidden = true;
     m.setAttribute("aria-hidden", "true");
-    m.classList.remove("is-open");
 }
 
+/* =========================
+   Helpers
+   ========================= */
 function val(id) {
     const el = document.getElementById(id);
     return (el?.value ?? "").trim();

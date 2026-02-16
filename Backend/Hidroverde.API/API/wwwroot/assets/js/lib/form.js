@@ -15,7 +15,12 @@ export function getDecimal(id, { nullable = false } = {}) {
 
 export function getBool(id) {
     const el = document.getElementById(id);
-    return String(el?.value) === "true";
+    if (!el) return false;
+
+    if (el.type === "checkbox") return el.checked;
+
+    const v = String(el.value).toLowerCase();
+    return v === "true" || v === "1" || v === "yes";
 }
 
 export function nullableString(s) {

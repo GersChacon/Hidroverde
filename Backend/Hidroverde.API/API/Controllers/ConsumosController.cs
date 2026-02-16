@@ -25,8 +25,6 @@ namespace Hidroverde.API.Controllers
             return Ok(new { consumoId });
         }
 
-
-
         [HttpPut("{consumoId:long}")]
         public async Task<IActionResult> Editar(
             long consumoId,
@@ -65,6 +63,7 @@ namespace Hidroverde.API.Controllers
             var data = await _consumosFlujo.ObtenerReporte(cicloId, fechaDesde, fechaHasta, granularidad);
             return Ok(data);
         }
+
         [HttpGet("reporte-diario")]
         public async Task<IActionResult> ReporteDiario(
             [FromQuery] int? cicloId,
@@ -76,26 +75,34 @@ namespace Hidroverde.API.Controllers
             return Ok(r);
         }
 
-    
-    [HttpGet("reporte-diario/export/csv")]
+        // =========================
+        // EXPORTS (reporte diario)
+        // =========================
+
+        [HttpGet("reporte-diario/export/csv")]
         public async Task<IActionResult> ExportReporteDiarioCsv(
-    [FromQuery] int? cicloId,
-    [FromQuery] DateTime? fechaDesde,
-    [FromQuery] DateTime? fechaHasta,
-    [FromQuery] int? tipoRecursoId)
+            [FromQuery] int? cicloId,
+            [FromQuery] DateTime? fechaDesde,
+            [FromQuery] DateTime? fechaHasta,
+            [FromQuery] int? tipoRecursoId)
         {
             var data = await _consumosFlujo.ObtenerReporteDiario(cicloId, fechaDesde, fechaHasta, tipoRecursoId);
 
             var sb = new StringBuilder();
             sb.AppendLine("Fecha,CicloId,TipoRecursoId,Codigo,RecursoNombre,Unidad,TotalCantidad");
 
+            string CsvSafe(string? s) => "\"" + (s ?? "").Replace("\"", "\"\"") + "\"";
+
             foreach (var r in data)
             {
-                // CSV safe (mínimo): envolver texto con comillas y escapar comillas internas
-                string Safe(string s) => "\"" + (s ?? "").Replace("\"", "\"\"") + "\"";
-
                 sb.AppendLine(
-                    $"{r.Fecha:yyyy-MM-dd},{r.CicloId},{r.TipoRecursoId},{Safe(r.Codigo)},{Safe(r.RecursoNombre)},{Safe(r.Unidad)},{r.TotalCantidad}"
+                    $"{r.Fecha:yyyy-MM-dd}," +
+                    $"{r.CicloId}," +
+                    $"{r.TipoRecursoId}," +
+                    $"{CsvSafe(r.Codigo)}," +
+                    $"{CsvSafe(r.RecursoNombre)}," +
+                    $"{CsvSafe(r.Unidad)}," +
+                    $"{r.TotalCantidad}"
                 );
             }
 
@@ -103,16 +110,17 @@ namespace Hidroverde.API.Controllers
             var fileName = $"reporte_consumos_diario_{DateTime.Now:yyyyMMdd_HHmmss}.csv";
             return File(bytes, "text/csv; charset=utf-8", fileName);
         }
+
         [HttpGet("reporte-diario/export/excel")]
         public async Task<IActionResult> ExportReporteDiarioExcel(
-    [FromQuery] int? cicloId,
-    [FromQuery] DateTime? fechaDesde,
-    [FromQuery] DateTime? fechaHasta,
-    [FromQuery] int? tipoRecursoId)
+            [FromQuery] int? cicloId,
+            [FromQuery] DateTime? fechaDesde,
+            [FromQuery] DateTime? fechaHasta,
+            [FromQuery] int? tipoRecursoId)
         {
             var data = await _consumosFlujo.ObtenerReporteDiario(cicloId, fechaDesde, fechaHasta, tipoRecursoId);
 
-            string HtmlEncode(string? s) =>
+            static string HtmlEncode(string? s) =>
                 (s ?? "")
                 .Replace("&", "&amp;")
                 .Replace("<", "&lt;")
@@ -143,8 +151,5 @@ namespace Hidroverde.API.Controllers
             var fileName = $"reporte_consumos_diario_{DateTime.Now:yyyyMMdd_HHmmss}.xls"; // Excel lo abre
             return File(bytes, "application/vnd.ms-excel", fileName);
         }
-
     }
-
-
 }

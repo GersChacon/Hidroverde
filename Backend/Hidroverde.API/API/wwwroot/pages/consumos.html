@@ -1,12 +1,109 @@
-﻿<!DOCTYPE html>
-<link rel="stylesheet" href="/assets/css/app.css" />
-<script defer src="/assets/js/app.js"></script>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
+﻿<section class="page page-consumos">
+    <header class="page__header">
+        <div>
+            <h1>Consumos</h1>
+            <p class="muted">Registra consumos de agua y nutrientes por ciclo.</p>
+        </div>
 
-</body>
-</html>
+        <div class="page__actions">
+            <button class="btn btn-primary" id="btnNuevoConsumo">+ Nuevo consumo</button>
+            <button class="btn" id="btnRefrescarConsumos">Refrescar</button>
+        </div>
+    </header>
+
+    <div class="card" style="margin-top:14px;">
+        <div class="row" style="gap:12px;">
+            <input id="filtroCicloId" type="number" min="1" placeholder="CicloId" style="max-width:160px;">
+            <input id="filtroDesde" type="date">
+            <input id="filtroHasta" type="date">
+
+            <button class="btn" id="btnAplicarFiltros">Aplicar</button>
+            <button class="btn" id="btnLimpiarFiltros">Limpiar</button>
+
+            <span class="right"></span>
+
+            <button class="btn" id="btnVerReporteDiario">Reporte diario</button>
+            <button class="btn" id="btnExportCsv">Export CSV</button>
+            <button class="btn" id="btnExportExcel">Export Excel</button>
+        </div>
+
+        <table class="table" style="margin-top:12px;">
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Recurso</th>
+                    <th>Cantidad</th>
+                    <th>Ciclo</th>
+                    <th>Responsable</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tblConsumosBody">
+                <tr><td colspan="6" class="muted">Cargando...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal (placeholder, ya lo conectamos luego) -->
+    <div class="modal" id="modalConsumo" hidden>
+        <div class="modalCard">
+            <div class="row">
+                <h3 id="modalConsumoTitle">Nuevo consumo</h3>
+                <span class="right"></span>
+                <button class="btn" id="btnCerrarModalConsumo">Cerrar</button>
+            </div>
+
+            <div class="grid2">
+                <label>
+                    <span>CicloId *</span>
+                    <input type="number" id="consumoCicloId" min="1">
+                </label>
+
+                <label>
+                    <span>TipoRecursoId *</span>
+                    <input type="number" id="consumoTipoRecursoId" min="1">
+                </label>
+
+                <label>
+                    <span>Cantidad *</span>
+                    <input type="number" id="consumoCantidad" min="0" step="0.01">
+                </label>
+
+                <label>
+                    <span>Fecha *</span>
+                    <input type="date" id="consumoFecha">
+                </label>
+            </div>
+
+            <div class="row" style="margin-top:12px; justify-content:flex-end;">
+                <button class="btn btn-primary" id="btnGuardarConsumo">Guardar</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="modalHistorial" hidden>
+        <div class="modalCard">
+            <div class="row">
+                <h3>Historial de consumo</h3>
+                <span class="right"></span>
+                <button class="btn" data-close="modalHistorial">Cerrar</button>
+            </div>
+
+            <table class="table" style="margin-top:12px;">
+                <thead>
+                    <tr>
+                        <th>Versión</th>
+                        <th>Fecha consumo</th>
+                        <th>Cantidad</th>
+                        <th>Notas</th>
+                        <th>Motivo</th>
+                        <th>Registro</th>
+                    </tr>
+                </thead>
+                <tbody id="tblHistorialBody">
+                    <tr><td colspan="6" class="muted">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</section>

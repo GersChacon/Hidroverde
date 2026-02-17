@@ -76,7 +76,6 @@
     <Build Include="dbo\Tables\Tipos_Cultivo.sql" />
     <Build Include="dbo\Tables\Tipos_Cliente.sql" />
     <Build Include="dbo\Tables\Roles.sql" />
-    <Build Include="dbo\Tables\Provincias.sql" />
     <Build Include="dbo\Tables\Productos.sql" />
     <Build Include="dbo\Tables\Movimientos_Inventario.sql" />
     <Build Include="dbo\Tables\Monitoreos.sql" />
@@ -84,18 +83,15 @@
     <Build Include="dbo\Tables\Inventario_Actual.sql" />
     <Build Include="dbo\Tables\Estados_Venta.sql" />
     <Build Include="dbo\Tables\Estados_Pago.sql" />
-    <Build Include="dbo\Tables\Estados_Empleado.sql" />
     <Build Include="dbo\Tables\Estados_Ciclo.sql" />
     <Build Include="dbo\Tables\Estados_Calidad.sql" />
     <Build Include="dbo\Tables\Empleados.sql" />
-    <Build Include="dbo\Tables\Distritos.sql" />
     <Build Include="dbo\Tables\Direcciones_Clientes.sql" />
     <Build Include="dbo\Tables\Detalle_Ventas.sql" />
     <Build Include="dbo\Tables\Config_Sistema.sql" />
     <Build Include="dbo\Tables\Clientes.sql" />
     <Build Include="dbo\Tables\Ciclos.sql" />
     <Build Include="dbo\Tables\Categorias.sql" />
-    <Build Include="dbo\Tables\Cantones.sql" />
     <Build Include="notif\Tables\Alerta.sql" />
     <Build Include="dbo\Stored Procedures\sp_Venta_Crear.sql" />
     <Build Include="dbo\Stored Procedures\sp_Venta_AgregarDetalle_DescontarInventario.sql" />
@@ -137,5 +133,8 @@
     <Build Include="dbo\Stored Procedures\AgregarProducto.sql" />
     <Build Include="dbo\Stored Procedures\AgregarCategoria.sql" />
     <Build Include="dbo\Stored Procedures\sp_Ciclo_Cancelar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_DireccionesCliente_Listar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_DireccionCliente_Obtener.sql" />
+    <Build Include="dbo\Stored Procedures\sp_DireccionCliente_Crear.sql" />
   </ItemGroup>
 </Project>

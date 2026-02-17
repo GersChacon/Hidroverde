@@ -25,6 +25,8 @@ builder.Services.AddScoped<IProductoFlujo, ProductoFlujo>();
 builder.Services.AddScoped<IProductoDA, ProductoDA>();
 builder.Services.AddScoped<IAlertasDA, AlertasDA>();
 builder.Services.AddScoped<IAlertasFlujo, AlertasFlujo>();
+builder.Services.AddScoped<IEstadoVentaDA, EstadoVentaDA>();
+builder.Services.AddScoped<IEstadoVentaFlujo, EstadoVentaFlujo>();
 builder.Services.AddScoped<IRepositorioDapper, RepositorioDapper>();
 
 builder.Services.AddScoped<ICiclosDA, CiclosDA>();

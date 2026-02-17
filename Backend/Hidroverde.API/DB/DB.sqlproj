@@ -136,5 +136,10 @@
     <Build Include="dbo\Stored Procedures\sp_DireccionesCliente_Listar.sql" />
     <Build Include="dbo\Stored Procedures\sp_DireccionCliente_Obtener.sql" />
     <Build Include="dbo\Stored Procedures\sp_DireccionCliente_Crear.sql" />
+    <Build Include="dbo\Stored Procedures\ObtenerEstadoVenta.sql" />
+    <Build Include="dbo\Stored Procedures\ObtenerEstadosVenta.sql" />
+    <Build Include="dbo\Stored Procedures\EliminarEstadoVenta.sql" />
+    <Build Include="dbo\Stored Procedures\EditarEstadoVenta.sql" />
+    <Build Include="dbo\Stored Procedures\AgregarEstadoVenta.sql" />
   </ItemGroup>
 </Project>

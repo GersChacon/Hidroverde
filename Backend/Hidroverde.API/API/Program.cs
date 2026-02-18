@@ -25,7 +25,10 @@ builder.Services.AddScoped<IProductoFlujo, ProductoFlujo>();
 builder.Services.AddScoped<IProductoDA, ProductoDA>();
 builder.Services.AddScoped<IAlertasDA, AlertasDA>();
 builder.Services.AddScoped<IAlertasFlujo, AlertasFlujo>();
-builder.Services.AddScoped<IRepositorioDapper, RepositorioDapper>();
+builder.Services.AddScoped<IEstadoVentaDA, EstadoVentaDA>();
+builder.Services.AddScoped<IEstadoVentaFlujo, EstadoVentaFlujo>();
+builder.Services.AddScoped<ITipoEntregaDA, TipoEntregaDA>();
+builder.Services.AddScoped<ITipoEntregaFlujo, TipoEntregaFlujo>();
 
 builder.Services.AddScoped<ICiclosDA, CiclosDA>();
 builder.Services.AddScoped<ITiposRecursoDA, TiposRecursoDA>();

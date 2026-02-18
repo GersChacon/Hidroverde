@@ -2,6 +2,7 @@
 using Abstracciones.Modelos;
 using Hidroverde.Abstracciones.Modelos.Ciclos;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 
 namespace Hidroverde.API.Controllers
 {
@@ -41,18 +42,19 @@ namespace Hidroverde.API.Controllers
                 var resp = await _ciclosFlujo.RegistrarSiembraAsync(request, responsableId);
                 return Ok(resp);
             }
-            catch (Microsoft.Data.SqlClient.SqlException ex)
+            catch (SqlException ex)
             {
-                // Errores de negocio del SP (THROW 50004 etc.)
+                // Siembra: depende de tus THROW; por ahora 400 para reglas de negocio
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpPost("{cicloId:int}/cosecha")]
         public async Task<IActionResult> Cosechar(
-                [FromRoute] int cicloId,
-                [FromBody] CosecharCicloRequest request,
-                [FromHeader(Name = "X-Empleado-Id")] int usuarioId
-            )
+            [FromRoute] int cicloId,
+            [FromBody] CosecharCicloRequest request,
+            [FromHeader(Name = "X-Empleado-Id")] int usuarioId
+        )
         {
             if (usuarioId <= 0) return BadRequest("Header X-Empleado-Id inválido.");
             if (request == null) return BadRequest("Body requerido.");
@@ -63,17 +65,31 @@ namespace Hidroverde.API.Controllers
                 var resp = await _ciclosFlujo.CosecharAsync(cicloId, request, usuarioId);
                 return Ok(resp);
             }
-            catch (Microsoft.Data.SqlClient.SqlException ex)
+            catch (SqlException ex) when (ex.Number == 51002)
             {
-                return BadRequest(ex.Message);
+                // "Este ciclo ya fue cosechado y ya generó inventario."
+                return Conflict(ex.Message); // 409
+            }
+            catch (SqlException ex) when (ex.Number == 51001 || ex.Number == 51005 || ex.Number == 51006)
+            {
+                // 51001: ciclo no existe
+                // 51005: calidad inválida
+                // 51006: producto inválido/inactivo
+                return BadRequest(ex.Message); // 400
+            }
+            catch (SqlException ex)
+            {
+                // Configuración/infra: estados/tipos inexistentes, constraints, etc.
+                return StatusCode(500, ex.Message);
             }
         }
+
         [HttpPost("{cicloId:int}/cancelar")]
         public async Task<IActionResult> Cancelar(
-    [FromRoute] int cicloId,
-    [FromBody] CancelarCicloRequest request,
-    [FromHeader(Name = "X-Empleado-Id")] int usuarioId
-)
+            [FromRoute] int cicloId,
+            [FromBody] CancelarCicloRequest request,
+            [FromHeader(Name = "X-Empleado-Id")] int usuarioId
+        )
         {
             if (usuarioId <= 0) return BadRequest("Header X-Empleado-Id inválido.");
             if (cicloId <= 0) return BadRequest("cicloId inválido.");
@@ -83,14 +99,11 @@ namespace Hidroverde.API.Controllers
                 var id = await _ciclosFlujo.CancelarAsync(cicloId, usuarioId, request?.Motivo);
                 return Ok(new { cicloIdCancelado = id });
             }
-            catch (Microsoft.Data.SqlClient.SqlException ex)
+            catch (SqlException ex)
             {
+                // Si quieres, acá también podemos mapear por Number si tu SP usa THROW
                 return BadRequest(ex.Message);
             }
         }
-
-
-
     }
-
 }

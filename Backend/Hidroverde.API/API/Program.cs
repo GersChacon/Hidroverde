@@ -35,6 +35,8 @@ builder.Services.AddScoped<IConsumosDA, ConsumosDA>();
 builder.Services.AddScoped<ICiclosFlujo, CiclosFlujo>();
 builder.Services.AddScoped<ITiposRecursoFlujo, TiposRecursoFlujo>();
 builder.Services.AddScoped<IConsumosFlujo, ConsumosFlujo>();
+builder.Services.AddScoped<IInventarioDA, InventarioDA>();
+builder.Services.AddScoped<IInventarioFlujo, InventarioFlujo>();
 
 // Después de builder.Services.AddControllers();
 

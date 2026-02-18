@@ -46,6 +46,7 @@ namespace DA
                 {
                     codigo = producto.Codigo,
                     variedad_id = producto.VariedadId,
+                    unidad_id = producto.UnidadId,          // ✅ FIX
                     nombre_producto = producto.NombreProducto,
                     descripcion = producto.Descripcion,
                     precio_base = producto.PrecioBase,
@@ -62,6 +63,7 @@ namespace DA
             return resultado;
         }
 
+
         public async Task<int> Editar(int productoId, ProductoRequest producto)
         {
             await VerificarProductoExiste(productoId);
@@ -73,6 +75,7 @@ namespace DA
                     producto_id = productoId,
                     codigo = producto.Codigo,
                     variedad_id = producto.VariedadId,
+                    unidad_id = producto.UnidadId,          // ✅ FIX
                     nombre_producto = producto.NombreProducto,
                     descripcion = producto.Descripcion,
                     precio_base = producto.PrecioBase,

@@ -1,7 +1,8 @@
-﻿
+﻿-- =============================================
+-- PROCEDIMIENTOS PARA ESTADOS DE VENTA
 -- =============================================
+
 -- AGREGAR ESTADO VENTA
--- =============================================
 CREATE PROCEDURE [dbo].[AgregarEstadoVenta]
     @codigo nvarchar(30),
     @nombre nvarchar(50),

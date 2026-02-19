@@ -1,7 +1,5 @@
 ﻿
--- =============================================
 -- OBTENER ESTADO VENTA POR ID
--- =============================================
 CREATE PROCEDURE [dbo].[ObtenerEstadoVenta]
     @estado_venta_id int
 AS

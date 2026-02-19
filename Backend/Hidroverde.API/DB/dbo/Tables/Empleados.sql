@@ -12,12 +12,16 @@
     [clave_hash]         NVARCHAR (255) NULL,
     [activo]             BIT            CONSTRAINT [DF_Empleados_Activo] DEFAULT ((1)) NOT NULL,
     [fecha_creacion]     DATETIME2 (0)  CONSTRAINT [DF_Empleados_FechaCreacion] DEFAULT (sysdatetime()) NOT NULL,
+    [estado]             NVARCHAR (20)  NOT NULL,
     CONSTRAINT [PK_Empleados] PRIMARY KEY CLUSTERED ([empleado_id] ASC),
+    CONSTRAINT [CK_Empleados_Estado] CHECK ([estado]='LICENCIA' OR [estado]='VACACIONES' OR [estado]='INACTIVO' OR [estado]='ACTIVO'),
     CONSTRAINT [FK_Empleados_Roles] FOREIGN KEY ([rol_id]) REFERENCES [dbo].[Roles] ([rol_id]),
     CONSTRAINT [UQ_Empleados_Cedula] UNIQUE NONCLUSTERED ([cedula] ASC),
     CONSTRAINT [UQ_Empleados_Email] UNIQUE NONCLUSTERED ([email] ASC),
     CONSTRAINT [UQ_Empleados_Usuario] UNIQUE NONCLUSTERED ([usuario_sistema] ASC)
 );
+
+
 
 
 

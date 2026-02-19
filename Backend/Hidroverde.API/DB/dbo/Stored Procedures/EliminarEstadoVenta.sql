@@ -1,7 +1,5 @@
 ﻿
--- =============================================
 -- ELIMINAR ESTADO VENTA
--- =============================================
 CREATE PROCEDURE [dbo].[EliminarEstadoVenta]
     @estado_venta_id int
 AS

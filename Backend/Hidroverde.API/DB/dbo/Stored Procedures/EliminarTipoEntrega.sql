@@ -1,7 +1,5 @@
 ﻿
--- =============================================
 -- ELIMINAR TIPO ENTREGA
--- =============================================
 CREATE PROCEDURE [dbo].[EliminarTipoEntrega]
     @tipo_entrega_id int
 AS

@@ -1,7 +1,5 @@
 ﻿
--- =============================================
 -- EDITAR ESTADO VENTA
--- =============================================
 CREATE PROCEDURE [dbo].[EditarEstadoVenta]
     @estado_venta_id int,
     @codigo nvarchar(30),

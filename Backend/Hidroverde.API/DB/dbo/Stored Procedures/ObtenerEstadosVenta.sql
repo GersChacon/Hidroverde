@@ -1,7 +1,5 @@
 ﻿
--- =============================================
 -- OBTENER TODOS LOS ESTADOS VENTA
--- =============================================
 CREATE PROCEDURE [dbo].[ObtenerEstadosVenta]
 AS
 BEGIN

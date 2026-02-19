@@ -1,6 +1,9 @@
-﻿-- =============================================
--- AGREGAR TIPO ENTREGA
+﻿
 -- =============================================
+-- PROCEDIMIENTOS PARA TIPOS DE ENTREGA
+-- =============================================
+
+-- AGREGAR TIPO ENTREGA
 CREATE PROCEDURE [dbo].[AgregarTipoEntrega]
     @codigo nvarchar(30),
     @nombre nvarchar(50),

@@ -1,7 +1,5 @@
 ﻿
--- =============================================
 -- OBTENER TIPO ENTREGA POR ID
--- =============================================
 CREATE PROCEDURE [dbo].[ObtenerTipoEntrega]
     @tipo_entrega_id int
 AS

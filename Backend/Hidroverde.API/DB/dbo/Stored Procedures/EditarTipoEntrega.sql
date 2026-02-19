@@ -1,7 +1,5 @@
 ﻿
--- =============================================
 -- EDITAR TIPO ENTREGA
--- =============================================
 CREATE PROCEDURE [dbo].[EditarTipoEntrega]
     @tipo_entrega_id int,
     @codigo nvarchar(30),

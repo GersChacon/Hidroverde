@@ -1,7 +1,5 @@
 ﻿
--- =============================================
 -- OBTENER TODOS LOS TIPOS ENTREGA
--- =============================================
 CREATE PROCEDURE [dbo].[ObtenerTiposEntrega]
 AS
 BEGIN

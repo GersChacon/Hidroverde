@@ -1,0 +1,106 @@
+﻿<div class="prov-tabs">
+    <button id="tabPendientes" class="prov-tab active" type="button">Pagos activos Pendientes</button>
+    <button id="tabPagos" class="prov-tab" type="button">Historial de Pagos</button>
+</div>
+
+<!-- ✅ SOLO Pendientes aquí -->
+<div id="viewPendientes">
+    <!-- tu header + botón refrescar si lo quieres para ambos aquí o arriba -->
+    <div class="prov-card">
+        <div class="prov-tableWrap">
+            <table class="prov-table">
+                <thead>
+                    <tr>
+                        <th>Proveedor</th>
+                        <th>Total compras</th>
+                        <th>Total pagado</th>
+                        <th>Saldo pendiente</th>
+                        <th>Acción</th>
+                        <th>Historial</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaProveedores"></tbody>
+            </table>
+        </div>
+
+        <div id="provEmpty" class="prov-empty" style="display:none;">
+            No hay proveedores pendientes de pago.
+        </div>
+    </div>
+</div>
+
+<!-- ✅ SOLO Pagos aquí -->
+<div id="viewPagos" style="display:none;">
+    <div class="prov-card">
+        <div class="prov-tableWrap">
+            <table class="prov-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Proveedor</th>
+                        <th>Monto</th>
+                        <th>Saldo antes</th>
+                        <th>Saldo después</th>
+                        <th>Estado</th>
+                        <th>Comentario</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaPagos"></tbody>
+            </table>
+        </div>
+
+        <div id="pagosEmpty" class="prov-empty" style="display:none;">
+            No hay pagos registrados.
+        </div>
+    </div>
+</div>
+<!-- Modal Pago -->
+<div id="modalPago" class="prov-modal" style="display:none;">
+    <div class="prov-modal-content">
+        <h3>Registrar Pago</h3>
+
+        <div class="prov-form">
+            <input type="hidden" id="provIdSeleccionado">
+
+            <label>Monto a pagar</label>
+            <input type="number" id="inputMontoPago" step="0.01" min="0">
+
+            <div class="prov-modal-actions">
+                <button id="btnCancelarPago">Cancelar</button>
+                <button id="btnConfirmarPago" class="btn-pagar">Confirmar Pago</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    </div>
+<!-- Modal Historial -->
+<div id="modalHistorial" class="prov-modal" style="display:none;">
+    <div class="prov-modal-content" style="width: 720px;">
+        <div class="prov-hist-header">
+            <h3 id="histTitle">Historial de pagos</h3>
+            <button id="btnCerrarHistorial">Cerrar</button>
+        </div>
+
+        <div class="prov-tableWrap">
+            <table class="prov-table">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Monto</th>
+                        <th>Saldo antes</th>
+                        <th>Saldo después</th>
+                        <th>Estado</th>
+                        <th>Comentario</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaHistorial"></tbody>
+            </table>
+        </div>
+
+        <div id="histEmpty" class="prov-empty" style="display:none;">
+            No hay pagos registrados para este proveedor.
+        </div>
+    </div>
+</div>
+</div>

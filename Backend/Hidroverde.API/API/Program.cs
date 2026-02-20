@@ -1,8 +1,11 @@
 ﻿using Abstracciones.Interfaces.DA;
 using Abstracciones.Interfaces.Flujo;
-using Flujo;
 using DA;
 using DA.Repositorios;
+using Abstracciones.Interfaces.DA;
+using Abstracciones.Interfaces.Flujo;
+using DA;
+using Flujo;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +43,8 @@ builder.Services.AddScoped<ITiposRecursoFlujo, TiposRecursoFlujo>();
 builder.Services.AddScoped<IConsumosFlujo, ConsumosFlujo>();
 builder.Services.AddScoped<IInventarioDA, InventarioDA>();
 builder.Services.AddScoped<IInventarioFlujo, InventarioFlujo>();
+builder.Services.AddScoped<IProveedoresDA, ProveedoresDA>();
+builder.Services.AddScoped<IProveedoresFlujo, ProveedoresFlujo>();
 
 // Después de builder.Services.AddControllers();
 

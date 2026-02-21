@@ -87,7 +87,6 @@
     <Build Include="dbo\Tables\Estados_Ciclo.sql" />
     <Build Include="dbo\Tables\Estados_Calidad.sql" />
     <Build Include="dbo\Tables\Empleados.sql" />
-    <Build Include="dbo\Tables\Direcciones_Clientes.sql" />
     <Build Include="dbo\Tables\Detalle_Ventas.sql" />
     <Build Include="dbo\Tables\Config_Sistema.sql" />
     <Build Include="dbo\Tables\Clientes.sql" />
@@ -134,23 +133,23 @@
     <Build Include="dbo\Stored Procedures\AgregarProducto.sql" />
     <Build Include="dbo\Stored Procedures\AgregarCategoria.sql" />
     <Build Include="dbo\Stored Procedures\sp_Ciclo_Cancelar.sql" />
-    <Build Include="dbo\Stored Procedures\sp_DireccionesCliente_Listar.sql" />
-    <Build Include="dbo\Stored Procedures\sp_DireccionCliente_Obtener.sql" />
-    <Build Include="dbo\Stored Procedures\sp_DireccionCliente_Crear.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerEstadoVenta.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerEstadosVenta.sql" />
-    <Build Include="dbo\Stored Procedures\EliminarEstadoVenta.sql" />
-    <Build Include="dbo\Stored Procedures\EditarEstadoVenta.sql" />
-    <Build Include="dbo\Stored Procedures\AgregarEstadoVenta.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerTiposEntrega.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerTipoEntrega.sql" />
-    <Build Include="dbo\Stored Procedures\EliminarTipoEntrega.sql" />
-    <Build Include="dbo\Stored Procedures\EditarTipoEntrega.sql" />
-    <Build Include="dbo\Stored Procedures\AgregarTipoEntrega.sql" />
     <Build Include="dbo\Stored Procedures\sp_InventarioActual_Obtener.sql" />
     <Build Include="dbo\Stored Procedures\sp_InventarioActual_Listar.sql" />
     <Build Include="dbo\Stored Procedures\sp_Inventario_Movimientos_Listar.sql" />
-    <Build Include="dbo\Functions\fn_ValidarCodigoPostalCR.sql" />
-    <Build Include="dbo\Stored Procedures\sp_DireccionCliente_Actualizar.sql" />
+    <Build Include="dbo\Tables\Proveedores_Saldo.sql" />
+    <Build Include="dbo\Tables\Proveedores_Pagos.sql" />
+    <Build Include="dbo\Tables\Proveedores.sql" />
+    <Build Include="dbo\Tables\Pagos_Proveedores.sql" />
+    <Build Include="dbo\Tables\Estados_Empleado.sql" />
+    <Build Include="dbo\Stored Procedures\sp_ProveedorSaldo_Actualizar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedores_PendientesPago.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedores_ListarConSaldo.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_RegistrarPago.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_RegistrarCompraMonto.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_Pagos_ListarPorProveedor.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_Pagos_Listar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_Listar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_Editar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_Crear.sql" />
   </ItemGroup>
 </Project>

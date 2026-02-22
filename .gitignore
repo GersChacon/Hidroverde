@@ -23,3 +23,4 @@ obj/
 UpgradeLog.htm
 *.dbmdl
 *.jfm
+/Backend/Hidroverde.API/API/appsettings.json

@@ -196,5 +196,19 @@
     <Build Include="dbo\Stored Procedures\sp_DireccionCliente_Crear.sql" />
     <Build Include="dbo\Stored Procedures\sp_DireccionCliente_Actualizar.sql" />
     <Build Include="dbo\Stored Procedures\sp_Ciclo_Cosechar.sql" />
+    <Build Include="dbo\Tables\Proveedores_Saldo_1.sql" />
+    <Build Include="dbo\Tables\Proveedores_Pagos_1.sql" />
+    <Build Include="dbo\Tables\Proveedores_1.sql" />
+    <Build Include="dbo\Tables\Pagos_Proveedores_1.sql" />
+    <Build Include="dbo\Stored Procedures\sp_ProveedorSaldo_Actualizar_1.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedores_PendientesPago_1.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedores_ListarConSaldo_1.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_RegistrarPago_1.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_RegistrarCompraMonto_1.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_Pagos_ListarPorProveedor_1.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_Pagos_Listar_1.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_Listar_1.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_Editar_1.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_Crear_1.sql" />
   </ItemGroup>
 </Project>

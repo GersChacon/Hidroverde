@@ -22,9 +22,10 @@
     CONSTRAINT [FK_Ventas_EstadoVenta] FOREIGN KEY ([estado_venta_id]) REFERENCES [dbo].[Estados_Venta] ([estado_venta_id]),
     CONSTRAINT [FK_Ventas_MetodoPago] FOREIGN KEY ([metodo_pago_id]) REFERENCES [dbo].[Metodos_Pago] ([metodo_pago_id]),
     CONSTRAINT [FK_Ventas_TipoEntrega] FOREIGN KEY ([tipo_entrega_id]) REFERENCES [dbo].[Tipos_Entrega] ([tipo_entrega_id]),
-    CONSTRAINT [FK_Ventas_Vendedor] FOREIGN KEY ([vendedor_id]) REFERENCES [dbo].[Empleados] ([empleado_id]),
-    CONSTRAINT [UQ_Ventas_Factura] UNIQUE NONCLUSTERED ([numero_factura] ASC)
+    CONSTRAINT [FK_Ventas_Vendedor] FOREIGN KEY ([vendedor_id]) REFERENCES [dbo].[Empleados] ([empleado_id])
 );
+
+
 
 
 GO
@@ -35,4 +36,9 @@ CREATE NONCLUSTERED INDEX [IX_Ventas_VendedorId]
 GO
 CREATE NONCLUSTERED INDEX [IX_Ventas_ClienteId]
     ON [dbo].[Ventas]([cliente_id] ASC);
+
+
+GO
+CREATE UNIQUE NONCLUSTERED INDEX [UQ_Ventas_Factura]
+    ON [dbo].[Ventas]([numero_factura] ASC) WHERE ([numero_factura] IS NOT NULL);
 

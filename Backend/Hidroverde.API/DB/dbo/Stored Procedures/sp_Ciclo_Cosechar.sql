@@ -1,4 +1,5 @@
 ﻿
+
 CREATE   PROCEDURE [dbo].[sp_Ciclo_Cosechar]
     @ciclo_id INT,
     @ubicacion_id INT,          -- la elige el usuario
@@ -63,8 +64,8 @@ BEGIN
 
         -- Generar lote: CODIGO-PRODUCTO-MMDDYY (ej: LEC-001-012926)
         DECLARE @hoy DATE = CAST(SYSDATETIME() AS DATE);
-        DECLARE @lote NVARCHAR(100) =
-            @codigo_producto + N'-' + FORMAT(@hoy, 'MMddyy');
+DECLARE @lote NVARCHAR(100) =
+    @codigo_producto + N'-' + FORMAT(@hoy, 'MMddyy') + N'-C' + CAST(@ciclo_id AS NVARCHAR(20));
 
         -- 1) Cerrar ciclo (libera capacidad al dejar de ser activo)
         UPDATE dbo.Ciclos
@@ -113,7 +114,10 @@ BEGIN
 
         COMMIT;
 
-        SELECT @inventario_id AS inventario_id_creado, @lote AS lote_generado;
+        SELECT 
+    @inventario_id AS InventarioIdCreado,
+    @lote AS LoteGenerado;
+
     END TRY
     BEGIN CATCH
         IF @@TRANCOUNT > 0 ROLLBACK;

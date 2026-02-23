@@ -37,6 +37,7 @@ builder.Services.AddScoped<ICiclosDA, CiclosDA>();
 builder.Services.AddScoped<ITiposRecursoDA, TiposRecursoDA>();
 builder.Services.AddScoped<IConsumosDA, ConsumosDA>();
 builder.Services.AddScoped<IConsumosDA, ConsumosDA>();
+builder.Services.AddScoped<IConsumosFlujo, ConsumosFlujo>();
 builder.Services.AddScoped<ICiclosFlujo, CiclosFlujo>();
 builder.Services.AddScoped<ITiposRecursoFlujo, TiposRecursoFlujo>();
 builder.Services.AddScoped<IInventarioDA, InventarioDA>();

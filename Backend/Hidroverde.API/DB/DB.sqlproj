@@ -191,6 +191,7 @@
     <Build Include="dbo\Stored Procedures\sp_InventarioActual_Obtener.sql" />
     <Build Include="dbo\Stored Procedures\sp_InventarioActual_Listar.sql" />
     <Build Include="dbo\Stored Procedures\sp_Inventario_Movimientos_Listar.sql" />
+
     <Build Include="dbo\Stored Procedures\sp_DireccionesCliente_Listar.sql" />
     <Build Include="dbo\Stored Procedures\sp_DireccionCliente_Obtener.sql" />
     <Build Include="dbo\Stored Procedures\sp_DireccionCliente_Crear.sql" />
@@ -210,5 +211,24 @@
     <Build Include="dbo\Stored Procedures\sp_Proveedor_Listar_1.sql" />
     <Build Include="dbo\Stored Procedures\sp_Proveedor_Editar_1.sql" />
     <Build Include="dbo\Stored Procedures\sp_Proveedor_Crear_1.sql" />
+
+    <Build Include="dbo\Tables\Proveedores_Saldo.sql" />
+    <Build Include="dbo\Tables\Proveedores_Pagos.sql" />
+    <Build Include="dbo\Tables\Proveedores.sql" />
+    <Build Include="dbo\Tables\Pagos_Proveedores.sql" />
+    <Build Include="dbo\Tables\Estados_Empleado.sql" />
+    <Build Include="dbo\Stored Procedures\sp_ProveedorSaldo_Actualizar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedores_PendientesPago.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedores_ListarConSaldo.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_RegistrarPago.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_RegistrarCompraMonto.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_Pagos_ListarPorProveedor.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_Pagos_Listar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_Listar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_Editar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_Crear.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_RegistrarCompraPorNombre.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Proveedor_ListarActivos.sql" />
+
   </ItemGroup>
 </Project>

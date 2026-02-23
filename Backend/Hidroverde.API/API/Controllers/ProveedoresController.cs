@@ -51,5 +51,26 @@ namespace Hidroverde.API.Controllers
             var data = await _proveedoresFlujo.ListarPagos();
             return Ok(data);
         }
+        // POST: api/proveedores/compras/nombre
+        [HttpPost("compras/nombre")]
+        public async Task<IActionResult> RegistrarCompraPorNombre([FromBody] ProveedorCompraNombreRequest request)
+        {
+            var data = await _proveedoresFlujo.RegistrarCompraPorNombre(request);
+            return Ok(data);
+        }
+        // GET: api/proveedores/lista
+        [HttpGet("lista")]
+        public async Task<IActionResult> ListarActivos()
+        {
+            var data = await _proveedoresFlujo.ListarActivos();
+            return Ok(data);
+        }
+        // POST: api/proveedores
+        [HttpPost]
+        public async Task<IActionResult> CrearProveedor([FromBody] ProveedorCrearRequest request)
+        {
+            var data = await _proveedoresFlujo.CrearProveedor(request);
+            return Ok(data);
+        }
     }
 }

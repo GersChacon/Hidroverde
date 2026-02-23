@@ -1,7 +1,7 @@
 ﻿const API = "/api/proveedores";
 
 export function init() {
-    // ====== Tabs (si existen) ======
+    // ====== Tabs ======
     const tabPend = document.getElementById("tabPendientes");
     const tabPagos = document.getElementById("tabPagos");
     const viewPend = document.getElementById("viewPendientes");
@@ -10,6 +10,15 @@ export function init() {
     // ====== Pendientes ======
     const tbody = document.getElementById("tablaProveedores");
     const empty = document.getElementById("provEmpty");
+
+    // ====== Nuevo pendiente (registrar compra por pagar) ======
+    const btnNuevoPendiente = document.getElementById("btnNuevoPendiente");
+    const modalNuevoPendiente = document.getElementById("modalNuevoPendiente");
+    const selProveedor = document.getElementById("selProveedor");
+    const inputMontoCompra = document.getElementById("inputMontoCompra");
+    const inputComentarioCompra = document.getElementById("inputComentarioCompra");
+    const btnCancelarNuevoPendiente = document.getElementById("btnCancelarNuevoPendiente");
+    const btnConfirmarNuevoPendiente = document.getElementById("btnConfirmarNuevoPendiente");
 
     // ====== Modal pago ======
     const modalPago = document.getElementById("modalPago");
@@ -29,6 +38,15 @@ export function init() {
     const tablaPagos = document.getElementById("tablaPagos");
     const pagosEmpty = document.getElementById("pagosEmpty");
 
+
+    const btnNuevoProveedor = document.getElementById("btnNuevoProveedor");
+    const modalNuevoProveedor = document.getElementById("modalNuevoProveedor");
+    const inpProvNombre = document.getElementById("inpProvNombre");
+    const inpProvDesc = document.getElementById("inpProvDesc");
+    const inpProvCorreo = document.getElementById("inpProvCorreo");
+    const inpProvTel = document.getElementById("inpProvTel");
+    const btnCancelarNuevoProveedor = document.getElementById("btnCancelarNuevoProveedor");
+    const btnConfirmarNuevoProveedor = document.getElementById("btnConfirmarNuevoProveedor");
     // ---------- Helpers ----------
     function fmt(n) {
         const num = Number(n ?? 0);
@@ -42,7 +60,7 @@ export function init() {
     }
 
     function tagEstado(estado) {
-        const cls = (estado || "").toLowerCase(); // parcial/total/pendiente
+        const cls = (estado || "").toLowerCase();
         return `<span class="prov-tag ${cls}">${estado ?? ""}</span>`;
     }
 
@@ -62,6 +80,9 @@ export function init() {
             const t = await resp.text();
             throw new Error(t || `HTTP ${resp.status}`);
         }
+        // si el endpoint devuelve vacío, evitar crash
+        const ct = resp.headers.get("content-type") || "";
+        if (!ct.includes("application/json")) return null;
         return await resp.json();
     }
 
@@ -70,12 +91,13 @@ export function init() {
         if (!tbody) return;
 
         const data = await apiJson(`${API}/pendientes-pago`);
+        const arr = Array.isArray(data) ? data : [];
 
         tbody.innerHTML = "";
-        if (empty) empty.style.display = data.length ? "none" : "block";
-        if (!data.length) return;
+        if (empty) empty.style.display = arr.length ? "none" : "block";
+        if (!arr.length) return;
 
-        data.forEach(p => {
+        arr.forEach(p => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
         <td>${p.nombre ?? ""}</td>
@@ -120,16 +142,11 @@ export function init() {
                 body: JSON.stringify({ proveedorId, montoPago: monto })
             });
 
-            alert((data.estadoPago === "PARCIAL" ? "⚠️ " : "✅ ") + (data.mensaje ?? "Pago registrado"));
-
+            alert((data?.estadoPago === "PARCIAL" ? "⚠️ " : "✅ ") + (data?.mensaje ?? "Pago registrado"));
             if (modalPago) modalPago.style.display = "none";
 
-            // refresca según tab activo
-            if (viewPagos && viewPagos.style.display !== "none") {
-                await cargarPagosGlobal();
-            } else {
-                await cargarPendientes();
-            }
+            if (viewPagos && viewPagos.style.display !== "none") await cargarPagosGlobal();
+            else await cargarPendientes();
         } catch (err) {
             console.error(err);
             alert(err.message || "Error al registrar pago");
@@ -148,13 +165,14 @@ export function init() {
             modalHist.style.display = "flex";
 
             const data = await apiJson(`${API}/${proveedorId}/pagos`);
+            const arr = Array.isArray(data) ? data : [];
 
-            if (!data.length) {
+            if (!arr.length) {
                 if (histEmpty) histEmpty.style.display = "block";
                 return;
             }
 
-            data.forEach(x => {
+            arr.forEach(x => {
                 const tr = document.createElement("tr");
                 tr.innerHTML = `
           <td>${fmtDate(x.fechaPago)}</td>
@@ -176,17 +194,92 @@ export function init() {
         if (modalHist) modalHist.style.display = "none";
     });
 
+    // ---------- Nuevo pendiente: cargar lista de proveedores (por nombre) ----------
+    async function cargarProveedoresSelect() {
+        if (!selProveedor) return;
+
+        // ✅ este endpoint lo creamos: GET /api/proveedores/lista
+        const data = await apiJson(`${API}/lista`);
+        const arr = Array.isArray(data) ? data : [];
+
+        selProveedor.innerHTML = "";
+        arr.forEach(p => {
+            const opt = document.createElement("option");
+            // value = nombre (porque el POST será por nombre)
+            opt.value = p.nombre;
+            opt.textContent = p.nombre;
+            selProveedor.appendChild(opt);
+        });
+    }
+
+    function abrirModalNuevoPendiente() {
+        if (!modalNuevoPendiente) return;
+
+        if (inputMontoCompra) inputMontoCompra.value = "";
+        if (inputComentarioCompra) inputComentarioCompra.value = "";
+
+        modalNuevoPendiente.style.display = "flex";
+        inputMontoCompra?.focus?.();
+    }
+
+    btnNuevoPendiente?.addEventListener("click", async () => {
+        try {
+            await cargarProveedoresSelect();
+            abrirModalNuevoPendiente();
+        } catch (e) {
+            console.error(e);
+            alert("No se pudieron cargar proveedores para seleccionar.");
+        }
+    });
+
+    btnCancelarNuevoPendiente?.addEventListener("click", () => {
+        if (modalNuevoPendiente) modalNuevoPendiente.style.display = "none";
+    });
+
+    btnConfirmarNuevoPendiente?.addEventListener("click", async () => {
+        try {
+            const nombreProveedor = (selProveedor?.value || "").trim();
+            const monto = parseFloat(inputMontoCompra?.value || "0");
+
+            if (!nombreProveedor) return alert("Seleccione un proveedor.");
+            if (!monto || monto <= 0) return alert("Ingrese un monto válido.");
+
+            // ✅ nuevo endpoint por nombre
+            const payload = {
+                nombreProveedor,
+                montoCompra: monto
+                // comentario no lo estás guardando en Proveedores_Saldo,
+                // si luego quieres guardarlo, sería en una tabla de compras.
+            };
+
+            await apiJson(`${API}/compras/nombre`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            if (modalNuevoPendiente) modalNuevoPendiente.style.display = "none";
+            alert("✅ Pendiente registrado");
+
+            await cargarPendientes();
+        } catch (err) {
+            console.error(err);
+            alert(err.message || "Error registrando pendiente.");
+        }
+    });
+
     // ---------- Pagos globales ----------
     async function cargarPagosGlobal() {
         if (!tablaPagos) return;
 
         const data = await apiJson(`${API}/pagos`);
+        const arr = Array.isArray(data) ? data : [];
 
         tablaPagos.innerHTML = "";
-        if (pagosEmpty) pagosEmpty.style.display = data.length ? "none" : "block";
-        if (!data.length) return;
+        if (pagosEmpty) pagosEmpty.style.display = arr.length ? "none" : "block";
+        if (!arr.length) return;
 
-        data.forEach(x => {
+        arr.forEach(x => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
         <td>${fmtDate(x.fechaPago)}</td>
@@ -204,11 +297,8 @@ export function init() {
     // ---------- Events ----------
     document.getElementById("btnRefrescar")?.addEventListener("click", async () => {
         try {
-            if (viewPagos && viewPagos.style.display !== "none") {
-                await cargarPagosGlobal();
-            } else {
-                await cargarPendientes();
-            }
+            if (viewPagos && viewPagos.style.display !== "none") await cargarPagosGlobal();
+            else await cargarPendientes();
         } catch (err) {
             console.error(err);
             alert("Error refrescando. Revisa consola.");
@@ -234,19 +324,67 @@ export function init() {
             alert("Error cargando pagos.");
         }
     });
+    btnNuevoProveedor?.addEventListener("click", () => {
+        inpProvNombre.value = "";
+        inpProvDesc.value = "";
+        inpProvCorreo.value = "";
+        inpProvTel.value = "";
+        modalNuevoProveedor.style.display = "flex";
+        inpProvNombre.focus?.();
+    });
 
-    // Cerrar modal al click fuera (opcional, suave)
+    btnCancelarNuevoProveedor?.addEventListener("click", () => {
+        modalNuevoProveedor.style.display = "none";
+    });
+
+    btnConfirmarNuevoProveedor?.addEventListener("click", async () => {
+        try {
+            const nombre = (inpProvNombre.value || "").trim();
+            if (!nombre) return alert("Nombre es obligatorio.");
+
+            await apiJson(`${API}`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    nombre,
+                    descripcion: (inpProvDesc.value || "").trim() || null,
+                    correo: (inpProvCorreo.value || "").trim() || null,
+                    telefono: (inpProvTel.value || "").trim() || null
+                })
+            });
+
+            modalNuevoProveedor.style.display = "none";
+            alert("✅ Proveedor creado");
+
+            // refrescar dropdown del modal “Nuevo pendiente” si está abierto o si lo usas luego
+            // (opcional) await cargarProveedoresSelect();
+
+            // refrescar tabla pendientes (por si el proveedor nuevo luego tiene compras)
+            await cargarPendientes();
+        } catch (e) {
+            console.error(e);
+            alert(e.message || "Error creando proveedor");
+        }
+    });
+
+    modalNuevoProveedor?.addEventListener("click", (e) => {
+        if (e.target === modalNuevoProveedor) modalNuevoProveedor.style.display = "none";
+    });
+
+    // cerrar modales al click fuera
     modalPago?.addEventListener("click", (e) => {
         if (e.target === modalPago) modalPago.style.display = "none";
     });
     modalHist?.addEventListener("click", (e) => {
         if (e.target === modalHist) modalHist.style.display = "none";
     });
+    modalNuevoPendiente?.addEventListener("click", (e) => {
+        if (e.target === modalNuevoPendiente) modalNuevoPendiente.style.display = "none";
+    });
 
-    // ---------- Init load ----------
+    // ---------- Init ----------
     (async () => {
         try {
-            // Si no hay tabs en tu HTML, simplemente carga pendientes
             if (!tabPend || !tabPagos || !viewPend || !viewPagos) {
                 await cargarPendientes();
                 return;

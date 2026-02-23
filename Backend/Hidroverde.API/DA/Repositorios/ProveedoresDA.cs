@@ -78,5 +78,44 @@ namespace DA
             );
             return resultado;
         }
+        public async Task<ProveedorPagoResponse> RegistrarCompraPorNombre(string nombreProveedor, decimal montoCompra)
+        {
+            var resultado = await _sqlConnection.QueryFirstOrDefaultAsync<ProveedorPagoResponse>(
+                "sp_Proveedor_RegistrarCompraPorNombre",
+                new
+                {
+                    nombre_proveedor = nombreProveedor,
+                    monto_compra = montoCompra
+                },
+                commandType: CommandType.StoredProcedure
+            );
+
+            return resultado!;
+        }
+        public async Task<IEnumerable<ProveedorItemDto>> ListarActivos()
+        {
+            var resultado = await _sqlConnection.QueryAsync<ProveedorItemDto>(
+                "sp_Proveedor_ListarActivos",
+                commandType: CommandType.StoredProcedure
+            );
+
+            return resultado;
+        }
+        public async Task<ProveedorDto> CrearProveedor(ProveedorCrearRequest request)
+        {
+            var result = await _sqlConnection.QueryFirstAsync<ProveedorDto>(
+                "sp_Proveedor_Crear",
+                new
+                {
+                    nombre = request.Nombre,
+                    descripcion = request.Descripcion,
+                    correo = request.Correo,
+                    telefono = request.Telefono
+                },
+                commandType: CommandType.StoredProcedure
+            );
+
+            return result;
+        }
     }
 }

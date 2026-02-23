@@ -14,5 +14,8 @@ namespace Abstracciones.Interfaces.Flujo
         Task<ProveedorPagoResponse> RegistrarPago(ProveedorPagoRequest request);
         Task<IEnumerable<ProveedorPagoHistorialDto>> ListarPagosPorProveedor(int proveedorId);
         Task<IEnumerable<ProveedorPagoHistorialDto>> ListarPagos();
+        Task<ProveedorPagoResponse> RegistrarCompraPorNombre(ProveedorCompraNombreRequest request);
+        Task<IEnumerable<ProveedorItemDto>> ListarActivos();
+        Task<ProveedorDto> CrearProveedor(ProveedorCrearRequest request);
     }
 }

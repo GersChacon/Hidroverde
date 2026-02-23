@@ -38,5 +38,17 @@ namespace Flujo
         {
             return await _proveedoresDA.ListarPagos();
         }
+        public async Task<ProveedorPagoResponse> RegistrarCompraPorNombre(ProveedorCompraNombreRequest request)
+        {
+            return await _proveedoresDA.RegistrarCompraPorNombre(request.NombreProveedor, request.MontoCompra);
+        }
+        public async Task<IEnumerable<ProveedorItemDto>> ListarActivos()
+        {
+            return await _proveedoresDA.ListarActivos();
+        }
+        public async Task<ProveedorDto> CrearProveedor(ProveedorCrearRequest request)
+        {
+            return await _proveedoresDA.CrearProveedor(request);
+        }
     }
 }

@@ -10,6 +10,8 @@
         <div class="prov-tableWrap">
             <table class="prov-table">
                 <thead>
+                    <button id="btnNuevoPendiente" type="button">Nuevo pendiente</button>
+                    <button id="btnNuevoProveedor" type="button">Nuevo proveedor</button>
                     <tr>
                         <th>Proveedor</th>
                         <th>Total compras</th>
@@ -100,6 +102,50 @@
 
         <div id="histEmpty" class="prov-empty" style="display:none;">
             No hay pagos registrados para este proveedor.
+        </div>
+    </div>
+</div>
+<!-- Modal Nuevo Pendiente (Registrar compra) -->
+<div id="modalNuevoPendiente" class="prov-modal" style="display:none;">
+    <div class="prov-modal-content">
+        <h3>Registrar pago pendiente</h3>
+
+        <div class="prov-form">
+            <label>Proveedor</label>
+            <select id="selProveedor"></select>
+
+            <label>Monto de compra</label>
+            <input type="number" id="inputMontoCompra" step="0.01" min="0" />
+
+            <label>Comentario (opcional)</label>
+            <input type="text" id="inputComentarioCompra" maxlength="200" />
+
+            <div class="prov-modal-actions">
+                <button id="btnCancelarNuevoPendiente" type="button">Cancelar</button>
+                <button id="btnConfirmarNuevoPendiente" type="button" class="btn-pagar">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="modalNuevoProveedor" class="prov-modal" style="display:none;">
+    <div class="prov-modal-content">
+        <h3>Crear proveedor</h3>
+
+        <label>Nombre *</label>
+        <input id="inpProvNombre" type="text" maxlength="200" />
+
+        <label>Descripción</label>
+        <input id="inpProvDesc" type="text" maxlength="500" />
+
+        <label>Correo</label>
+        <input id="inpProvCorreo" type="email" maxlength="200" />
+
+        <label>Teléfono</label>
+        <input id="inpProvTel" type="text" maxlength="50" />
+
+        <div class="prov-modal-actions">
+            <button id="btnCancelarNuevoProveedor" type="button">Cancelar</button>
+            <button id="btnConfirmarNuevoProveedor" type="button" class="btn-pagar">Guardar</button>
         </div>
     </div>
 </div>

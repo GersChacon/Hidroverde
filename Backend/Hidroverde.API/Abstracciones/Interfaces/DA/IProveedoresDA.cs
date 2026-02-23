@@ -11,5 +11,8 @@ namespace Abstracciones.Interfaces.DA
         Task<ProveedorPagoResponse> RegistrarPago(int proveedorId, decimal montoPago);
         Task<IEnumerable<ProveedorPagoHistorialDto>> ListarPagosPorProveedor(int proveedorId);
         Task<IEnumerable<ProveedorPagoHistorialDto>> ListarPagos();
+        Task<ProveedorPagoResponse> RegistrarCompraPorNombre(string nombreProveedor, decimal montoCompra);
+        Task<IEnumerable<ProveedorItemDto>> ListarActivos();
+        Task<ProveedorDto> CrearProveedor(ProveedorCrearRequest request);
     }
 }

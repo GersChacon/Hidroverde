@@ -1,0 +1,204 @@
+<section class="page page-ventas">
+
+    <!-- ===================== CABECERA ===================== -->
+    <header class="vt-header">
+        <div>
+            <h1 class="vt-title">Ventas</h1>
+            <p class="vt-subtitle">Gestiona pedidos, estados y pagos</p>
+        </div>
+        <div class="vt-header-actions">
+            <button class="btn btn-primary" id="btnNuevaVenta">+ Nueva venta</button>
+            <button class="btn" id="btnRefrescarVentas">Refrescar</button>
+        </div>
+    </header>
+
+    <!-- ===================== TABLA DE VENTAS ===================== -->
+    <div class="vt-card">
+        <table class="vt-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Cliente</th>
+                    <th>Fecha</th>
+                    <th>Estado venta</th>
+                    <th>Estado pago</th>
+                    <th>Factura</th>
+                    <th class="th-right">Total</th>
+                    <th class="th-right">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tblVentasBody">
+                <tr><td colspan="8" class="vt-muted">Cargando...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ===================== MODAL — NUEVA VENTA ===================== -->
+    <div class="modal" id="modalNuevaVenta" hidden aria-hidden="true">
+        <div class="modal__backdrop" id="backdropNuevaVenta"></div>
+        <div class="modal__content modal__content--wide">
+            <div class="modal__header">
+                <h2 class="modalTitle">Nueva venta</h2>
+                <button class="icon-btn" id="btnCerrarNuevaVenta">✕</button>
+            </div>
+            <div class="modal__body">
+                <!-- Fila 1: cliente + dirección -->
+                <div class="vt-grid3">
+                    <label class="field">
+                        <span>ClienteId *</span>
+                        <input type="number" id="nvClienteId" min="1" placeholder="Ej: 1">
+                    </label>
+                    <label class="field">
+                        <span>DireccionEntregaId *</span>
+                        <input type="number" id="nvDireccionId" min="1" placeholder="Ej: 1">
+                    </label>
+                    <label class="field">
+                        <span>VendedorId *</span>
+                        <input type="number" id="nvVendedorId" min="1" placeholder="Ej: 1">
+                    </label>
+                </div>
+                <!-- Fila 2: estados y método -->
+                <div class="vt-grid3" style="margin-top:10px;">
+                    <label class="field">
+                        <span>EstadoVentaId *</span>
+                        <input type="number" id="nvEstadoVentaId" min="1" value="1">
+                    </label>
+                    <label class="field">
+                        <span>EstadoPagoId *</span>
+                        <input type="number" id="nvEstadoPagoId" min="1" value="1">
+                    </label>
+                    <label class="field">
+                        <span>TipoEntregaId *</span>
+                        <input type="number" id="nvTipoEntregaId" min="1" value="1">
+                    </label>
+                </div>
+                <!-- Fila 3: extras -->
+                <div class="vt-grid3" style="margin-top:10px;">
+                    <label class="field">
+                        <span>MetodoPagoId</span>
+                        <input type="number" id="nvMetodoPagoId" min="1" placeholder="Opcional">
+                    </label>
+                    <label class="field">
+                        <span>Fecha entrega</span>
+                        <input type="datetime-local" id="nvFechaEntrega">
+                    </label>
+                    <label class="field">
+                        <span>IVA (monto ₡)</span>
+                        <input type="number" id="nvIvaMonto" min="0" step="0.01" value="0">
+                    </label>
+                </div>
+                <label class="field" style="margin-top:10px;">
+                    <span>Notas</span>
+                    <textarea id="nvNotas" rows="2" style="width:100%;"></textarea>
+                </label>
+
+                <!-- DETALLE -->
+                <div class="vt-detalle-header">
+                    <h3 style="margin:0;">Detalle de productos</h3>
+                    <button class="btn" type="button" id="btnAgregarLinea">+ Agregar línea</button>
+                </div>
+                <table class="vt-table vt-table--detalle" style="margin-top:8px;">
+                    <thead>
+                        <tr>
+                            <th>InventarioId</th>
+                            <th>ProductoId</th>
+                            <th>Cantidad</th>
+                            <th>Precio unit.</th>
+                            <th>Descuento unit.</th>
+                            <th>Notas</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tblDetalleNueva"></tbody>
+                </table>
+
+                <div class="vt-totales" id="nvTotalesPreview">
+                    <span>Subtotal: <strong id="nvSubtotal">₡0.00</strong></span>
+                    <span>IVA: <strong id="nvIvaPreview">₡0.00</strong></span>
+                    <span>Total: <strong id="nvTotal">₡0.00</strong></span>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn" id="btnCancelarNuevaVenta">Cancelar</button>
+                <button class="btn btn-primary" id="btnGuardarVenta">Guardar venta</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL — DETALLE VENTA ===================== -->
+    <div class="modal" id="modalDetalleVenta" hidden aria-hidden="true">
+        <div class="modal__backdrop" id="backdropDetalleVenta"></div>
+        <div class="modal__content modal__content--wide">
+            <div class="modal__header">
+                <h2 class="modalTitle" id="detalleVentaTitle">Venta #</h2>
+                <button class="icon-btn" id="btnCerrarDetalleVenta">✕</button>
+            </div>
+            <div class="modal__body" id="detalleVentaBody">
+                <div class="vt-muted">Cargando...</div>
+            </div>
+            <div class="modal__footer">
+                <!-- Botones de acciones sobre la venta cargada -->
+                <button class="btn" id="btnCambiarEstado">Cambiar estado</button>
+                <button class="btn" id="btnConfirmarPago">Confirmar pago</button>
+                <button class="btn danger" id="btnCancelarVenta">Cancelar venta</button>
+                <span style="flex:1;"></span>
+                <button class="btn btn-primary" id="btnDescargarFactura">⬇ Descargar factura PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL — CAMBIAR ESTADO ===================== -->
+    <div class="modal" id="modalCambiarEstado" hidden aria-hidden="true">
+        <div class="modal__backdrop" id="backdropCambiarEstado"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h2>Cambiar estado de venta</h2>
+                <button class="icon-btn" id="btnCerrarCambiarEstado">✕</button>
+            </div>
+            <div class="modal__body">
+                <label class="field">
+                    <span>Nuevo EstadoVentaId *</span>
+                    <input type="number" id="ceEstadoVentaId" min="1" placeholder="Ej: 2">
+                </label>
+                <label class="field" style="margin-top:10px;">
+                    <span>Notas</span>
+                    <textarea id="ceNotas" rows="2" style="width:100%;"></textarea>
+                </label>
+            </div>
+            <div class="modal__footer">
+                <button class="btn" id="btnCancelarCambiarEstado">Cancelar</button>
+                <button class="btn btn-primary" id="btnConfirmarCambiarEstado">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== MODAL — CONFIRMAR PAGO ===================== -->
+    <div class="modal" id="modalConfirmarPago" hidden aria-hidden="true">
+        <div class="modal__backdrop" id="backdropConfirmarPago"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h2>Confirmar pago</h2>
+                <button class="icon-btn" id="btnCerrarConfirmarPago">✕</button>
+            </div>
+            <div class="modal__body">
+                <label class="field">
+                    <span>EstadoPagoId *</span>
+                    <input type="number" id="cpEstadoPagoId" min="1" placeholder="Ej: 2">
+                </label>
+                <label class="field" style="margin-top:10px;">
+                    <span>MetodoPagoId *</span>
+                    <input type="number" id="cpMetodoPagoId" min="1" placeholder="Ej: 1">
+                </label>
+                <label class="field" style="margin-top:10px;">
+                    <span>Notas</span>
+                    <textarea id="cpNotas" rows="2" style="width:100%;"></textarea>
+                </label>
+            </div>
+            <div class="modal__footer">
+                <button class="btn" id="btnCancelarConfirmarPago">Cancelar</button>
+                <button class="btn btn-primary" id="btnGuardarConfirmarPago">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+</section>

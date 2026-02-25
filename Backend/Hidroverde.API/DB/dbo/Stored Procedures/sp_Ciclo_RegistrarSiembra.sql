@@ -54,5 +54,5 @@ BEGIN
         @lote_semilla, @notas
     );
 
-    SELECT SCOPE_IDENTITY() AS ciclo_id_creado;
+    SELECT CAST(SCOPE_IDENTITY() AS INT) AS ciclo_id_creado;
 END

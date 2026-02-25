@@ -1,0 +1,281 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Checklist Diario - Hidroverde</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+    <style>
+        /* Additional styles for evidence modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 400px;
+            max-width: 90%;
+        }
+        .close {
+            float: right;
+            font-size: 28px;
+            cursor: pointer;
+        }
+        .employee-selector {
+            margin-bottom: 20px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+        .employee-selector label {
+            margin-right: 10px;
+        }
+        .btn-upload {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-upload:hover {
+            background-color: #45a049;
+        }
+        .btn-complete {
+            background-color: #008CBA;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-complete:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="is-preload">
+    <div id="wrapper">
+        <header id="header">
+            <a href="index.html" class="logo">Hidroverde</a>
+        </header>
+
+        <!-- Navigation (same as other pages) -->
+        <nav id="nav">
+            <ul class="links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="registroMovimientos.html">Registro De Movimientos</a></li>
+                <li><a href="gestionInventario.html">Gestión de Inventario</a></li>
+                <li><a href="produccion.html">Produccion</a></li>
+                <li><a href="PedidosInternos.html">Pedidos Internos</a></li>
+                <li><a href="controlDeLotes.html">Control de Lotes</a></li>
+                <li><a href="reportes-alertas.html">Reportes y Alertas</a></li>
+                <li><a href="reportes.html">Reportes</a></li>
+                <li><a href="UsuarioYRoles.html">Usuario y roles</a></li>
+                <!-- NEW LINKS -->
+                <li class="active"><a href="checklist.html">Checklist Diario</a></li>
+                <li><a href="compliance-history.html">Historial de Cumplimiento</a></li>
+            </ul>
+        </nav>
+
+        <div id="main">
+            <section class="post">
+                <header class="major">
+                    <h1>Checklist Diario</h1>
+                    <p>Tareas operativas del día</p>
+                </header>
+
+                <!-- Employee selector (since auth not implemented) -->
+                <div class="employee-selector">
+                    <label for="empleadoId">Empleado ID:</label>
+                    <input type="number" id="empleadoId" value="1" min="1" style="width: 80px;">
+                    <button id="refreshTasks" class="button primary small">Actualizar</button>
+                </div>
+
+                <div class="table-wrapper">
+                    <table id="checklistTable">
+                        <thead>
+                            <tr>
+                                <th>Tarea</th>
+                                <th>Descripción</th>
+                                <th>Responsable</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Tasks will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- Modal for evidence upload -->
+        <div id="evidenceModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h3>Subir evidencia</h3>
+                <input type="hidden" id="evidenceTaskId">
+                <label for="evidenceFile">Archivo:</label>
+                <input type="file" id="evidenceFile" accept=".jpg,.jpeg,.png,.pdf,.docx"><br><br>
+                <label for="evidenceNotes">Notas (opcional):</label>
+                <textarea id="evidenceNotes" rows="2" style="width:100%"></textarea><br><br>
+                <button id="uploadEvidenceBtn" class="button primary">Subir</button>
+            </div>
+        </div>
+
+        <footer id="footer">
+            <!-- same footer as other pages -->
+            <section class="split contact">
+                <section class="alt"><h3>Dirección</h3><p>Heredia | Costa Rica</p></section>
+            </section>
+        </footer>
+        <div id="copyright"><ul><li>todos los derechos reservados a &copy; hidroverde.com</li></ul></div>
+    </div>
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.scrollex.min.js"></script>
+    <script src="assets/js/jquery.scrolly.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+
+    <script>
+        // Global employee ID
+        let currentEmpleadoId = 1;
+
+        // Load tasks on page load
+        $(document).ready(function() {
+            loadTasks();
+
+            // Refresh button
+            $('#refreshTasks').click(loadTasks);
+
+            // Modal close
+            $('.close').click(function() {
+                $('#evidenceModal').hide();
+            });
+
+            // Upload evidence
+            $('#uploadEvidenceBtn').click(function() {
+                uploadEvidence();
+            });
+        });
+
+        function loadTasks() {
+            const empleadoId = $('#empleadoId').val();
+            currentEmpleadoId = empleadoId;
+
+            $.ajax({
+                url: '/api/checklist/today',
+                method: 'GET',
+                headers: { 'X-Empleado-Id': empleadoId },
+                success: function(tasks) {
+                    renderTasks(tasks);
+                },
+                error: function(xhr) {
+                    alert('Error al cargar tareas: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function renderTasks(tasks) {
+            const tbody = $('#checklistTable tbody');
+            tbody.empty();
+
+            if (!tasks || tasks.length === 0) {
+                tbody.append('<tr><td colspan="5" style="text-align:center">No hay tareas para hoy.</td></tr>');
+                return;
+            }
+
+            tasks.forEach(task => {
+                const row = $('<tr>');
+                row.append(`<td>${task.taskId}</td>`);
+                row.append(`<td>${task.description}</td>`);
+                row.append(`<td>${task.responsible}</td>`);
+                row.append(`<td>${task.isCompleted ? 'Completada' : 'Pendiente'}</td>`);
+
+                const actions = $('<td>');
+                if (!task.isCompleted) {
+                    const completeBtn = $('<button class="btn-complete">Completar</button>');
+                    completeBtn.click(() => markComplete(task.taskId));
+                    actions.append(completeBtn);
+                }
+                const uploadBtn = $('<button class="btn-upload">Subir evidencia</button>');
+                uploadBtn.click(() => openEvidenceModal(task.taskId));
+                actions.append(' ').append(uploadBtn);
+
+                row.append(actions);
+                tbody.append(row);
+            });
+        }
+
+        function markComplete(taskId) {
+            if (!confirm('¿Marcar esta tarea como completada?')) return;
+
+            $.ajax({
+                url: `/api/checklist/task/${taskId}/complete`,
+                method: 'PATCH',
+                headers: { 'X-Empleado-Id': currentEmpleadoId },
+                success: function() {
+                    alert('Tarea marcada como completada.');
+                    loadTasks(); // refresh list
+                },
+                error: function(xhr) {
+                    alert('Error: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function openEvidenceModal(taskId) {
+            $('#evidenceTaskId').val(taskId);
+            $('#evidenceFile').val('');
+            $('#evidenceNotes').val('');
+            $('#evidenceModal').show();
+        }
+
+        function uploadEvidence() {
+            const taskId = $('#evidenceTaskId').val();
+            const file = $('#evidenceFile')[0].files[0];
+            if (!file) {
+                alert('Seleccione un archivo.');
+                return;
+            }
+            const notes = $('#evidenceNotes').val();
+
+            const formData = new FormData();
+            formData.append('file', file);
+            if (notes) formData.append('notes', notes);
+
+            $.ajax({
+                url: `/api/evidence/upload?taskId=${taskId}`,
+                method: 'POST',
+                headers: { 'X-Empleado-Id': currentEmpleadoId },
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(resp) {
+                    alert('Evidencia subida. ID: ' + resp.evidenceId);
+                    $('#evidenceModal').hide();
+                },
+                error: function(xhr) {
+                    alert('Error: ' + xhr.responseText);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

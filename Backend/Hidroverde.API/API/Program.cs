@@ -1,11 +1,8 @@
 ﻿using Abstracciones.Interfaces.DA;
 using Abstracciones.Interfaces.Flujo;
+using Flujo;
 using DA;
 using DA.Repositorios;
-using Abstracciones.Interfaces.DA;
-using Abstracciones.Interfaces.Flujo;
-using DA;
-using Flujo;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,38 +25,26 @@ builder.Services.AddScoped<IProductoFlujo, ProductoFlujo>();
 builder.Services.AddScoped<IProductoDA, ProductoDA>();
 builder.Services.AddScoped<IAlertasDA, AlertasDA>();
 builder.Services.AddScoped<IAlertasFlujo, AlertasFlujo>();
-builder.Services.AddScoped<IEstadoVentaDA, EstadoVentaDA>();
-builder.Services.AddScoped<IEstadoVentaFlujo, EstadoVentaFlujo>();
-builder.Services.AddScoped<ITipoEntregaDA, TipoEntregaDA>();
-builder.Services.AddScoped<ITipoEntregaFlujo, TipoEntregaFlujo>();
+builder.Services.AddScoped<IRepositorioDapper, RepositorioDapper>();
 
 builder.Services.AddScoped<ICiclosDA, CiclosDA>();
 builder.Services.AddScoped<ITiposRecursoDA, TiposRecursoDA>();
 builder.Services.AddScoped<IConsumosDA, ConsumosDA>();
 builder.Services.AddScoped<IConsumosDA, ConsumosDA>();
-builder.Services.AddScoped<IConsumosFlujo, ConsumosFlujo>();
+
 builder.Services.AddScoped<ICiclosFlujo, CiclosFlujo>();
 builder.Services.AddScoped<ITiposRecursoFlujo, TiposRecursoFlujo>();
-builder.Services.AddScoped<IInventarioDA, InventarioDA>();
-builder.Services.AddScoped<IInventarioFlujo, InventarioFlujo>();
-builder.Services.AddScoped<IProveedoresDA, ProveedoresDA>();
-builder.Services.AddScoped<IProveedoresFlujo, ProveedoresFlujo>();
-builder.Services.AddScoped<IMetodoPagoDA, MetodoPagoDA>();
-builder.Services.AddScoped<IMetodoPagoFlujo, MetodoPagoFlujo>();
-builder.Services.AddScoped<IRolDA, RolDA>();
-builder.Services.AddScoped<IRolFlujo, RolFlujo>();
-builder.Services.AddScoped<ITipoClienteDA, TipoClienteDA>();
-builder.Services.AddScoped<ITipoClienteFlujo, TipoClienteFlujo>();
-builder.Services.AddScoped<IEstadoPagoDA, EstadoPagoDA>();
-builder.Services.AddScoped<IEstadoPagoFlujo, EstadoPagoFlujo>();
-builder.Services.AddScoped<IEmpleadoDA, EmpleadoDA>();
-builder.Services.AddScoped<IEmpleadoFlujo, EmpleadoFlujo>();
-builder.Services.AddScoped<IClienteDA, ClienteDA>();
+builder.Services.AddScoped<IConsumosFlujo, ConsumosFlujo>();
+builder.Services.AddScoped<IChecklistFlujo, ChecklistFlujo>();
+builder.Services.AddScoped<IChecklistDA, ChecklistDA>();
+builder.Services.AddScoped<IEvidenceFlujo, EvidenceFlujo>();
+builder.Services.AddScoped<IEvidenceDA, EvidenceDA>();
+builder.Services.AddScoped<IHistoryFlujo, HistoryFlujo>();
+builder.Services.AddScoped<IHistoryDA, HistoryDA>();
 builder.Services.AddScoped<IClienteFlujo, ClienteFlujo>();
-builder.Services.AddScoped<IVentaDA, VentaDA>();
-builder.Services.AddScoped<IVentaFlujo, VentaFlujo>();
-builder.Services.AddScoped<IProveedoresFlujo, ProveedoresFlujo>();
-
+builder.Services.AddScoped<IClienteDA, ClienteDA>();
+builder.Services.AddScoped<IKpiFlujo, KpiFlujo>();
+builder.Services.AddScoped<IKpiDA, KpiDA>();
 // Después de builder.Services.AddControllers();
 
 Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true; // <-- aquí

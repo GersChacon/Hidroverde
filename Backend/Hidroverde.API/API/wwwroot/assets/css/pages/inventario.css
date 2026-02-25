@@ -1,0 +1,27 @@
+﻿/* SOLO aplica a modales con modal--overlay */
+.modal.modal--overlay[hidden] {
+    display: none !important;
+}
+
+.modal.modal--overlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(0,0,0,.55);
+    z-index: 9999;
+}
+
+.modalCard.modalCard--dialog {
+    width: min(760px, 100%);
+    max-height: 90vh;
+    overflow: auto;
+    border-radius: 16px;
+}
+.modalCard.modalCard--dialog {
+    background: #fff; /* o var(--card) si usás variables */
+    padding: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.35);
+}

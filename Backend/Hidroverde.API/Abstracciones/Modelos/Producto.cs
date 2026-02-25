@@ -4,6 +4,7 @@
     {
         public string Codigo { get; set; }
         public int VariedadId { get; set; }
+        public int UnidadId { get; set; }
         public string NombreProducto { get; set; }
         public string? Descripcion { get; set; }
         public decimal PrecioBase { get; set; }

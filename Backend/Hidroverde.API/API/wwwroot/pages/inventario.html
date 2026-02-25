@@ -1,7 +1,7 @@
 ﻿<div class="card">
     <div class="row">
         <h2>Inventario · Productos</h2>
-        <span class="muted">API: /api/producto</span>
+        <span class="muted">API: /api/Producto</span>
 
         <button class="btn green" id="btnNuevoProducto">+ Nuevo producto</button>
         <button class="btn" id="btnRefrescarProductos">Refrescar</button>
@@ -28,11 +28,10 @@
 </div>
 
 <!-- Modal -->
-<!-- Modal: Nuevo Producto -->
-<div class="modal" id="modalProducto" hidden>
-    <div class="modalCard">
+<div class="modal modal--overlay" id="modalProducto" hidden>
+    <div class="modalCard modalCard--dialog">
         <div class="row">
-            <h3>Nuevo producto</h3>
+            <h3 class="modalTitle">Nuevo producto</h3>
             <button class="btn" id="btnCerrarProducto">Cerrar</button>
         </div>
 

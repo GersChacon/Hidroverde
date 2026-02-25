@@ -42,7 +42,10 @@ namespace DA
             var id = await _conn.ExecuteScalarAsync<int>(sp, p, commandType: CommandType.StoredProcedure);
             return id;
         }
-        public async Task<CosecharCicloResponse> CosecharAsync(int cicloId, CosecharCicloRequest request, int usuarioId)
+        public async Task<CosecharCicloResponse> CosecharAsync(
+    int cicloId,
+    CosecharCicloRequest request,
+    int usuarioId)
         {
             const string sp = "dbo.sp_Ciclo_Cosechar";
 
@@ -51,16 +54,14 @@ namespace DA
             p.Add("@ubicacion_id", request.UbicacionId, DbType.Int32);
             p.Add("@estado_calidad_codigo", request.EstadoCalidadCodigo, DbType.String);
             p.Add("@usuario_id", usuarioId, DbType.Int32);
-            p.Add("@motivo", (object?)request.Motivo ?? DBNull.Value, DbType.String);
+            p.Add("@motivo", request.Motivo, DbType.String);
 
-            // El SP devuelve: inventario_id_creado, lote_generado
-            var row = await _conn.QueryFirstAsync(sp, p, commandType: CommandType.StoredProcedure);
-
-            return new CosecharCicloResponse
-            {
-                InventarioIdCreado = (int)row.inventario_id_creado,
-                LoteGenerado = (string)row.lote_generado
-            };
+            // 👇 IMPORTANTE: usamos QuerySingleAsync<T>
+            return await _conn.QuerySingleAsync<CosecharCicloResponse>(
+                sp,
+                p,
+                commandType: CommandType.StoredProcedure
+            );
         }
         public async Task<int> CancelarAsync(int cicloId, int usuarioId, string? motivo)
         {

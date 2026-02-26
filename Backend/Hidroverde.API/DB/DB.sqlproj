@@ -200,7 +200,6 @@
     <Build Include="dbo\Tables\Proveedores_Pagos.sql" />
     <Build Include="dbo\Tables\Proveedores.sql" />
     <Build Include="dbo\Tables\Pagos_Proveedores.sql" />
-    <Build Include="dbo\Tables\Estados_Empleado.sql" />
     <Build Include="dbo\Stored Procedures\sp_ProveedorSaldo_Actualizar.sql" />
     <Build Include="dbo\Stored Procedures\sp_Proveedores_PendientesPago.sql" />
     <Build Include="dbo\Stored Procedures\sp_Proveedores_ListarConSaldo.sql" />
@@ -213,5 +212,12 @@
     <Build Include="dbo\Stored Procedures\sp_Proveedor_Crear.sql" />
     <Build Include="dbo\Stored Procedures\sp_Proveedor_RegistrarCompraPorNombre.sql" />
     <Build Include="dbo\Stored Procedures\sp_Proveedor_ListarActivos.sql" />
+    <Build Include="dbo\Tables\Plagas_Registro.sql" />
+    <Build Include="dbo\Tables\Plagas.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Plagas_Registrar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Plagas_Listar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Plagas_Grafica_Diaria.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Plagas_Grafica.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Plagas_Catalogo_Listar.sql" />
   </ItemGroup>
 </Project>

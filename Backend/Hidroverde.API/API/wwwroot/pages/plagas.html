@@ -1,0 +1,101 @@
+﻿<section class="page">
+    <div class="page-header">
+        <h2>Plagas</h2>
+        <button class="btn primary" id="btnRegistrarPlaga">Registrar plaga</button>
+    </div>
+
+    <div class="filters">
+        <div class="field">
+            <label>Desde</label>
+            <input type="date" id="fDesde" />
+        </div>
+        <div class="field">
+            <label>Hasta</label>
+            <input type="date" id="fHasta" />
+        </div>
+        <div class="field">
+            <label>Plaga</label>
+            <select id="fPlaga">
+                <option value="">Todas</option>
+            </select>
+        </div>
+        <div class="field">
+            <label>Agrupar por</label>
+            <select id="fAgrupacion">
+                <option value="DIA" selected>Diario</option>
+                <option value="MES">Mensual</option>
+                <option value="ANIO">Anual</option>
+            </select>
+        </div>
+        <div class="filter-actions">
+            <button class="btn" id="btnAplicar">Aplicar</button>
+            <button class="btn" id="btnLimpiar">Limpiar</button>
+            <button class="btn" id="btnRefrescar">Refrescar</button>
+        </div>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Histórico</h3>
+            <div class="table-wrap">
+                <table class="tabla" id="tblPlagas">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Plaga</th>
+                            <th>Cantidad</th>
+                            <th>Comentario</th>
+                            <th>Usuario</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 id="chartTitle">Incidencias (Diario)</h3>
+            <div class="chart-wrap">
+                <canvas id="chartPlagas"></canvas>
+            </div>
+            <p class="hint">Se actualiza automáticamente al registrar.</p>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-backdrop hidden" id="modalPlaga">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Registrar plaga</h3>
+                <button class="icon-btn" id="btnCerrarModal">✕</button>
+            </div>
+
+            <form id="frmPlaga" class="modal-body">
+                <div class="field">
+                    <label>Fecha hallazgo</label>
+                    <input type="date" id="mFecha" required />
+                </div>
+
+                <div class="field">
+                    <label>Plaga</label>
+                    <select id="mPlaga" required></select>
+                </div>
+
+                <div class="field">
+                    <label>Cantidad</label>
+                    <input type="number" id="mCantidad" min="1" value="1" />
+                </div>
+
+                <div class="field">
+                    <label>Comentario</label>
+                    <textarea id="mComentario" rows="3" placeholder="Opcional"></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn" id="btnCancelar">Cancelar</button>
+                    <button type="submit" class="btn primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

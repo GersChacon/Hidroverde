@@ -59,6 +59,8 @@ builder.Services.AddScoped<IClienteFlujo, ClienteFlujo>();
 builder.Services.AddScoped<IVentaDA, VentaDA>();
 builder.Services.AddScoped<IVentaFlujo, VentaFlujo>();
 builder.Services.AddScoped<IProveedoresFlujo, ProveedoresFlujo>();
+builder.Services.AddScoped<IPlagasDA, PlagasDA>();
+builder.Services.AddScoped<IPlagasFlujo, PlagasFlujo>();
 
 // Después de builder.Services.AddControllers();
 

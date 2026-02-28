@@ -14,9 +14,11 @@ BEGIN
         r.cantidad,
         r.comentario,
         r.empleado_id,
+        e.nombre + ' ' + e.apellidos AS empleado_nombre,
         r.fecha_registro
     FROM dbo.Plagas_Registro r
     INNER JOIN dbo.Plagas p ON p.plaga_id = r.plaga_id
+    LEFT JOIN dbo.Empleados e ON e.empleado_id = r.empleado_id
     WHERE
         (@fecha_desde IS NULL OR r.fecha_hallazgo >= @fecha_desde)
         AND (@fecha_hasta IS NULL OR r.fecha_hallazgo <= @fecha_hasta)

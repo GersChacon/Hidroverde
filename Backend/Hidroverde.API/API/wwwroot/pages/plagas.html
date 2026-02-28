@@ -1,51 +1,61 @@
-﻿<section class="page">
+<section class="page">
+
     <div class="page-header">
-        <h2>Plagas</h2>
-        <button class="btn primary" id="btnRegistrarPlaga">Registrar plaga</button>
+        <div>
+            <h1 class="page-title">Plagas</h1>
+            <p class="page-subtitle">Registro y seguimiento de incidencias</p>
+        </div>
+        <div class="page-actions">
+            <button class="btn primary" id="btnRegistrarPlaga">+ Registrar plaga</button>
+        </div>
     </div>
 
-    <div class="filters">
+    <!-- Filtros -->
+    <div class="filter-bar">
         <div class="field">
-            <label>Desde</label>
+            <span>Desde</span>
             <input type="date" id="fDesde" />
         </div>
         <div class="field">
-            <label>Hasta</label>
+            <span>Hasta</span>
             <input type="date" id="fHasta" />
         </div>
         <div class="field">
-            <label>Plaga</label>
+            <span>Plaga</span>
             <select id="fPlaga">
                 <option value="">Todas</option>
             </select>
         </div>
         <div class="field">
-            <label>Agrupar por</label>
+            <span>Agrupar por</span>
             <select id="fAgrupacion">
                 <option value="DIA" selected>Diario</option>
                 <option value="MES">Mensual</option>
                 <option value="ANIO">Anual</option>
             </select>
         </div>
-        <div class="filter-actions">
+        <div class="filter-bar-actions">
             <button class="btn" id="btnAplicar">Aplicar</button>
             <button class="btn" id="btnLimpiar">Limpiar</button>
             <button class="btn" id="btnRefrescar">Refrescar</button>
         </div>
     </div>
 
-    <div class="grid">
-        <div class="card">
-            <h3>Histórico</h3>
+    <!-- Contenido principal -->
+    <div class="plagas-grid">
+
+        <!-- Tabla histórico -->
+        <div class="content-card">
+            <h3 class="content-card-title">Histórico de registros</h3>
             <div class="table-wrap">
-                <table class="tabla" id="tblPlagas">
+                <table class="data-table" id="tblPlagas">
                     <thead>
                         <tr>
                             <th>Fecha</th>
                             <th>Plaga</th>
                             <th>Cantidad</th>
                             <th>Comentario</th>
-                            <th>Usuario</th>
+                            <th>Registrado por</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -53,49 +63,49 @@
             </div>
         </div>
 
-        <div class="card">
-            <h3 id="chartTitle">Incidencias (Diario)</h3>
-            <div class="chart-wrap">
-                <canvas id="chartPlagas"></canvas>
+        <!-- Gráfica -->
+        <div class="content-card">
+            <h3 class="content-card-title" id="chartTitle">Incidencias (Diario)</h3>
+            <div class="content-card-body">
+                <div class="chart-wrap">
+                    <canvas id="chartPlagas"></canvas>
+                </div>
+                <p class="hint">Se actualiza al aplicar filtros o registrar.</p>
             </div>
-            <p class="hint">Se actualiza automáticamente al registrar.</p>
         </div>
+
     </div>
 
-    <!-- Modal -->
+    <!-- Modal registrar plaga -->
     <div class="modal-backdrop hidden" id="modalPlaga">
-        <div class="modal">
-            <div class="modal-header">
+        <div class="modal-box">
+            <div class="modal-box-header">
                 <h3>Registrar plaga</h3>
                 <button class="icon-btn" id="btnCerrarModal">✕</button>
             </div>
-
-            <form id="frmPlaga" class="modal-body">
+            <form id="frmPlaga" class="modal-box-body">
                 <div class="field">
-                    <label>Fecha hallazgo</label>
+                    <span>Fecha hallazgo *</span>
                     <input type="date" id="mFecha" required />
                 </div>
-
                 <div class="field">
-                    <label>Plaga</label>
+                    <span>Plaga *</span>
                     <select id="mPlaga" required></select>
                 </div>
-
                 <div class="field">
-                    <label>Cantidad</label>
+                    <span>Cantidad</span>
                     <input type="number" id="mCantidad" min="1" value="1" />
                 </div>
-
                 <div class="field">
-                    <label>Comentario</label>
+                    <span>Comentario</span>
                     <textarea id="mComentario" rows="3" placeholder="Opcional"></textarea>
                 </div>
-
-                <div class="modal-actions">
-                    <button type="button" class="btn" id="btnCancelar">Cancelar</button>
-                    <button type="submit" class="btn primary">Guardar</button>
-                </div>
             </form>
+            <div class="modal-box-footer">
+                <button type="button" class="btn" id="btnCancelar">Cancelar</button>
+                <button type="submit" form="frmPlaga" class="btn primary">Guardar</button>
+            </div>
         </div>
     </div>
+
 </section>

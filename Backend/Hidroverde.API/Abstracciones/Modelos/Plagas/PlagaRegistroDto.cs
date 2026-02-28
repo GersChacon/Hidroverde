@@ -15,6 +15,7 @@ namespace Abstracciones.Modelos.Plagas
         public int Cantidad { get; set; }
         public string? Comentario { get; set; }
         public int UsuarioId { get; set; }
+        public string? EmpleadoNombre { get; set; }
         public DateTime FechaRegistro { get; set; }
     }
 }

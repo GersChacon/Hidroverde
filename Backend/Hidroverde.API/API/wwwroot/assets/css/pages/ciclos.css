@@ -1,185 +1,23 @@
-﻿/* ===== Ciclos estilo Lovable ===== */
+/* ciclos.css — usa el sistema global de app.css */
 
-.page-ciclos {
-    max-width: 1100px;
-    margin: 0 auto;
+/* Barra de búsqueda específica de ciclos */
+.ciclos-toolbar {
+    margin: 0 0 14px;
 }
 
-.ciclosHeader {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 14px;
-    margin: 6px 0 14px;
-}
-
-.ciclosTitle {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 950;
-}
-
-.ciclosSubtitle {
-    margin: 6px 0 0;
-    color: var(--muted);
-    font-size: 13px;
-}
-
-.ciclosHeaderActions {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-/* Buscador */
-.ciclosToolbar {
-    margin: 10px 0 14px;
-}
-
-.searchBox {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(255,255,255,.06);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 10px 12px;
-    max-width: 420px;
-}
-
-.searchIcon {
-    opacity: .8;
-}
-
-#txtBuscarCiclos {
-    border: 0;
-    background: transparent;
-    padding: 0;
-    outline: none;
-    color: var(--text);
-    width: 100%;
-}
-
-/* Card + tabla limpia */
-.ciclosCard {
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    overflow: hidden;
-    background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.03));
-    box-shadow: var(--shadow2);
-}
-
-.ciclosTable {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-    .ciclosTable thead th {
-        text-align: left;
-        font-size: 12px;
-        color: rgba(231,238,252,.85);
-        background: rgba(255,255,255,.05);
-        padding: 12px 12px;
-        border-bottom: 1px solid var(--line);
-    }
-
-    .ciclosTable td {
-        padding: 14px 12px;
-        border-bottom: 1px solid var(--line);
-        vertical-align: middle;
-        font-size: 13px;
-    }
-
-    .ciclosTable tbody tr:hover td {
-        background: rgba(255,255,255,.03);
-    }
-
-.thRight {
-    text-align: right;
-}
-
-/* Progreso */
-.progressWrap {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.progressBar {
+/* Barra de progreso dentro de la tabla */
+.progress-bar-wrap {
+    background: rgba(2,6,23,.07);
+    border-radius: 999px;
     height: 8px;
-    width: 120px;
-    border-radius: 999px;
-    background: rgba(255,255,255,.08);
-    border: 1px solid rgba(255,255,255,.10);
+    min-width: 100px;
     overflow: hidden;
 }
-
-.progressFill {
+.progress-bar-fill {
     height: 100%;
-    width: 0%;
-    background: rgba(34,197,94,.75);
-}
-
-.progressPct {
-    font-size: 12px;
-    color: var(--muted);
-    min-width: 34px;
-}
-
-/* Estado pill */
-.pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 10px;
     border-radius: 999px;
-    font-weight: 900;
-    font-size: 12px;
-    border: 1px solid var(--line);
-    background: rgba(255,255,255,.05);
+    background: var(--primary);
+    transition: width .3s;
 }
 
-    .pill.green {
-        border-color: rgba(34,197,94,.45);
-        background: rgba(34,197,94,.14);
-    }
-
-/* Acciones compactas */
-.actionsCell {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.btn.small {
-    padding: 8px 10px;
-    border-radius: 10px;
-    font-weight: 900;
-    font-size: 12px;
-    white-space: nowrap;
-}
-
-.btn.danger {
-    background: rgba(255,123,114,.14);
-    border-color: rgba(255,123,114,.45);
-}
-
-/* Responsive */
-@media (max-width: 900px) {
-    .page-ciclos {
-        max-width: 100%;
-    }
-
-    .ciclosHeader {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .progressBar {
-        width: 90px;
-    }
-
-    .ciclosCard {
-        overflow: auto;
-    }
-}
+/* Modal de ciclos (cosechar/cancelar) reutiliza modal global */

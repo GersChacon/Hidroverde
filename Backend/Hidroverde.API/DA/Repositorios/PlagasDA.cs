@@ -31,7 +31,7 @@ namespace DA.Repositorios
             p.Add("@fecha_hallazgo", request.FechaHallazgo.Date);
             p.Add("@cantidad", request.Cantidad ?? 1);
             p.Add("@comentario", request.Comentario);
-            p.Add("@usuario_id", usuarioId);
+            p.Add("@empleado_id", usuarioId);
 
             return await _sqlConnection.ExecuteScalarAsync<int>(
                 "dbo.sp_Plagas_Registrar",

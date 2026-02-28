@@ -114,7 +114,7 @@ async function cargarTabla() {
       <td>${escapeHtml(r.plagaNombre ?? r.PlagaNombre ?? "")}</td>
       <td>${escapeHtml(r.cantidad ?? r.Cantidad ?? 0)}</td>
       <td>${escapeHtml(r.comentario ?? r.Comentario ?? "")}</td>
-      <td>${escapeHtml(r.usuarioId ?? r.UsuarioId ?? "")}</td>
+      <td>${escapeHtml(r.empleadoNombre ?? r.EmpleadoNombre ?? r.usuarioId ?? r.UsuarioId ?? "")}</td>
     `;
         tbody.appendChild(tr);
     });

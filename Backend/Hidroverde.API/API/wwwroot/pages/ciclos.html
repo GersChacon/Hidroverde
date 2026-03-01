@@ -47,48 +47,94 @@
                 <h2>Nueva siembra</h2>
                 <button class="icon-btn" data-close="modalSiembra">✕</button>
             </div>
+
             <div class="modal__body">
                 <form id="frmSiembra">
                     <div class="grid">
-                        <label class="field">
-                            <span>Producto *</span>
-                            <input type="number" id="productoId" min="1" required />
-                        </label>
+
+                        <!-- Producto (visible buscador) + productoId (hidden) -->
+                        <div class="field" style="position:relative;">
+                            <label for="productoNombre">
+                                <span>Producto *</span>
+                            </label>
+
+                            <!-- Visible buscador -->
+                            <input type="text"
+                                   id="productoNombre"
+                                   placeholder="Escribe el nombre del producto..."
+                                   autocomplete="off" />
+
+                            <!-- Dropdown -->
+                            <div id="productoSuggs"
+                                 class="autocomplete-list"
+                                 hidden></div>
+
+                            <!-- Hidden que usa guardarSiembra() -->
+                            <input type="hidden" id="productoId" />
+                        </div>
+
+                        <!-- Variedad (visible autopoblado) + variedadId (hidden) -->
                         <label class="field">
                             <span>Variedad *</span>
-                            <input type="number" id="variedadId" min="1" required />
+                            <input type="text"
+                                   id="variedadNombre"
+                                   placeholder="Se completará automáticamente al seleccionar un producto"
+                                   readonly />
+                            <input type="hidden" id="variedadId" />
                         </label>
-                        <label class="field">
-                            <span>Torre *</span>
-                            <input type="number" id="torreId" min="1" required />
-                        </label>
+
+                        <!-- Torre (matriz visual) + torreId (hidden) -->
+                        <div class="field field--full">
+                            <label>
+                                <span>Torre *</span>
+                            </label>
+
+                            <!-- hidden para mantener tu flujo -->
+                            <input type="hidden" id="torreId" />
+
+                            <!-- hint selección -->
+                            <div class="muted" style="margin-top:6px;">
+                                Seleccioná una torre en la matriz.
+                            </div>
+
+                            <!-- matriz -->
+                            <div id="torresGrid" class="torres-grid" aria-label="Selector de torres"></div>
+                        </div>
+
                         <label class="field">
                             <span>Estado ciclo *</span>
                             <input type="text" id="estadoCicloCodigo" value="SIEMBRA" required />
                         </label>
+
                         <label class="field">
                             <span>Fecha siembra *</span>
                             <input type="date" id="fechaSiembra" required />
                         </label>
+
                         <label class="field">
                             <span>Fecha cosecha estimada *</span>
                             <input type="date" id="fechaCosechaEstimada" required />
                         </label>
+
                         <label class="field">
                             <span>Cantidad plantas *</span>
                             <input type="number" id="cantidadPlantas" min="1" required />
                         </label>
+
                         <label class="field">
                             <span>Lote semilla</span>
                             <input type="text" id="loteSemilla" />
                         </label>
+
                         <label class="field field--full">
                             <span>Notas</span>
                             <textarea id="notas" rows="3"></textarea>
                         </label>
+
                     </div>
                 </form>
             </div>
+
             <div class="modal__footer">
                 <button type="button" class="btn" data-close="modalSiembra">Cancelar</button>
                 <button type="submit" form="frmSiembra" class="btn primary">Guardar</button>

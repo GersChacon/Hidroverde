@@ -219,5 +219,7 @@
     <Build Include="dbo\Stored Procedures\sp_Plagas_Grafica_Diaria.sql" />
     <Build Include="dbo\Stored Procedures\sp_Plagas_Grafica.sql" />
     <Build Include="dbo\Stored Procedures\sp_Plagas_Catalogo_Listar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Torres_Listar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Torres_Disponibilidad_Listar.sql" />
   </ItemGroup>
 </Project>

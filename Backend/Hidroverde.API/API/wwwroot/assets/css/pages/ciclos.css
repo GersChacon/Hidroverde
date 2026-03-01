@@ -21,3 +21,96 @@
 }
 
 /* Modal de ciclos (cosechar/cancelar) reutiliza modal global */
+
+
+
+.autocomplete-list {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 6px);
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    max-height: 240px;
+    overflow: auto;
+    z-index: 9999;
+    box-shadow: 0 10px 20px rgba(0,0,0,.08);
+}
+
+.autocomplete-item {
+    padding: 10px 12px;
+    cursor: pointer;
+}
+
+    .autocomplete-item:hover {
+        background: #f3f4f6;
+    }
+
+.torres-grid {
+    display: grid;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* fila (A, B, C...) */
+.torres-row {
+    display: grid;
+    grid-template-columns: 32px repeat(11, minmax(0, 1fr));
+    gap: 8px;
+    align-items: center;
+}
+
+.torres-row-label {
+    font-weight: 700;
+    color: #6b7280;
+    text-align: center;
+}
+
+/* celda torre */
+.torre-cell {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 8px 6px;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    background: #ffffff;
+    font-size: 12px;
+}
+
+    .torre-cell:hover {
+        background: #f9fafb;
+    }
+
+    .torre-cell.selected {
+        outline: 2px solid #111827;
+        border-color: #111827;
+    }
+
+/* pequeño label dentro */
+.torre-code {
+    font-weight: 700;
+    font-size: 12px;
+}
+
+.torre-cap {
+    font-size: 11px;
+    color: #6b7280;
+    margin-top: 2px;
+}
+
+.torre-cell.free {
+    background: #ffffff;
+    border-color: #d1d5db;
+}
+
+.torre-cell.partial {
+    background: #fff7d6;
+    border-color: #f59e0b;
+}
+
+.torre-cell.full {
+    background: #dcfce7;
+    border-color: #22c55e;
+}

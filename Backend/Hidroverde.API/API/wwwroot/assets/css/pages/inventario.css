@@ -1,1 +1,168 @@
-/* inventario.css — usa el sistema global de app.css */
+/* ================================
+   TABLA - COLUMNA ACCIONES
+================================ */
+.col-acciones {
+    width: 220px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.acciones-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+
+/* ================================
+   TOOLBAR INVENTARIO
+================================ */
+.card > .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+    .card > .row h2 {
+        margin-right: auto;
+    }
+
+    .card > .row .btn {
+        height: 38px;
+        padding: 0 14px;
+        border-radius: 12px;
+    }
+
+#btnNuevoProducto {
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    color: #166534;
+}
+
+
+/* ================================
+   MODAL OVERLAY
+================================ */
+#modalProducto.modal--overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, .55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 9999;
+}
+
+#modalProducto[hidden] {
+    display: none !important;
+}
+
+
+/* ================================
+   MODAL CARD
+================================ */
+#modalProducto .modalCard--dialog {
+    width: min(820px, 95vw);
+    max-height: 85vh;
+    overflow: auto;
+    background: #fff;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 20px 50px rgba(0,0,0,.25);
+}
+
+
+    /* ================================
+   MODAL HEADER
+================================ */
+    #modalProducto .modalCard--dialog > .row:first-child {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid #e5e7eb;
+        margin-bottom: 16px;
+    }
+
+#modalProducto .modalTitle {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+
+/* ================================
+   FORM GRID
+================================ */
+#modalProducto .grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+@media (max-width: 720px) {
+    #modalProducto .grid2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+#modalProducto label {
+    display: block;
+    font-weight: 700;
+    color: #64748b;
+}
+
+#modalProducto input,
+#modalProducto select {
+    margin-top: 6px;
+    width: 100%;
+}
+
+
+/* ================================
+   MODAL FOOTER (BOTONES JUNTOS)
+================================ */
+/* Footer: mensaje a la izquierda, botones juntos a la derecha */
+#modalProducto .modalCard--dialog > .row:last-child{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding-top:18px;
+  border-top:1px solid #e5e7eb;
+  margin-top:18px;
+}
+
+/* Mensaje a la izquierda */
+#modalProducto #pMsg {
+    margin-right: auto;
+}
+
+/* Botones a la derecha */
+#modalProducto #btnCerrarProducto,
+#modalProducto #btnGuardarProducto {
+    height: 38px;
+    padding: 0 14px;
+    border-radius: 12px;
+}
+
+/* ================================
+   BOTONES MODAL
+================================ */
+#btnCerrarProducto {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    color: #334155;
+}
+
+#btnGuardarProducto {
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    color: #166534;
+    font-weight: 700;
+}
+
+#btnGuardarProducto:hover {
+    background: #bbf7d0;
+}

@@ -1,21 +1,33 @@
-﻿import { api } from "../lib/http.js";
+﻿// /assets/js/pages/inventario.js
+
+import { api } from "../lib/http.js";
 import { escapeHtml, setValue } from "../lib/dom.js";
 import { showModal, setModalTitle } from "../lib/modal.js";
 import { getTrim, getNumber, getDecimal, getBool, nullableString } from "../lib/form.js";
 
 const API_PRODUCTO = "/api/Producto";
 
+const UNIDADES = [
+    { id: 1, nombre: "Unidad", simbolo: "u" },
+    { id: 2, nombre: "Racimo", simbolo: "rac" },
+    { id: 3, nombre: "Bandeja", simbolo: "bdj" },
+    { id: 4, nombre: "Kilogramo", simbolo: "kg" },
+    { id: 5, nombre: "Gramo", simbolo: "g" },
+    { id: 6, nombre: "Paquete", simbolo: "paq" },
+    { id: 7, nombre: "Atado", simbolo: "atd" },
+];
+
 let modoEdicion = false;
 let productoEditandoId = null;
-
-
+let productoEditandoCodigo = null;
+console.log("📄 inventario.js cargado");
 
 export function init() {
-   
+    console.log("✅ inventario init ejecutado");
 
     // Listeners UI
     document.getElementById("btnRefrescarProductos")?.addEventListener("click", () => {
-        cargarProductos(true);
+        cargarProductos();
     });
 
     document.getElementById("btnNuevoProducto")?.addEventListener("click", abrirModalNuevo);
@@ -30,8 +42,8 @@ export function init() {
     const tbody = document.getElementById("productosBody");
     if (tbody) tbody.addEventListener("click", onTableClick);
 
-    // IMPORTANTE: correr después del paint (evita carreras raras)
-    queueMicrotask(() => cargarProductos());
+    // correr después del paint (SPA)
+    requestAnimationFrame(() => cargarProductos());
 }
 
 /* =========================
@@ -39,26 +51,26 @@ export function init() {
    ========================= */
 async function cargarProductos() {
     const tbody = document.getElementById("productosBody");
-    
-
     if (!tbody) return;
 
     tbody.innerHTML = `<tr><td colspan="9" class="muted">Cargando…</td></tr>`;
 
     try {
-       
-        const r = await fetch("/api/Producto", {
-            headers: { "X-Empleado-Id": localStorage.getItem("empleadoId") || "1" }
+        const r = await fetch(API_PRODUCTO, {
+            headers: { "X-Empleado-Id": localStorage.getItem("empleadoId") || "1" },
         });
-       
 
+        // ✅ Manejo correcto de errores HTTP
         if (r.status === 204) {
             tbody.innerHTML = `<tr><td colspan="9" class="muted">No hay productos</td></tr>`;
             return;
         }
+        if (!r.ok) {
+            const txt = await r.text().catch(() => "");
+            throw new Error(`API ${r.status}: ${txt || r.statusText}`);
+        }
 
         const data = await r.json().catch(() => null);
-       
 
         if (!Array.isArray(data) || data.length === 0) {
             tbody.innerHTML = `<tr><td colspan="9" class="muted">No hay productos</td></tr>`;
@@ -68,8 +80,8 @@ async function cargarProductos() {
         renderTabla(data);
     } catch (err) {
         console.error(err);
-        alert(err?.message || "Error al cargar datos");
         tbody.innerHTML = `<tr><td colspan="9" class="danger">Error al cargar datos</td></tr>`;
+        alert(err?.message || "Error al cargar datos");
     }
 }
 
@@ -90,9 +102,11 @@ function renderTabla(productos) {
           <td>${escapeHtml(p.precioBase ?? 0)}</td>
           <td>${p.activo ? "Sí" : "No"}</td>
           <td>${escapeHtml(p.stockMinimo ?? "-")}</td>
-          <td class="right">
-            <button class="btn" data-action="edit" data-id="${id}">Editar</button>
-            <button class="btn danger" data-action="del" data-id="${id}">Eliminar</button>
+          <td class="col-acciones">
+            <div class="acciones-wrapper">
+              <button class="btn" data-action="edit" data-id="${id}">Editar</button>
+              <button class="btn danger" data-action="del" data-id="${id}">Eliminar</button>
+            </div>
           </td>
         </tr>`;
         })
@@ -118,9 +132,10 @@ async function onTableClick(e) {
 function abrirModalNuevo() {
     modoEdicion = false;
     productoEditandoId = null;
-
+    productoEditandoCodigo = null; // ✅ reset
     setModalTitle("modalProducto", "Nuevo producto");
     limpiarFormulario();
+    cargarUnidadesDropdown(1);
     setMsg("");
 
     showModal("modalProducto", true);
@@ -133,11 +148,12 @@ async function abrirModalEditar(productoId) {
     setModalTitle("modalProducto", `Editar producto #${productoId}`);
     limpiarFormulario();
     setMsg("Cargando…");
-
     showModal("modalProducto", true);
 
     try {
         const { data } = await api(`${API_PRODUCTO}/${productoId}`);
+
+        productoEditandoCodigo = data.codigo;   // ✅ GUARDAR CODIGO REAL
         fillForm(data);
         setMsg("");
     } catch (err) {
@@ -147,34 +163,27 @@ async function abrirModalEditar(productoId) {
 }
 
 function fillForm(p) {
-    setValue("pCodigo", p.codigo);
-    setValue("pNombreProducto", p.nombreProducto);
-    setValue("pVariedadId", p.variedadId);
-    setValue("pUnidadId", p.unidadId);
-    setValue("pPrecioBase", p.precioBase);
-    setValue("pDiasCaducidad", p.diasCaducidad);
-    setValue("pStockMinimo", p.stockMinimo);
-    setValue("pDescripcion", p.descripcion);
-    setValue("pImagenUrl", p.imagenUrl);
+    setValue("pNombreProducto", p?.nombreProducto ?? "");
+    setValue("pPrecioBase", p?.precioBase ?? "");
+    setValue("pDiasCaducidad", p?.diasCaducidad ?? "");
+    setValue("pStockMinimo", p?.stockMinimo ?? "");
+    setValue("pDescripcion", p?.descripcion ?? "");
+    setValue("pImagenUrl", p?.imagenUrl ?? "");
+
+    cargarUnidadesDropdown(p?.unidadId ?? 1);
 
     const rr = document.getElementById("pRequiereRefrigeracion");
     const ac = document.getElementById("pActivo");
-    if (rr) rr.value = String(!!p.requiereRefrigeracion);
-    if (ac) ac.value = String(!!p.activo);
+    if (rr) rr.value = String(!!p?.requiereRefrigeracion);
+    if (ac) ac.value = String(!!p?.activo);
 }
 
 function limpiarFormulario() {
-    [
-        "pCodigo",
-        "pNombreProducto",
-        "pVariedadId",
-        "pUnidadId",
-        "pPrecioBase",
-        "pDiasCaducidad",
-        "pStockMinimo",
-        "pDescripcion",
-        "pImagenUrl",
-    ].forEach((id) => setValue(id, ""));
+    ["pNombreProducto", "pPrecioBase", "pDiasCaducidad", "pStockMinimo", "pDescripcion", "pImagenUrl"].forEach((id) =>
+        setValue(id, "")
+    );
+
+    cargarUnidadesDropdown(1);
 
     const rr = document.getElementById("pRequiereRefrigeracion");
     const ac = document.getElementById("pActivo");
@@ -204,7 +213,7 @@ async function guardarProducto() {
 
     try {
         await api(url, { method, body: payload });
-        await cargarProductos(true);
+        await cargarProductos();
         showModal("modalProducto", false);
     } catch (err) {
         console.error(err);
@@ -216,41 +225,44 @@ function buildPayload() {
     const stockTxt = getTrim("pStockMinimo");
 
     return {
-        codigo: getTrim("pCodigo"),
-        nombreProducto: getTrim("pNombreProducto"),
-        variedadId: getNumber("pVariedadId"),
-        unidadId: getNumber("pUnidadId"),
+        // ✅ POST: null (autogenera)
+        // ✅ PUT: usa el existente
+        codigo: modoEdicion ? productoEditandoCodigo : null,
 
+        nombreProducto: getTrim("pNombreProducto"),
+        variedadId: 1,
+        unidadId: getNumber("pUnidadId"),
         precioBase: getDecimal("pPrecioBase"),
         diasCaducidad: getNumber("pDiasCaducidad"),
-
         stockMinimo: stockTxt === "" ? null : Number(stockTxt),
-
         requiereRefrigeracion: getBool("pRequiereRefrigeracion"),
         activo: getBool("pActivo"),
-
         descripcion: nullableString(getTrim("pDescripcion")),
         imagenUrl: nullableString(getTrim("pImagenUrl")),
-
-        // ✅ Agregalo si tu modal lo va a manejar (o al menos mandar 0 por ahora)
         pesoGramos: 0
     };
 }
 
+function cargarUnidadesDropdown(selectedId = 1) {
+    const sel = document.getElementById("pUnidadId");
+    if (!sel) return;
+
+    sel.innerHTML = UNIDADES.map(
+        (u) => `<option value="${u.id}">${escapeHtml(u.nombre)} (${escapeHtml(u.simbolo)})</option>`
+    ).join("");
+
+    sel.value = String(selectedId);
+}
+
 function validar(p) {
-    if (!p.codigo) return { ok: false, msg: "El código es necesario" };
     if (!p.nombreProducto) return { ok: false, msg: "El nombre es necesario" };
 
-    if (!Number.isFinite(p.variedadId) || p.variedadId <= 0)
-        return { ok: false, msg: "VariedadId inválido" };
+    if (!Number.isFinite(p.unidadId) || p.unidadId <= 0) return { ok: false, msg: "Unidad inválida" };
 
-    if (!Number.isFinite(p.unidadId) || p.unidadId <= 0)
-        return { ok: false, msg: "UnidadId inválido" };
-
-    if (!Number.isFinite(p.precioBase) || p.precioBase < 0)
+    if (p.precioBase != null && (!Number.isFinite(p.precioBase) || p.precioBase < 0))
         return { ok: false, msg: "Precio inválido" };
 
-    if (!Number.isFinite(p.diasCaducidad) || p.diasCaducidad < 0)
+    if (p.diasCaducidad != null && (!Number.isFinite(p.diasCaducidad) || p.diasCaducidad < 0))
         return { ok: false, msg: "Días inválidos" };
 
     if (p.stockMinimo !== null && (!Number.isFinite(p.stockMinimo) || p.stockMinimo < 0))
@@ -263,13 +275,21 @@ function validar(p) {
    Eliminar
    ========================= */
 async function eliminarProducto(productoId) {
-    if (!confirm(`¿Eliminar el producto #${productoId}?`)) return;
+    if (!confirm(`¿Eliminar el producto #${productoId}? Esta acción no se puede deshacer.`)) return;
 
     try {
         await api(`${API_PRODUCTO}/${productoId}`, { method: "DELETE" });
-        await cargarProductos(true);
+        await cargarProductos();
     } catch (err) {
         console.error(err);
+
+        // ✅ caso esperado por requerimiento: no se puede borrar si hay relaciones
+        if (err?.status === 409) {
+            alert("No se puede eliminar este producto porque tiene registros asociados (por ejemplo, alertas). Primero elimina esos registros y vuelve a intentarlo.");
+            return;
+        }
+
+        // otros errores
         alert(err?.message || "Error al eliminar");
     }
 }

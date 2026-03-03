@@ -114,3 +114,12 @@
     background: #dcfce7;
     border-color: #22c55e;
 }
+
+/* Header: solo alinear texto */
+table th:last-child {
+    
+}
+/* Filas: aquí sí usamos flex para los botones */
+table td:last-child {
+    width: 220px;
+}

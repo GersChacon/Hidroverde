@@ -2,7 +2,7 @@
 {
     public class ProductoBase
     {
-        public string Codigo { get; set; }
+        public string? Codigo { get; set; }
         public int VariedadId { get; set; }
         public int UnidadId { get; set; }
         public string NombreProducto { get; set; }

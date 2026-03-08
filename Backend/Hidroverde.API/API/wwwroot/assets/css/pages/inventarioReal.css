@@ -1,361 +1,79 @@
-﻿/* DEBUG: INVENTARIOREAL CSS CARGADO */
-/* wwwroot/assets/css/pages/inventarioReal.css */
-/* Scope total: solo aplica dentro de <main class="page inventarioReal"> */
-.inventarioReal {
-    outline: 6px solid red;
-}
-.inventarioReal {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 16px;
+/* inventarioReal.css — usa el sistema global de app.css */
+
+/* KPIs row */
+.inv-kpis {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin-bottom: 16px;
 }
 
-    .inventarioReal .page__header {
-        display: flex;
-        gap: 16px;
-        align-items: flex-start;
-        justify-content: space-between;
-        margin-bottom: 16px;
-    }
-
-    .inventarioReal .page__title {
-        margin: 0;
-        font-size: 28px;
-    }
-
-    .inventarioReal .page__subtitle {
-        margin: 6px 0 0;
-        color: var(--muted);
-    }
-
-    .inventarioReal .page__actions {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-    }
-
-    .inventarioReal .filters {
-        display: grid;
-        grid-template-columns: repeat(4, minmax(180px, 1fr));
-        gap: 12px;
-    }
-
-@media (max-width: 980px) {
-    .inventarioReal .filters {
-        grid-template-columns: repeat(2, minmax(180px, 1fr));
-    }
+@media (max-width: 900px) {
+    .inv-kpis { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 560px) {
+    .inv-kpis { grid-template-columns: repeat(2, 1fr); }
 }
 
-@media (max-width: 520px) {
-    .inventarioReal .filters {
-        grid-template-columns: 1fr;
-    }
+.inv-kpi {
+    background: var(--surface, #fff);
+    border: 1px solid var(--line, #e5e7eb);
+    border-radius: 14px;
+    padding: 14px 16px;
 }
 
-.inventarioReal .field label {
-    display: block;
-    font-weight: 600;
+.inv-kpi--danger { background: #fef2f2; border-color: #fca5a5; }
+.inv-kpi--warn   { background: #fffbeb; border-color: #fde68a; }
+.inv-kpi--muted  { background: var(--surface-alt, #f8fafc); }
+
+.inv-kpi__label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--text-muted, #94a3b8);
     margin-bottom: 6px;
 }
 
-.inventarioReal .field input {
-    width: 100%;
-    padding: 10px 10px;
-    border-radius: 10px;
-    border: 1px solid var(--line);
-    background: var(--btn);
-    color: var(--text);
-}
-
-.inventarioReal .field .hint {
-    display: block;
-    margin-top: 6px;
-    color: var(--muted);
-    font-size: 12px;
-}
-
-.inventarioReal .field--inline {
-    grid-column: 1 / -1;
-}
-
-.inventarioReal .checkbox {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    user-select: none;
-}
-
-.inventarioReal .table-wrap {
-    width: 100%;
-    overflow: auto;
-    border-radius: 14px;
-    border: 1px solid var(--line);
-}
-
-.inventarioReal .table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-    .inventarioReal .table th,
-    .inventarioReal .table td {
-        padding: 12px 12px;
-        border-bottom: 1px solid var(--line);
-    }
-
-    .inventarioReal .table thead th {
-        text-align: left;
-        position: sticky;
-        top: 0;
-        background: var(--card);
-        z-index: 1;
-    }
-
-.inventarioReal .table--compact th,
-.inventarioReal .table--compact td {
-    padding: 10px 10px;
-}
-
-.inventarioReal .t-right {
-    text-align: right;
-}
-
-.inventarioReal .mono {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-}
-
-.inventarioReal .row-actions {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-end;
-    flex-wrap: wrap;
-}
-
-.inventarioReal .badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 34px;
-    height: 26px;
-    padding: 0 10px;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: rgba(255,255,255,.06);
-}
-
-.inventarioReal .empty {
-    padding: 18px;
-    color: var(--muted);
-    text-align: center;
-}
-
-.inventarioReal .loading {
-    padding: 18px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: var(--muted);
-}
-
-.inventarioReal .spinner {
-    width: 18px;
-    height: 18px;
-    border-radius: 999px;
-    border: 2px solid rgba(255,255,255,.2);
-    border-top-color: rgba(255,255,255,.8);
-    animation: inventarioReal-spin .9s linear infinite;
-}
-
-@keyframes inventarioReal-spin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-/* Pills en modal de movimientos */
-.inventarioReal .pill {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 600;
-    border: 1px solid var(--line);
-}
-
-.inventarioReal .pill--ok {
-    background: rgba(86, 211, 100, .15);
-    color: #3fbf62;
-}
-
-.inventarioReal .pill--warn {
-    background: rgba(242, 204, 96, .18);
-    color: #b68c00;
-}
-
-.inventarioReal .pill--danger {
-    background: rgba(255,0,0,.15);
-    color: #c0392b;
-}
-
-
-/* Modal content */
-.inventarioReal .modal-body {
-    padding: 4px 2px;
-}
-
-.inventarioReal .kv {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(220px, 1fr));
-    gap: 12px;
-}
-
-@media (max-width: 720px) {
-    .inventarioReal .kv {
-        grid-template-columns: 1fr;
-    }
-}
-
-.inventarioReal .kv > div {
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 12px;
-    background: rgba(255,255,255,.04);
-}
-
-.inventarioReal .kv span {
-    display: block;
-    color: var(--muted);
-    font-size: 12px;
-    margin-bottom: 6px;
-}
-
-.inventarioReal .kv strong {
-    display: block;
-}
-
-.inventarioReal .kv--wide {
-    grid-column: 1 / -1;
-}
-
-/* Fallback modal nativo (solo si usas <dialog>) */
-.inventarioReal .native-modal::backdrop {
-    background: rgba(0,0,0,.6);
-}
-
-.inventarioReal .native-modal__box {
-    width: min(860px, calc(100vw - 24px));
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    background: var(--card);
-    color: var(--text);
-    padding: 12px;
-}
-
-.inventarioReal .native-modal__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    border-bottom: 1px solid var(--line);
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-}
-
-    .inventarioReal .native-modal__header h3 {
-        margin: 0;
-        font-size: 18px;
-    }
-
-.inventarioReal .native-modal__content {
-    padding: 6px 2px 2px;
-}
-.inventarioReal__kpis {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(140px, 1fr));
-    gap: 10px;
-    margin-bottom: 12px;
-}
-
-@media (max-width: 980px) {
-    .inventarioReal__kpis {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-.kpi {
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 12px;
-    background: rgba(255,255,255,.04);
-}
-
-.kpi__label {
-    color: var(--muted);
-    font-size: 12px;
-}
-
-.kpi__value {
-    font-size: 22px;
+.inv-kpi__value {
+    font-size: 26px;
     font-weight: 800;
-    margin-top: 6px;
+    color: var(--text, #1e293b);
+    line-height: 1;
 }
 
-.kpi--danger {
-    background: rgba(255,0,0,.06);
+.inv-kpi--danger .inv-kpi__value { color: #dc2626; }
+.inv-kpi--warn   .inv-kpi__value { color: #92400e; }
+
+/* Pills de caducidad */
+.cad-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    border: 1px solid;
+    white-space: nowrap;
+    margin-top: 3px;
 }
 
-.kpi--warn {
-    background: rgba(242,204,96,.12);
-}
+.cad-pill.ok      { background:#dcfce7; color:#15803d; border-color:#86efac; }
+.cad-pill.warn    { background:#fef9c3; color:#854d0e; border-color:#fde047; }
+.cad-pill.danger  { background:#fee2e2; color:#dc2626; border-color:#fca5a5; }
+.cad-pill.muted   { background:#f1f5f9; color:#94a3b8; border-color:#e2e8f0; }
 
-.kpi--muted {
-    background: rgba(255,255,255,.03);
-}
-
-/* Caducidad con badge */
-.inventarioReal .cell-stack {
+/* Columna caducidad: fecha + pill */
+.cad-cell {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
 }
 
-
-.inventarioReal .pill--danger {
-    background: rgba(255,0,0,.10);
-}
-
-/* FORCE pills style (override total) */
-/* ===== Fix definitivo: badges en caducidad ===== */
-/* FIX: badges (sin depender de .inventarioReal) */
-.cell-stack {
+/* Filtros */
+.filter-bar {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: flex-end;
 }
-
-    .cell-stack .pill {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: fit-content;
-        padding: 4px 10px;
-        border-radius: 999px;
-        border: 1px solid var(--line);
-        font-size: 12px;
-        font-weight: 700;
-        line-height: 1;
-    }
-
-    .cell-stack .pill--ok {
-        background: rgba(86, 211, 100, .18);
-    }
-
-    .cell-stack .pill--warn {
-        background: rgba(242, 204, 96, .22);
-    }
-
-    .cell-stack .pill--danger {
-        background: rgba(255, 0, 0, .16);
-    }

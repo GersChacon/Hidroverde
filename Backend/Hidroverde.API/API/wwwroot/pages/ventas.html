@@ -44,6 +44,8 @@
                 <button class="icon-btn" id="btnCerrarNuevaVenta">✕</button>
             </div>
             <div class="modal__body">
+
+                <!-- Fila 1: Cliente + Dirección + Vendedor -->
                 <div class="form-grid3">
                     <label class="field">
                         <span>Cliente *</span>
@@ -58,27 +60,15 @@
                         <select id="nvVendedorId"><option value="">Cargando...</option></select>
                     </label>
                 </div>
+
+                <!-- Fila 2: Tipo entrega + Fecha entrega + IVA -->
                 <div class="form-grid3" style="margin-top:10px;">
                     <label class="field">
-                        <span>Estado venta *</span>
-                        <select id="nvEstadoVentaId"><option value="">Cargando...</option></select>
-                    </label>
-                    <label class="field">
-                        <span>Estado pago *</span>
-                        <select id="nvEstadoPagoId"><option value="">Cargando...</option></select>
-                    </label>
-                    <label class="field">
-                        <span>Tipo entrega *</span>
+                        <span>Tipo de entrega *</span>
                         <select id="nvTipoEntregaId"><option value="">Cargando...</option></select>
                     </label>
-                </div>
-                <div class="form-grid3" style="margin-top:10px;">
-                    <label class="field">
-                        <span>Método de pago</span>
-                        <select id="nvMetodoPagoId"><option value="">Sin especificar</option></select>
-                    </label>
-                    <label class="field">
-                        <span>Fecha entrega</span>
+                    <label class="field" id="wrapFechaEntrega">
+                        <span>Fecha de entrega</span>
                         <input type="datetime-local" id="nvFechaEntrega">
                     </label>
                     <label class="field">
@@ -86,12 +76,36 @@
                         <input type="number" id="nvIvaMonto" min="0" step="0.01" value="0">
                     </label>
                 </div>
+
+                <!-- Nota sobre tipo de entrega -->
+                <div id="nvNotaEntrega" class="info-note" style="display:none; margin-top:6px;"></div>
+
+                <!-- Fila 3: Método de pago + campos bloqueados -->
+                <div class="form-grid3" style="margin-top:10px;">
+                    <label class="field">
+                        <span>Método de pago</span>
+                        <select id="nvMetodoPagoId"><option value="">Sin especificar</option></select>
+                        <small class="field-hint">Podés confirmarlo después en "Confirmar pago"</small>
+                    </label>
+                    <label class="field">
+                        <span>Estado venta</span>
+                        <select id="nvEstadoVentaId" disabled><option value="">—</option></select>
+                        <small class="field-hint">Siempre inicia en Pendiente</small>
+                    </label>
+                    <label class="field">
+                        <span>Estado de pago</span>
+                        <select id="nvEstadoPagoId" disabled><option value="">—</option></select>
+                        <small class="field-hint">Siempre inicia en Pendiente de Pago</small>
+                    </label>
+                </div>
+
+                <!-- Notas -->
                 <label class="field" style="margin-top:10px;">
                     <span>Notas</span>
                     <textarea id="nvNotas" rows="2" style="width:100%;"></textarea>
                 </label>
 
-                <!-- Detalle -->
+                <!-- Detalle de productos -->
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-top:18px;padding-bottom:8px;border-bottom:1px solid var(--line);">
                     <h3 style="margin:0;font-size:15px;">Detalle de productos</h3>
                     <button class="btn btn-sm" type="button" id="btnAgregarLinea">+ Agregar línea</button>
@@ -100,11 +114,10 @@
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th>Inv. ID</th>
-                                <th>Producto ID</th>
+                                <th>Producto</th>
+                                <th>Stock disponible</th>
                                 <th>Cantidad</th>
                                 <th>Precio unit.</th>
-                                <th>Descuento unit.</th>
                                 <th>Notas</th>
                                 <th></th>
                             </tr>
@@ -156,6 +169,8 @@
                 <button class="icon-btn" id="btnCerrarCambiarEstado">✕</button>
             </div>
             <div class="modal__body">
+                <!-- Nota sobre tipo de entrega -->
+                <div id="ceNotaEntrega" class="info-note" style="display:none; margin-bottom:12px;"></div>
                 <label class="field">
                     <span>Nuevo estado *</span>
                     <select id="ceEstadoVentaId"><option value="">Cargando...</option></select>

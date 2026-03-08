@@ -49,6 +49,10 @@ namespace API.Controllers
             if (venta.Detalle.Any(d => d.PrecioUnitario <= 0))
                 return BadRequest("El precio unitario debe ser mayor a 0.");
 
+            _logger.LogInformation("CrearVenta → FechaEntrega={FechaEntrega} Kind={Kind}",
+                venta.FechaEntrega?.ToString("o") ?? "null",
+                venta.FechaEntrega?.Kind.ToString() ?? "n/a");
+
             try
             {
                 var ventaId = await _ventaFlujo.Crear(venta);

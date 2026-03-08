@@ -14,6 +14,7 @@ let _productos    = [];
 let _inventario   = [];  // stock actual disponible
 let _tiposEntrega = [];
 let _estadosVenta = [];
+let _estadosPago  = [];
 
 // Estados que implican movimiento físico (domicilio)
 // En DB: EN_RUTA (5) sólo aplica si hay envío a domicilio
@@ -49,6 +50,7 @@ async function cargarCatalogos() {
         _productos    = Array.isArray(productos)    ? productos.filter(p => p.activo) : [];
         _tiposEntrega = Array.isArray(tiposEntrega) ? tiposEntrega : [];
         _estadosVenta = Array.isArray(estadosVenta) ? estadosVenta : [];
+        _estadosPago  = Array.isArray(estadosPago)  ? estadosPago  : [];
 
         // --- Modal Nueva Venta ---
         llenarSelect("nvClienteId",  clientes,  v => v.clienteId,
@@ -85,19 +87,9 @@ async function cargarCatalogos() {
         // Cuando cambia tipo entrega → filtrar estados de venta disponibles en modal cambiar estado
         document.getElementById("nvTipoEntregaId")?.addEventListener("change", actualizarInfoEntrega);
 
-        // Fecha mínima = hoy
-        const ahora = new Date();
-        const minDate = ahora.toISOString().slice(0, 16);
-        const fechaInput = document.getElementById("nvFechaEntrega");
-        if (fechaInput) {
-            fechaInput.min = minDate;
-            fechaInput.addEventListener("change", () => {
-                if (fechaInput.value && fechaInput.value < minDate) {
-                    fechaInput.value = minDate;
-                    alert("La fecha de entrega no puede ser anterior a hoy.");
-                }
-            });
-        }
+        // Sin 'min' en el input — la validación se hace en guardarVenta.
+        const fechaInput = document.getElementById("nvFechaEntregaDate");
+        if (fechaInput) fechaInput.removeAttribute("min");
 
     } catch (err) {
         console.error("Error cargando catálogos de ventas:", err);
@@ -258,7 +250,10 @@ function abrirModalNuevaVenta() {
     if (estadoPagoSel) { estadoPagoSel.selectedIndex = 0; estadoPagoSel.setAttribute("disabled","true"); }
 
     document.getElementById("nvDireccionId").innerHTML = `<option value="">Seleccione cliente primero</option>`;
-    document.getElementById("nvFechaEntrega").value  = "";
+    const elFechaDate = document.getElementById("nvFechaEntregaDate");
+    const elFechaTime = document.getElementById("nvFechaEntregaTime");
+    if (elFechaDate) elFechaDate.value = "";
+    if (elFechaTime) elFechaTime.value = "";
     document.getElementById("nvNotas").value         = "";
     document.getElementById("nvIvaMonto").value      = "0";
 
@@ -419,12 +414,21 @@ async function guardarVenta() {
     const ivaMonto      = Number(document.getElementById("nvIvaMonto")?.value) || 0;
     const notas         = document.getElementById("nvNotas")?.value?.trim() || null;
 
-    // Fecha entrega — validar que no sea en el pasado
-    const fechaEntregaVal = document.getElementById("nvFechaEntrega")?.value || null;
-    const fechaEntrega    = fechaEntregaVal || null;
+    // Fecha entrega — enviar como string local sin conversión a UTC
+    // "2026-03-15T10:30" → "2026-03-15T10:30:00" (sin Z)
+    // Así .NET lo parsea como DateTime Kind=Unspecified, que Dapper pasa
+    // correctamente a DATETIME2 en SQL Server
+    // Combinar los dos campos date + time en un string "YYYY-MM-DDTHH:MM:00"
+    // (separados para compatibilidad con Firefox que no soporta bien datetime-local)
+    const fechaDate = document.getElementById("nvFechaEntregaDate")?.value || "";
+    const fechaTime = document.getElementById("nvFechaEntregaTime")?.value || "00:00";
+    const fechaEntregaVal = fechaDate ? `${fechaDate}T${fechaTime}` : null;
+    const fechaEntrega    = fechaEntregaVal ? fechaEntregaVal + ":00" : null;
     if (fechaEntrega) {
-        const hoy = new Date(); hoy.setSeconds(0, 0);
-        if (new Date(fechaEntrega) < hoy) {
+        const ahora = new Date();
+        const pad = n => String(n).padStart(2, "0");
+        const ahoraLocal = `${ahora.getFullYear()}-${pad(ahora.getMonth()+1)}-${pad(ahora.getDate())}T${pad(ahora.getHours())}:${pad(ahora.getMinutes())}`;
+        if (fechaEntregaVal < ahoraLocal) {
             return alert("La fecha de entrega no puede ser anterior a la fecha actual.");
         }
     }
@@ -491,7 +495,7 @@ function bindModalDetalleVenta() {
     document.getElementById("btnCerrarDetalleVenta")?.addEventListener("click",  () => cerrarModal("modalDetalleVenta"));
     document.getElementById("backdropDetalleVenta")?.addEventListener("click",   () => cerrarModal("modalDetalleVenta"));
     document.getElementById("btnCambiarEstado")?.addEventListener("click",       abrirModalCambiarEstado);
-    document.getElementById("btnConfirmarPago")?.addEventListener("click",       () => abrirModal("modalConfirmarPago"));
+    document.getElementById("btnConfirmarPago")?.addEventListener("click",       abrirModalConfirmarPago);
     document.getElementById("btnCancelarVenta")?.addEventListener("click",       accionCancelarVenta);
     document.getElementById("btnDescargarFactura")?.addEventListener("click",    generarFacturaPDF);
 }
@@ -505,6 +509,8 @@ async function abrirDetalleVenta(ventaId) {
     try {
         const { data } = await api(`/api/venta/${ventaId}`);
         ventaActual = data;
+        // Debug: ver campos exactos que llegan del API (remover en producción)
+        console.debug("[Venta detalle]", { fechaEntrega: data.fechaEntrega, fecha_entrega: data.fecha_entrega, metodoPagoId: data.metodoPagoId });
         renderDetalleVenta(data);
     } catch {
         document.getElementById("detalleVentaBody").innerHTML = `<p class="danger">Error cargando la venta.</p>`;
@@ -533,7 +539,7 @@ function renderDetalleVenta(v) {
             <div class="detail-item"><span>Fecha pedido</span><strong>${fmtDate(v.fechaPedido)}</strong></div>
             <div class="detail-item">
                 <span>Fecha entrega</span>
-                <strong>${v.fechaEntrega ? fmtDateTime(v.fechaEntrega) : '<em style="color:var(--text-muted,#94a3b8)">No especificada</em>'}</strong>
+                <strong>${(v.fechaEntrega || v.fecha_entrega) ? fmtDateTime(v.fechaEntrega || v.fecha_entrega) : '<em style="color:var(--text-muted,#94a3b8)">No especificada</em>'}</strong>
             </div>
             <div class="detail-item"><span>Factura</span><strong>${escapeHtml(v.numeroFactura ?? "—")}</strong></div>
             <div class="detail-item"><span>Estado venta</span>
@@ -653,6 +659,31 @@ async function accionCambiarEstado() {
     const notas         = document.getElementById("ceNotas")?.value?.trim() || null;
     if (!estadoVentaId) return alert("Seleccioná un estado.");
 
+    // ── Validaciones estado pago vs estado venta ─────────────────────────
+    const nuevoEstado    = _estadosVenta.find(e => e.estadoVentaId === estadoVentaId);
+    const codigoPago     = _estadosPago.find(e => e.estadoPagoId === ventaActual.estadoPagoId)?.codigo ?? "";
+    const tieneMetodoPago = !!ventaActual.metodoPagoId;
+
+    // Estados que requieren pago confirmado antes de avanzar
+    const ESTADOS_REQUIEREN_PAGO = ["LISTO", "EN_RUTA", "ENTREGADO"];
+
+    if (nuevoEstado && ESTADOS_REQUIEREN_PAGO.includes(nuevoEstado.codigo)) {
+        if (!tieneMetodoPago) {
+            return alert(
+                `No se puede avanzar a "${nuevoEstado.nombre}" sin un método de pago definido.\n\n` +
+                `Usá el botón "Confirmar pago" para registrar el método y estado de pago antes de continuar.`
+            );
+        }
+        if (codigoPago !== "PAGADO") {
+            return alert(
+                `No se puede avanzar a "${nuevoEstado.nombre}" si el pago no está confirmado.\n\n` +
+                `Estado de pago actual: ${ventaActual.nombreEstadoPago}.\n` +
+                `Usá "Confirmar pago" para registrar el pago primero.`
+            );
+        }
+    }
+    // ─────────────────────────────────────────────────────────────────────
+
     try {
         await api(`/api/venta/${ventaActual.ventaId}/estado`, { method: "PATCH", body: { estadoVentaId, notas } });
         alert("Estado actualizado correctamente.");
@@ -670,6 +701,49 @@ function bindModalConfirmarPago() {
     document.getElementById("btnCancelarConfirmarPago")?.addEventListener("click", () => cerrarModal("modalConfirmarPago"));
     document.getElementById("backdropConfirmarPago")?.addEventListener("click",    () => cerrarModal("modalConfirmarPago"));
     document.getElementById("btnGuardarConfirmarPago")?.addEventListener("click",  accionConfirmarPago);
+}
+
+// Jerarquía lógica de estados de pago: no se puede "deshacer" un pago confirmado
+// PENDIENTE(1) → PARCIAL(2) → PAGADO(3)
+// VENCIDO(4) y ANULADO(5) se pueden asignar desde cualquier estado no terminal
+const ORDEN_ESTADO_PAGO = { "PENDIENTE": 1, "PARCIAL": 2, "PAGADO": 3, "VENCIDO": 4, "ANULADO": 5 };
+const CODIGOS_PAGO_TERMINAL = ["PAGADO", "VENCIDO", "ANULADO"];
+
+function abrirModalConfirmarPago() {
+    if (!ventaActual) return;
+
+    const codigoPagoActual = _estadosPago.find(e => e.estadoPagoId === ventaActual.estadoPagoId)?.codigo ?? "";
+    const ordenActual      = ORDEN_ESTADO_PAGO[codigoPagoActual] ?? 0;
+
+    // Si ya está pagado/vencido/anulado, solo permitir ANULADO (rectificación)
+    // Si está pendiente o parcial, permitir avanzar normalmente
+    const estadosFiltrados = _estadosPago.filter(e => {
+        if (!e.activo) return false;
+        const ordenE = ORDEN_ESTADO_PAGO[e.codigo] ?? 99;
+        // No permitir volver a PENDIENTE si ya avanzó
+        if (e.codigo === "PENDIENTE" && ordenActual > 1) return false;
+        // No permitir PARCIAL si ya está PAGADO
+        if (e.codigo === "PARCIAL" && codigoPagoActual === "PAGADO") return false;
+        return true;
+    });
+
+    const selEstado = document.getElementById("cpEstadoPagoId");
+    if (selEstado) {
+        selEstado.innerHTML = estadosFiltrados.map(e =>
+            `<option value="${e.estadoPagoId}" ${e.estadoPagoId === ventaActual.estadoPagoId ? "selected" : ""}>${escapeHtml(e.nombre)}</option>`
+        ).join("");
+    }
+
+    // Preseleccionar método de pago si ya estaba definido en la venta
+    const selMetodo = document.getElementById("cpMetodoPagoId");
+    if (selMetodo && ventaActual.metodoPagoId) {
+        selMetodo.value = String(ventaActual.metodoPagoId);
+        // Si no encontró el valor (select no cargado aún), forzar en cuanto esté
+        if (!selMetodo.value) selMetodo.value = String(ventaActual.metodoPagoId);
+    }
+
+    document.getElementById("cpNotas").value = "";
+    abrirModal("modalConfirmarPago");
 }
 
 async function accionConfirmarPago() {
@@ -756,7 +830,7 @@ async function generarFacturaPDF() {
         y += 6;
     });
     y -= 24;
-    [["Tipo entrega", v.nombreTipoEntrega ?? "—"],["Fecha entrega", v.fechaEntrega ? fmtDateSimple(v.fechaEntrega) : "—"],["Vendedor", v.nombreVendedor ?? "—"],["Estado venta", v.nombreEstadoVenta ?? "—"]].forEach(([label, valor]) => {
+    [["Tipo entrega", v.nombreTipoEntrega ?? "—"],["Fecha entrega", v.fechaEntrega ? fmtDateTimeSimple(v.fechaEntrega) : "No especificada"],["Vendedor", v.nombreVendedor ?? "—"],["Estado venta", v.nombreEstadoVenta ?? "—"]].forEach(([label, valor]) => {
         doc.setFont("helvetica","bold"); doc.setTextColor(...grisMut); doc.text(`${label}:`, col2, y);
         doc.setFont("helvetica","normal"); doc.setTextColor(...grisText); doc.text(String(valor), col2 + 28, y);
         y += 6;
@@ -817,8 +891,43 @@ function cerrarModal(id) { const m = document.getElementById(id); if (!m) return
 function numVal(id) { const n = parseInt(document.getElementById(id)?.value ?? "", 10); return isNaN(n) ? 0 : n; }
 function fmtMonto(n) { return new Intl.NumberFormat("es-CR", { style: "currency", currency: "CRC" }).format(Number(n ?? 0)); }
 function fmtMontoRaw(n) { return `₡${Number(n ?? 0).toLocaleString("es-CR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`; }
-function fmtDate(v) { if (!v) return "—"; const d = new Date(v); return isNaN(d) ? String(v) : d.toLocaleDateString("es-CR"); }
-function fmtDateTime(v) { if (!v) return "—"; const d = new Date(v); if (isNaN(d)) return String(v); return d.toLocaleDateString("es-CR") + " " + d.toLocaleTimeString("es-CR", { hour: "2-digit", minute: "2-digit" }); }
-function fmtDateSimple(v) { if (!v) return "—"; const d = new Date(v); if (isNaN(d)) return String(v); const p = n => String(n).padStart(2,"0"); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`; }
+
+// .NET serializa DateTime sin 'Z' → el browser lo trataría como UTC si lo parseamos con new Date()
+// Para evitar desfase de zona horaria, parseamos manualmente el string ISO sin timezone
+function parseFechaLocal(v) {
+    if (!v) return null;
+    // Si el string tiene Z o +, usar Date normal (ya es UTC o tiene offset)
+    if (/[Zz]|[+-]\d{2}:/.test(v)) return new Date(v);
+    // Sin timezone: tratar como hora local (igual a como fue ingresada)
+    const [datePart, timePart = "00:00:00"] = v.split("T");
+    const [y, mo, d] = datePart.split("-").map(Number);
+    const [h, mi, s = 0] = timePart.split(":").map(Number);
+    return new Date(y, mo - 1, d, h, mi, s);
+}
+function fmtDate(v) {
+    if (!v) return "—";
+    const d = parseFechaLocal(v);
+    return (!d || isNaN(d)) ? String(v) : d.toLocaleDateString("es-CR");
+}
+function fmtDateTime(v) {
+    if (!v) return "—";
+    const d = parseFechaLocal(v);
+    if (!d || isNaN(d)) return String(v);
+    return d.toLocaleDateString("es-CR") + " " + d.toLocaleTimeString("es-CR", { hour: "2-digit", minute: "2-digit" });
+}
+function fmtDateSimple(v) {
+    if (!v) return "—";
+    const d = parseFechaLocal(v);
+    if (!d || isNaN(d)) return String(v);
+    const p = n => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}`;
+}
+function fmtDateTimeSimple(v) {
+    if (!v) return "No especificada";
+    const d = parseFechaLocal(v);
+    if (!d || isNaN(d)) return String(v);
+    const p = n => String(n).padStart(2, "0");
+    return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
 function truncate(str, maxLen) { if (!str) return ""; return str.length > maxLen ? str.substring(0, maxLen-1) + "…" : str; }
 function cargarScript(src) { return new Promise((resolve, reject) => { const s = document.createElement("script"); s.src = src; s.onload = resolve; s.onerror = reject; document.head.appendChild(s); }); }

@@ -69,7 +69,11 @@
                     </label>
                     <label class="field" id="wrapFechaEntrega">
                         <span>Fecha de entrega</span>
-                        <input type="datetime-local" id="nvFechaEntrega">
+                        <div style="display:flex; gap:6px;">
+                            <input type="date" id="nvFechaEntregaDate" style="flex:1;">
+                            <input type="time" id="nvFechaEntregaTime" style="width:110px;">
+                        </div>
+                        <small id="debugFecha" style="color:var(--text-muted,#94a3b8);font-size:11px;">Opcional</small>
                     </label>
                     <label class="field">
                         <span>IVA (₡)</span>

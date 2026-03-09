@@ -1,110 +1,144 @@
-<section class="page">
-
-    <!-- Cabecera -->
-    <div class="page-header">
+﻿<main class="page inventarioReal">
+    <header class="page__header">
         <div>
-            <h1 class="page-title">Inventario · Lotes</h1>
-            <p class="page-subtitle">Stock actual y movimientos por lote</p>
+            <h1 class="page__title">Inventario</h1>
+            <p class="page__subtitle">Inventario actual y movimientos por lote.</p>
         </div>
-        <div class="page-actions">
-            <button class="btn" id="btnRefrescarInventario">Refrescar</button>
-        </div>
-    </div>
 
-    <!-- KPIs -->
-    <div class="inv-kpis">
-        <div class="inv-kpi">
-            <div class="inv-kpi__label">Lotes</div>
-            <div class="inv-kpi__value" id="kpiItems">—</div>
+        <div class="page__actions">
+            <button id="btnRefrescarInventario" class="btn" type="button">Refrescar</button>
         </div>
-        <div class="inv-kpi">
-            <div class="inv-kpi__label">Unidades totales</div>
-            <div class="inv-kpi__value" id="kpiUnits">—</div>
-        </div>
-        <div class="inv-kpi inv-kpi--danger">
-            <div class="inv-kpi__label">Vencidos</div>
-            <div class="inv-kpi__value" id="kpiExpired">—</div>
-        </div>
-        <div class="inv-kpi inv-kpi--warn">
-            <div class="inv-kpi__label">Por vencer (7d)</div>
-            <div class="inv-kpi__value" id="kpiSoon">—</div>
-        </div>
-        <div class="inv-kpi inv-kpi--muted">
-            <div class="inv-kpi__label">Sin stock</div>
-            <div class="inv-kpi__value" id="kpiZero">—</div>
-        </div>
-    </div>
+    </header>
 
-    <!-- Filtros -->
-    <div class="content-card" style="margin-bottom:12px;">
-        <div class="filter-bar">
-            <label class="field" style="max-width:260px;">
-                <span>Buscar producto</span>
-                <input type="text" id="filtroNombre" placeholder="Nombre o código...">
-            </label>
-            <label class="field" style="max-width:200px;">
-                <span>Lote</span>
-                <input type="text" id="filtroLote" placeholder="Ej: LEC-001-...">
-            </label>
-            <label class="field" style="max-width:160px;">
-                <span>Disponibilidad</span>
-                <select id="filtroDisponibles">
-                    <option value="false">Todos</option>
-                    <option value="true" selected>Solo con stock</option>
+    <section class="card card--filters">
+        <div class="card__header card__header--filters">
+            <div>
+                <h2 class="card__title">Filtros de búsqueda</h2>
+                <p class="card__subtitle">
+                    Consulta el inventario por producto, lote y rango de fechas.
+                </p>
+            </div>
+
+            <div class="card__actions">
+                <button id="btnLimpiarFiltros" class="btn btn--ghost" type="button">Limpiar</button>
+                <button id="btnAplicarFiltros" class="btn btn--primary" type="button">Buscar</button>
+            </div>
+        </div>
+
+        <div class="filters filters--inventory">
+            <div class="field">
+                <label for="fProductoId">Producto</label>
+                <select id="fProductoId">
+                    <option value="">Todos</option>
                 </select>
-            </label>
-            <label class="field" style="max-width:160px;">
-                <span>Caducidad</span>
-                <select id="filtroCaducidad">
-                    <option value="">Todas</option>
-                    <option value="vencido">Vencidos</option>
-                    <option value="pronto">Por vencer (7d)</option>
-                    <option value="ok">Vigentes</option>
-                </select>
-            </label>
-            <button class="btn btn-sm" id="btnLimpiarFiltros" style="align-self:flex-end;margin-bottom:2px;">Limpiar</button>
-        </div>
-    </div>
+            </div>
 
-    <!-- Tabla -->
-    <div class="content-card">
+            <div class="field">
+                <label for="fLote">Lote</label>
+                <input id="fLote" type="text" placeholder="Ej: LEC-001-021726" />
+            </div>
+
+            <div class="field field--date-range">
+                <label for="fDesde">Rango de fechas</label>
+                <div class="date-range">
+                    <input id="fDesde" type="date" aria-label="Fecha desde" />
+                    <span class="date-range__separator">a</span>
+                    <input id="fHasta" type="date" aria-label="Fecha hasta" />
+                </div>
+            </div>
+
+            <div class="field field--checkbox">
+                <label class="checkbox checkbox--box" for="fSoloDisponibles">
+                    <input id="fSoloDisponibles" type="checkbox" />
+                    <span>Solo disponibles</span>
+                </label>
+            </div>
+        </div>
+    </section>
+
+    <section class="inventarioReal__kpis">
+        <div class="kpi">
+            <div class="kpi__label">Ítems</div>
+            <div id="kpiItems" class="kpi__value">0</div>
+        </div>
+
+        <div class="kpi">
+            <div class="kpi__label">Unidades</div>
+            <div id="kpiUnits" class="kpi__value">0</div>
+        </div>
+
+        <div class="kpi kpi--danger">
+            <div class="kpi__label">Vencidos</div>
+            <div id="kpiExpired" class="kpi__value">0</div>
+        </div>
+
+        <div class="kpi kpi--warn">
+            <div class="kpi__label">Por vencer (7d)</div>
+            <div id="kpiSoon" class="kpi__value">0</div>
+        </div>
+
+        <div class="kpi kpi--muted">
+            <div class="kpi__label">Sin stock</div>
+            <div id="kpiZero" class="kpi__value">0</div>
+        </div>
+    </section>
+
+    <section class="card">
+        <div class="card__header">
+            <h2 class="card__title">Inventario actual</h2>
+            <div class="card__meta">
+                <span id="invCount" class="badge">0</span>
+            </div>
+        </div>
+
+        <div id="invError" class="alert alert--error" hidden></div>
+
         <div class="table-wrap">
-            <table class="data-table">
+            <table class="table" aria-label="Tabla de inventario">
                 <thead>
                     <tr>
-                        <th>#Inv.</th>
                         <th>Código</th>
                         <th>Producto</th>
                         <th>Lote</th>
-                        <th class="col-right">Disponible</th>
-                        <th>Entrada</th>
+                        <th class="t-right">Cantidad</th>
+                        <th>Ubicación</th>
                         <th>Caducidad</th>
-                        <th>Notas</th>
-                        <th class="col-right">Acciones</th>
+                        <th>Calidad</th>
+                        <th class="t-right">Acciones</th>
                     </tr>
                 </thead>
-                <tbody id="invTbody">
-                    <tr><td colspan="9" class="table-empty">Cargando...</td></tr>
-                </tbody>
+                <tbody id="invTbody"></tbody>
             </table>
         </div>
-    </div>
 
-    <!-- MODAL — Movimientos del lote -->
-    <div class="modal" id="modalMovimientos" hidden aria-hidden="true">
-        <div class="modal__backdrop" id="backdropMovimientos"></div>
-        <div class="modal__content modal__content--wide">
-            <div class="modal__header">
-                <h2 class="modalTitle" id="movimientosTitle">Movimientos</h2>
-                <button class="icon-btn" id="btnCerrarMovimientos">✕</button>
-            </div>
-            <div class="modal__body" id="movimientosBody">
-                <div class="table-empty">Cargando...</div>
-            </div>
-            <div class="modal__footer">
-                <button class="btn" id="btnCerrarMovimientosFooter">Cerrar</button>
+        <div id="invEmpty" class="empty" hidden>
+            <p>No hay registros con los filtros actuales.</p>
+        </div>
+
+        <div id="invLoading" class="loading" hidden>
+            <div class="spinner"></div>
+            <p>Cargando inventario…</p>
+        </div>
+    </section>
+
+    <section id="modalInventarioReal" class="modal" hidden>
+        <div class="modal__backdrop" data-close="1"></div>
+
+        <div class="modal__content"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="modalInventarioRealTitle">
+            <header class="modal__header">
+                <h3 id="modalInventarioRealTitle" class="modalTitle">Modal</h3>
+                <button type="button"
+                        class="btn btn--ghost"
+                        id="btnCerrarModalInventarioReal">
+                    Cerrar
+                </button>
+            </header>
+
+            <div id="modalInventarioRealBody" class="modal__body">
             </div>
         </div>
-    </div>
-
-</section>
+    </section>
+</main>

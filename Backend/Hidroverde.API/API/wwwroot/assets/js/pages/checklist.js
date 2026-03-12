@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿// checklist.js - Full functionality with Database + Fallback (mock data from file)
 
 let currentEmpleadoId = 1;
@@ -442,4 +443,9 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
 } else {
     init();
+=======
+﻿export function init() {
+    console.log("Checklist page loaded");
+    // The inline script in checklist.html already handles everything
+>>>>>>> c258a47c036e1f2f3bda8cbc9ae982b2e22d35a1
 }

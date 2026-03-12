@@ -1,16 +1,19 @@
-﻿using Abstracciones.Modelos;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+using Abstracciones.Modelos.Cliente;
 
 namespace Abstracciones.Interfaces.Flujo
 {
     public interface IClienteFlujo
     {
-        Task<IEnumerable<ClienteResponse>> Obtener();
-        Task<ClienteResponse> Obtener(int clienteId);
-        Task<int> Agregar(ClienteRequest cliente);
-        Task<int> Editar(int clienteId, ClienteRequest cliente);
-        Task<IEnumerable<DireccionClienteResponse>> ObtenerDirecciones(int clienteId);
-        Task<int> AgregarDireccion(DireccionClienteRequest direccion);
-        Task<int> EditarDireccion(int direccionId, DireccionClienteRequest direccion);
-        Task<int> EliminarDireccion(int direccionId);
+        Task<int> Agregar(ClienteRequest request);
+        Task<int> Editar(int clienteId, ClienteRequest request);
+        Task<int> Eliminar(int clienteId);
+        Task<ClienteResponse?> ObtenerPorId(int clienteId);
+        Task<IEnumerable<ClienteResponse>> ObtenerTodos(ClienteFilter? filtro = null);
     }
 }

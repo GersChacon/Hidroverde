@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 ﻿<link rel="stylesheet" href="/assets/css/pages/checklist.css">
+=======
+﻿﻿
+<link rel="stylesheet" href="/assets/css/pages/checklist.css">
+>>>>>>> c258a47c036e1f2f3bda8cbc9ae982b2e22d35a1
 
 <section class="page page-checklist">
     <header class="page__header">
@@ -12,7 +17,10 @@
                 <label for="empleadoId">Empleado ID:</label>
                 <input type="number" id="empleadoId" value="1" min="1" style="width:80px;">
                 <button class="btn" id="refreshTasks">Actualizar</button>
+<<<<<<< HEAD
                 <button class="btn btn-primary" id="btnNuevaTarea" style="margin-left:10px;">+ Nueva Tarea</button>
+=======
+>>>>>>> c258a47c036e1f2f3bda8cbc9ae982b2e22d35a1
             </div>
         </div>
     </header>
@@ -21,7 +29,11 @@
         <table class="table" id="checklistTable">
             <thead>
                 <tr>
+<<<<<<< HEAD
                     <th>ID</th>
+=======
+                    <th>Tarea</th>
+>>>>>>> c258a47c036e1f2f3bda8cbc9ae982b2e22d35a1
                     <th>Descripción</th>
                     <th>Responsable</th>
                     <th>Estado</th>
@@ -34,13 +46,21 @@
         </table>
     </div>
 
+<<<<<<< HEAD
     <!-- Modal for evidence upload -->
+=======
+    <!-- Modal for evidence upload (optional) -->
+>>>>>>> c258a47c036e1f2f3bda8cbc9ae982b2e22d35a1
     <div class="modal" id="evidenceModal" hidden>
         <div class="modalCard">
             <div class="row">
                 <h3>Subir evidencia</h3>
                 <span class="right"></span>
+<<<<<<< HEAD
                 <button class="btn" id="closeEvidenceModal">Cerrar</button>
+=======
+                <button class="btn" data-close="evidenceModal">Cerrar</button>
+>>>>>>> c258a47c036e1f2f3bda8cbc9ae982b2e22d35a1
             </div>
             <input type="hidden" id="evidenceTaskId">
             <div class="grid2" style="margin-top:12px;">
@@ -58,6 +78,7 @@
             </div>
         </div>
     </div>
+<<<<<<< HEAD
 
     <!-- Modal for creating new task -->
     <div class="modal" id="modalNuevaTarea" hidden>
@@ -110,3 +131,137 @@
 
 <!-- Link to external JavaScript file -->
 <script type="module" src="/assets/js/pages/checklist.js"></script>
+=======
+</section>
+
+<script>
+    (function () {
+        let currentEmpleadoId = 1;
+
+        function loadTasks() {
+            const empleadoId = document.getElementById('empleadoId').value;
+            currentEmpleadoId = empleadoId;
+
+            fetch(`/api/checklist/today`, {
+                headers: { 'X-Empleado-Id': empleadoId }
+            })
+                .then(res => {
+                    if (!res.ok) throw new Error('API error');
+                    return res.json();
+                })
+                .then(tasks => renderTasks(tasks))
+                .catch(err => {
+                    console.warn('API failed, using mock data', err);
+                    // Mock data fallback
+                    const mockTasks = [
+                        { taskId: 1, description: "Preparación de insumos", responsible: "Fiorella", isCompleted: false },
+                        { taskId: 2, description: "Plantación en torres", responsible: "Asistente", isCompleted: true },
+                        { taskId: 3, description: "Revisión de riego", responsible: "Diego", isCompleted: false }
+                    ];
+                    renderTasks(mockTasks);
+                });
+        }
+
+        function renderTasks(tasks) {
+            const tbody = document.getElementById('checklistTableBody');
+            if (!tasks || tasks.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="muted">No hay tareas para hoy.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = tasks.map(task => `
+                <tr>
+                    <td>${task.taskId}</td>
+                    <td>${task.description}</td>
+                    <td>${task.responsible}</td>
+                    <td>${task.isCompleted ? 'Completada' : 'Pendiente'}</td>
+                    <td class="right">
+                        ${!task.isCompleted ?
+                    `<button class="btn btn-small btn-complete" data-id="${task.taskId}">Completar</button>` : ''}
+                        <button class="btn btn-small btn-upload" data-id="${task.taskId}">Subir evidencia</button>
+                    </td>
+                </tr>
+            `).join('');
+
+            // Attach event listeners
+            document.querySelectorAll('.btn-complete').forEach(btn => {
+                btn.addEventListener('click', e => {
+                    const taskId = e.target.dataset.id;
+                    markComplete(taskId);
+                });
+            });
+            document.querySelectorAll('.btn-upload').forEach(btn => {
+                btn.addEventListener('click', e => {
+                    const taskId = e.target.dataset.id;
+                    openEvidenceModal(taskId);
+                });
+            });
+        }
+
+        function markComplete(taskId) {
+            if (!confirm('¿Marcar esta tarea como completada?')) return;
+
+            fetch(`/api/checklist/task/${taskId}/complete`, {
+                method: 'PATCH',
+                headers: { 'X-Empleado-Id': currentEmpleadoId }
+            })
+                .then(res => {
+                    if (res.ok) {
+                        alert('Tarea marcada como completada.');
+                        loadTasks();
+                    } else {
+                        res.text().then(text => alert('Error: ' + text));
+                    }
+                })
+                .catch(err => alert('Error: ' + err.message));
+        }
+
+        function openEvidenceModal(taskId) {
+            document.getElementById('evidenceTaskId').value = taskId;
+            document.getElementById('evidenceFile').value = '';
+            document.getElementById('evidenceNotes').value = '';
+            document.getElementById('evidenceModal').hidden = false;
+        }
+
+        function uploadEvidence() {
+            const taskId = document.getElementById('evidenceTaskId').value;
+            const fileInput = document.getElementById('evidenceFile');
+            const notes = document.getElementById('evidenceNotes').value;
+            if (!fileInput.files[0]) {
+                alert('Seleccione un archivo.');
+                return;
+            }
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            if (notes) formData.append('notes', notes);
+
+            fetch(`/api/evidence/upload?taskId=${taskId}`, {
+                method: 'POST',
+                headers: { 'X-Empleado-Id': currentEmpleadoId },
+                body: formData
+            })
+                .then(res => {
+                    if (res.ok) return res.json();
+                    else return res.text().then(text => { throw new Error(text); });
+                })
+                .then(data => {
+                    alert('Evidencia subida. ID: ' + data.evidenceId);
+                    document.getElementById('evidenceModal').hidden = true;
+                })
+                .catch(err => alert('Error: ' + err.message));
+        }
+
+        // Event listeners
+        document.getElementById('refreshTasks').addEventListener('click', loadTasks);
+        document.getElementById('uploadEvidenceBtn').addEventListener('click', uploadEvidence);
+
+        // Close modal
+        document.querySelector('[data-close="evidenceModal"]').addEventListener('click', () => {
+            document.getElementById('evidenceModal').hidden = true;
+        });
+
+        // Initial load
+        loadTasks();
+    })();
+</script>
+>>>>>>> c258a47c036e1f2f3bda8cbc9ae982b2e22d35a1

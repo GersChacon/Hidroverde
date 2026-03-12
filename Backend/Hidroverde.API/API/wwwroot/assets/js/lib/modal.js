@@ -7,6 +7,7 @@ export function showModal(modalId, show) {
 }
 
 export function setModalTitle(modalId, title) {
-    const h = document.querySelector(`#${modalId} .modalTitle`);
+    const h = $(`#${modalId} .modalTitle`);
+
     if (h) h.textContent = title ?? "";
 }

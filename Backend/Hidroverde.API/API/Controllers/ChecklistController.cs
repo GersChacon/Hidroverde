@@ -10,11 +10,14 @@ namespace API.Controllers
     {
         private readonly IChecklistFlujo _checklistFlujo;
 
+<<<<<<< HEAD
         public ChecklistController(IChecklistFlujo checklistFlujo)
         {
             _checklistFlujo = checklistFlujo;
         }
 
+=======
+>>>>>>> c258a47c036e1f2f3bda8cbc9ae982b2e22d35a1
         [HttpGet("kpi/summary")]
         [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetKpiSummary([FromQuery] DateTime? fecha = null)
@@ -22,6 +25,7 @@ namespace API.Controllers
             try
             {
                 var fechaConsulta = fecha ?? DateTime.Today;
+<<<<<<< HEAD
 
                 // Try to get real data first
                 var tareas = await _checklistFlujo.ObtenerChecklistHoy(null);
@@ -34,14 +38,57 @@ namespace API.Controllers
 
                 // If Flujo returned null/empty, use mock
                 return Ok(GetMockKpiSummary(fechaConsulta));
+=======
+                var tareas = await _checklistFlujo.ObtenerChecklistHoy(null);
+
+                var total = tareas.Count();
+                var completadas = tareas.Count(t => t.IsCompleted);
+                var pendientes = total - completadas;
+                var porcentaje = total > 0 ? (completadas * 100 / total) : 0;
+
+                string estado;
+                if (porcentaje >= 80) estado = "BUENO";
+                else if (porcentaje >= 50) estado = "REGULAR";
+                else estado = "CRÍTICO";
+
+                return Ok(new
+                {
+                    fecha = fechaConsulta.ToString("yyyy-MM-dd"),
+                    totalTareas = total,
+                    tareasCompletadas = completadas,
+                    tareasPendientes = pendientes,
+                    porcentajeCumplimiento = porcentaje,
+                    estado = estado
+                });
+>>>>>>> c258a47c036e1f2f3bda8cbc9ae982b2e22d35a1
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error loading checklist KPI: {ex.Message}");
+<<<<<<< HEAD
                 // Mock data fallback
                 return Ok(GetMockKpiSummary(fecha ?? DateTime.Today));
             }
         }
+=======
+
+                // Mock data fallback
+                return Ok(new
+                {
+                    fecha = fecha?.ToString("yyyy-MM-dd") ?? DateTime.Today.ToString("yyyy-MM-dd"),
+                    totalTareas = 12,
+                    tareasCompletadas = 8,
+                    tareasPendientes = 4,
+                    porcentajeCumplimiento = 67,
+                    estado = "REGULAR"
+                });
+            }
+        }
+        public ChecklistController(IChecklistFlujo checklistFlujo)
+        {
+            _checklistFlujo = checklistFlujo;
+        }
+>>>>>>> c258a47c036e1f2f3bda8cbc9ae982b2e22d35a1
 
         /// <summary>
         /// Obtiene el checklist de tareas para hoy.
@@ -53,6 +100,7 @@ namespace API.Controllers
         public async Task<IActionResult> ObtenerChecklistHoy(
             [FromHeader(Name = "X-Empleado-Id")] int? empleadoId)
         {
+<<<<<<< HEAD
             try
             {
                 // Try to get real data
@@ -86,6 +134,12 @@ namespace API.Controllers
 
                 return NoContent();
             }
+=======
+            var tasks = await _checklistFlujo.ObtenerChecklistHoy(empleadoId);
+            if (tasks == null || !tasks.Any())
+                return NoContent();
+            return Ok(tasks);
+>>>>>>> c258a47c036e1f2f3bda8cbc9ae982b2e22d35a1
         }
 
         /// <summary>
@@ -106,6 +160,7 @@ namespace API.Controllers
 
             try
             {
+<<<<<<< HEAD
                 // Try to mark as complete in database
                 await _checklistFlujo.MarcarTareaCompletada(id, empleadoId, DateTime.Now);
                 return Ok(new { mensaje = "Tarea marcada como completada.", success = true });
@@ -235,3 +290,15 @@ namespace API.Controllers
         #endregion
     }
 }
+=======
+                await _checklistFlujo.MarcarTareaCompletada(id, empleadoId, DateTime.Now);
+                return Ok(new { mensaje = "Tarea marcada como completada." });
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+    }
+}
+>>>>>>> c258a47c036e1f2f3bda8cbc9ae982b2e22d35a1

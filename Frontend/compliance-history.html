@@ -1,0 +1,191 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Historial de Cumplimiento - Hidroverde</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="assets/css/main.css" />
+    <noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+    <style>
+        .filter-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            margin-bottom: 20px;
+        }
+        .filter-row .field {
+            flex: 1 1 200px;
+        }
+        .export-buttons {
+            margin-top: 20px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body class="is-preload">
+    <div id="wrapper">
+        <header id="header">
+            <a href="index.html" class="logo">Hidroverde</a>
+        </header>
+
+        <nav id="nav">
+            <ul class="links">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="registroMovimientos.html">Registro De Movimientos</a></li>
+                <li><a href="gestionInventario.html">Gestión de Inventario</a></li>
+                <li><a href="produccion.html">Produccion</a></li>
+                <li><a href="PedidosInternos.html">Pedidos Internos</a></li>
+                <li><a href="controlDeLotes.html">Control de Lotes</a></li>
+                <li><a href="reportes-alertas.html">Reportes y Alertas</a></li>
+                <li><a href="reportes.html">Reportes</a></li>
+                <li><a href="UsuarioYRoles.html">Usuario y roles</a></li>
+                <li><a href="checklist.html">Checklist Diario</a></li>
+                <li class="active"><a href="compliance-history.html">Historial de Cumplimiento</a></li>
+            </ul>
+        </nav>
+
+        <div id="main">
+            <section class="post">
+                <header class="major">
+                    <h1>Historial de Cumplimiento</h1>
+                    <p>Consulte tareas completadas con filtros</p>
+                </header>
+
+                <!-- Filters -->
+                <div class="filter-row">
+                    <div class="field">
+                        <label for="filterUserId">ID Usuario</label>
+                        <input type="number" id="filterUserId" placeholder="Ej: 1">
+                    </div>
+                    <div class="field">
+                        <label for="filterBatchId">Lote</label>
+                        <input type="text" id="filterBatchId" placeholder="Ej: BATCH-001">
+                    </div>
+                    <div class="field">
+                        <label for="filterDateFrom">Fecha desde</label>
+                        <input type="date" id="filterDateFrom">
+                    </div>
+                    <div class="field">
+                        <label for="filterDateTo">Fecha hasta</label>
+                        <input type="date" id="filterDateTo">
+                    </div>
+                    <div class="field">
+                        <button id="applyFilters" class="button primary">Filtrar</button>
+                    </div>
+                </div>
+
+                <div class="table-wrapper">
+                    <table id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>TaskId</th>
+                                <th>Descripción</th>
+                                <th>Responsable</th>
+                                <th>Completado por</th>
+                                <th>Fecha</th>
+                                <th>Evidencia</th>
+                                <th>Lote</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Data loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="export-buttons">
+                    <a href="#" id="exportCsvBtn" class="button">Exportar CSV</a>
+                    <a href="#" id="exportExcelBtn" class="button">Exportar Excel</a>
+                </div>
+            </section>
+        </div>
+
+        <footer id="footer">
+            <section class="split contact">
+                <section class="alt"><h3>Dirección</h3><p>Heredia | Costa Rica</p></section>
+            </section>
+        </footer>
+        <div id="copyright"><ul><li>todos los derechos reservados a &copy; hidroverde.com</li></ul></div>
+    </div>
+
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/js/jquery.scrollex.min.js"></script>
+    <script src="assets/js/jquery.scrolly.min.js"></script>
+    <script src="assets/js/browser.min.js"></script>
+    <script src="assets/js/breakpoints.min.js"></script>
+    <script src="assets/js/util.js"></script>
+    <script src="assets/js/main.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            loadHistory();
+
+            $('#applyFilters').click(loadHistory);
+
+            // Export links: build URL with current filters
+            $('#exportCsvBtn').click(function(e) {
+                e.preventDefault();
+                exportFile('csv');
+            });
+            $('#exportExcelBtn').click(function(e) {
+                e.preventDefault();
+                exportFile('excel');
+            });
+        });
+
+        function getFilterParams() {
+            return {
+                userId: $('#filterUserId').val() || undefined,
+                batchId: $('#filterBatchId').val() || undefined,
+                dateFrom: $('#filterDateFrom').val() || undefined,
+                dateTo: $('#filterDateTo').val() || undefined
+            };
+        }
+
+        function loadHistory() {
+            const params = getFilterParams();
+            $.ajax({
+                url: '/api/history',
+                method: 'GET',
+                data: params,
+                success: function(data) {
+                    renderHistory(data);
+                },
+                error: function(xhr) {
+                    alert('Error al cargar historial: ' + xhr.responseText);
+                }
+            });
+        }
+
+        function renderHistory(records) {
+            const tbody = $('#historyTable tbody');
+            tbody.empty();
+
+            if (!records || records.length === 0) {
+                tbody.append('<tr><td colspan="7" style="text-align:center">No hay registros.</td></tr>');
+                return;
+            }
+
+            records.forEach(r => {
+                const row = $('<tr>');
+                row.append(`<td>${r.taskId}</td>`);
+                row.append(`<td>${r.taskDescription}</td>`);
+                row.append(`<td>${r.responsible}</td>`);
+                row.append(`<td>${r.completedByUserName} (${r.completedByUserId})</td>`);
+                row.append(`<td>${new Date(r.completedAt).toLocaleString()}</td>`);
+                row.append(`<td>${r.evidenceFileName ? '<a href="#" onclick="alert(\'Descarga no implementada\')">' + r.evidenceFileName + '</a>' : '—'}</td>`);
+                row.append(`<td>${r.batchId || '—'}</td>`);
+                tbody.append(row);
+            });
+        }
+
+        function exportFile(format) {
+            const params = getFilterParams();
+            let url = `/api/history/export/${format}?`;
+            const query = $.param(params);
+            window.open(url + query, '_blank');
+        }
+    </script>
+</body>
+</html>

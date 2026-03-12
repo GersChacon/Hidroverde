@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿/* Modal styles */
 .modal {
     position: fixed;
@@ -41,3 +42,7 @@
     .btn-primary:hover {
         background: #15803d;
     }
+=======
+﻿body {
+}
+>>>>>>> c258a47c036e1f2f3bda8cbc9ae982b2e22d35a1

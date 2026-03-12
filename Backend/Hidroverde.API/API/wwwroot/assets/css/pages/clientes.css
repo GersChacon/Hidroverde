@@ -1,0 +1,25 @@
+﻿.page-clientes .page__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.page-clientes .table th {
+    white-space: nowrap;
+}
+
+.page-clientes .table td {
+    vertical-align: middle;
+}
+
+.page-clientes .btn.danger {
+    background: rgba(220,38,38,.10);
+    border-color: rgba(220,38,38,.30);
+    color: #7f1d1d;
+    margin-left: 8px;
+}
+
+    .page-clientes .btn.danger:hover {
+        background: rgba(220,38,38,.20);
+    }

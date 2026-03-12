@@ -1,0 +1,90 @@
+﻿<link rel="stylesheet" href="/assets/css/pages/clientes.css">
+
+<section class="page page-clientes">
+    <header class="page__header">
+        <div>
+            <h1>Clientes</h1>
+            <p class="muted">Gestión de clientes y segmentación</p>
+        </div>
+        <div class="page__actions">
+            <button class="btn btn-primary" id="btnNuevoCliente">+ Nuevo cliente</button>
+            <button class="btn" id="btnRefrescar">Refrescar</button>
+        </div>
+    </header>
+
+    <div class="card" style="margin-top:14px;">
+        <div class="row" style="gap:12px; flex-wrap:wrap;">
+            <input id="filtroTipo" type="text" placeholder="Tipo cliente (ej. Mayorista)">
+            <input id="filtroUbicacion" type="text" placeholder="Ubicación">
+            <button class="btn" id="btnFiltrar">Filtrar</button>
+            <button class="btn" id="btnLimpiar">Limpiar</button>
+        </div>
+
+        <table class="table" style="margin-top:12px;">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre/Razón Social</th>
+                    <th>Email</th>
+                    <th>Teléfono</th>
+                    <th>Dirección</th>
+                    <th>Tipo</th>
+                    <th>Identificador</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="clientesTableBody">
+                <tr><td colspan="8" class="muted">Cargando...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal para crear/editar cliente -->
+    <div class="modal" id="modalCliente" hidden>
+        <div class="modalCard">
+            <div class="row">
+                <h3 id="modalTitle">Nuevo cliente</h3>
+                <span class="right"></span>
+                <button class="btn" id="btnCerrarModal">Cerrar</button>
+            </div>
+
+            <div class="grid2" style="margin-top:12px;">
+                <label>
+                    Nombre/Razón Social *
+                    <input id="clienteNombre" type="text" required>
+                </label>
+                <label>
+                    Email *
+                    <input id="clienteEmail" type="email" required>
+                </label>
+                <label>
+                    Teléfono
+                    <input id="clienteTelefono" type="text">
+                </label>
+                <label>
+                    Dirección
+                    <input id="clienteDireccion" type="text">
+                </label>
+                <label>
+                    Tipo cliente
+                    <select id="clienteTipo">
+                        <option value="Minorista">Minorista</option>
+                        <option value="Mayorista">Mayorista</option>
+                        <option value="Corporativo">Corporativo</option>
+                    </select>
+                </label>
+                <label>
+                    Identificador único (cédula/RUC) *
+                    <input id="clienteIdentificador" type="text" required>
+                </label>
+            </div>
+
+            <div class="row" style="margin-top:12px; justify-content:flex-end;">
+                <button class="btn btn-primary" id="btnGuardarCliente">Guardar</button>
+            </div>
+            <div id="clienteMsg" class="muted" style="margin-top:8px;"></div>
+        </div>
+    </div>
+</section>
+
+<script src="/assets/js/pages/clientes.js" type="module"></script>

@@ -1,0 +1,123 @@
+﻿﻿
+<link rel="stylesheet" href="/assets/css/pages/compliance-history.css">
+
+<section class="page page-history">
+    <header class="page__header">
+        <div>
+            <h1>Historial de Cumplimiento</h1>
+            <p class="muted">Consulte tareas completadas con filtros</p>
+        </div>
+    </header>
+
+    <div class="card" style="margin-top:14px;">
+        <div class="row" style="gap:12px; flex-wrap:wrap;">
+            <input id="filterUserId" type="number" placeholder="ID Usuario" style="max-width:120px;">
+            <input id="filterBatchId" type="text" placeholder="Lote (ej. BATCH-001)">
+            <input id="filterDateFrom" type="date">
+            <input id="filterDateTo" type="date">
+            <button class="btn" id="applyFilters">Filtrar</button>
+            <span class="right"></span>
+            <button class="btn" id="exportCsvBtn">Exportar CSV</button>
+            <button class="btn" id="exportExcelBtn">Exportar Excel</button>
+        </div>
+
+        <table class="table" style="margin-top:12px;">
+            <thead>
+                <tr>
+                    <th>TaskId</th>
+                    <th>Descripción</th>
+                    <th>Responsable</th>
+                    <th>Completado por</th>
+                    <th>Fecha</th>
+                    <th>Evidencia</th>
+                    <th>Lote</th>
+                </tr>
+            </thead>
+            <tbody id="historyTableBody">
+                <tr><td colspan="7" class="muted">Cargando...</td></tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<script>
+    (function () {
+        function getFilterParams() {
+            return {
+                userId: document.getElementById('filterUserId').value || undefined,
+                batchId: document.getElementById('filterBatchId').value || undefined,
+                dateFrom: document.getElementById('filterDateFrom').value || undefined,
+                dateTo: document.getElementById('filterDateTo').value || undefined
+            };
+        }
+
+        function loadHistory() {
+            const params = new URLSearchParams(getFilterParams());
+            fetch(`/api/history?${params}`)
+                .then(res => {
+                    if (!res.ok) throw new Error('API error');
+                    return res.json();
+                })
+                .then(data => renderHistory(data))
+                .catch(err => {
+                    console.warn('API failed, using mock data', err);
+                    // Mock data fallback
+                    const mockHistory = [
+                        {
+                            taskId: 1,
+                            taskDescription: "Preparación de insumos",
+                            responsible: "Fiorella",
+                            completedByUserId: 1,
+                            completedByUserName: "Fiorella",
+                            completedAt: new Date().toISOString(),
+                            evidenceFileName: "foto1.jpg",
+                            batchId: "BATCH-001"
+                        },
+                        {
+                            taskId: 2,
+                            taskDescription: "Plantación",
+                            responsible: "Asistente",
+                            completedByUserId: 2,
+                            completedByUserName: "Carlos",
+                            completedAt: new Date().toISOString(),
+                            evidenceFileName: null,
+                            batchId: null
+                        }
+                    ];
+                    renderHistory(mockHistory);
+                });
+        }
+
+        function renderHistory(records) {
+            const tbody = document.getElementById('historyTableBody');
+            if (!records || records.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="muted">No hay registros.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = records.map(r => `
+                <tr>
+                    <td>${r.taskId}</td>
+                    <td>${r.taskDescription}</td>
+                    <td>${r.responsible}</td>
+                    <td>${r.completedByUserName} (${r.completedByUserId})</td>
+                    <td>${new Date(r.completedAt).toLocaleString()}</td>
+                    <td>${r.evidenceFileName ? `<a href="#" onclick="alert('Descarga no implementada')">${r.evidenceFileName}</a>` : '—'}</td>
+                    <td>${r.batchId || '—'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function exportFile(format) {
+            const params = new URLSearchParams(getFilterParams());
+            window.open(`/api/history/export/${format}?${params}`, '_blank');
+        }
+
+        document.getElementById('applyFilters').addEventListener('click', loadHistory);
+        document.getElementById('exportCsvBtn').addEventListener('click', () => exportFile('csv'));
+        document.getElementById('exportExcelBtn').addEventListener('click', () => exportFile('excel'));
+
+        // Initial load
+        loadHistory();
+    })();
+</script>

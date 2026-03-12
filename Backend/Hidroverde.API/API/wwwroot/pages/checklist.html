@@ -1,0 +1,112 @@
+﻿<link rel="stylesheet" href="/assets/css/pages/checklist.css">
+
+<section class="page page-checklist">
+    <header class="page__header">
+        <div>
+            <h1>Checklist Diario</h1>
+            <p class="muted">Tareas operativas del día</p>
+        </div>
+
+        <div class="page__actions">
+            <div class="employee-selector">
+                <label for="empleadoId">Empleado ID:</label>
+                <input type="number" id="empleadoId" value="1" min="1" style="width:80px;">
+                <button class="btn" id="refreshTasks">Actualizar</button>
+                <button class="btn btn-primary" id="btnNuevaTarea" style="margin-left:10px;">+ Nueva Tarea</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="card" style="margin-top:14px;">
+        <table class="table" id="checklistTable">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Descripción</th>
+                    <th>Responsable</th>
+                    <th>Estado</th>
+                    <th class="thRight">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="checklistTableBody">
+                <tr><td colspan="5" class="muted">Cargando...</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal for evidence upload -->
+    <div class="modal" id="evidenceModal" hidden>
+        <div class="modalCard">
+            <div class="row">
+                <h3>Subir evidencia</h3>
+                <span class="right"></span>
+                <button class="btn" id="closeEvidenceModal">Cerrar</button>
+            </div>
+            <input type="hidden" id="evidenceTaskId">
+            <div class="grid2" style="margin-top:12px;">
+                <label>
+                    Archivo:
+                    <input type="file" id="evidenceFile" accept=".jpg,.jpeg,.png,.pdf,.docx">
+                </label>
+                <label>
+                    Notas (opcional):
+                    <textarea id="evidenceNotes" rows="2"></textarea>
+                </label>
+            </div>
+            <div class="row" style="margin-top:12px; justify-content:flex-end;">
+                <button class="btn btn-primary" id="uploadEvidenceBtn">Subir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for creating new task -->
+    <div class="modal" id="modalNuevaTarea" hidden>
+        <div class="modalCard" style="width:500px;">
+            <div class="row">
+                <h3>Crear Nueva Tarea</h3>
+                <span class="right"></span>
+                <button class="btn" id="closeNuevaTareaModal">Cerrar</button>
+            </div>
+
+            <div style="margin-top:20px;">
+                <label style="display:block; margin-bottom:15px;">
+                    <span style="display:block; margin-bottom:5px; font-weight:bold;">Descripción:</span>
+                    <textarea id="nuevaDescripcion" rows="3" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;" placeholder="Ej: Limpieza de tanques de nutrientes"></textarea>
+                </label>
+
+                <label style="display:block; margin-bottom:15px;">
+                    <span style="display:block; margin-bottom:5px; font-weight:bold;">Responsable:</span>
+                    <input type="text" id="nuevaResponsable" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;" placeholder="Ej: Fiorella">
+                </label>
+
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:15px;">
+                    <label>
+                        <span style="display:block; margin-bottom:5px; font-weight:bold;">Asignado a (ID):</span>
+                        <input type="number" id="nuevaAsignadoId" value="1" min="1" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+                    </label>
+
+                    <label>
+                        <span style="display:block; margin-bottom:5px; font-weight:bold;">Orden:</span>
+                        <input type="number" id="nuevaOrden" value="10" min="1" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+                    </label>
+                </div>
+
+                <label style="display:block; margin-bottom:15px;">
+                    <span style="display:block; margin-bottom:5px; font-weight:bold;">¿Es crítica?</span>
+                    <select id="nuevaEsCritica" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+                        <option value="false">No</option>
+                        <option value="true">Sí</option>
+                    </select>
+                </label>
+
+                <div class="row" style="margin-top:20px; justify-content:flex-end;">
+                    <button class="btn btn-primary" id="btnGuardarNuevaTarea">Guardar Tarea</button>
+                </div>
+                <div id="nuevaTareaMsg" class="muted" style="margin-top:10px;"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Link to external JavaScript file -->
+<script type="module" src="/assets/js/pages/checklist.js"></script>

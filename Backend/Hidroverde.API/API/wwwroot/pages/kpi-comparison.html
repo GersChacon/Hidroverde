@@ -1,0 +1,28 @@
+﻿<link rel="stylesheet" href="/assets/css/pages/kpi-comparison.css">
+
+<section class="page page-kpi">
+    <header class="page__header">
+        <div>
+            <h1>Comparación de KPIs</h1>
+            <p class="muted">Rendimiento vs objetivos</p>
+        </div>
+        <div class="page__actions">
+            <select id="periodoSelect">
+                <option value="mensual">Mensual</option>
+                <option value="trimestral">Trimestral</option>
+                <option value="anual">Anual</option>
+            </select>
+            <input type="number" id="anioInput" placeholder="Año" value="2025">
+            <input type="number" id="mesInput" placeholder="Mes (1-12)">
+            <button class="btn" id="btnActualizar">Actualizar</button>
+        </div>
+    </header>
+
+    <div class="card" style="margin-top:14px;">
+        <div class="kpi-grid" id="kpiGrid">
+            <div class="muted">Cargando...</div>
+        </div>
+    </div>
+</section>
+
+<script src="/assets/js/pages/kpi-comparison.js" type="module"></script>

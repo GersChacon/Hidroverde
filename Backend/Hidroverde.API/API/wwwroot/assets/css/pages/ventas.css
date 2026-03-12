@@ -1,55 +1,7 @@
-/* =============================================
-   ventas.css — Módulo de ventas
-   ============================================= */
+/* ventas.css — usa el sistema global de app.css */
 
-.page-ventas { max-width: 1200px; margin: 0 auto; }
-
-/* Cabecera */
-.vt-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    gap: 14px;
-    margin: 6px 0 16px;
-}
-.vt-title    { margin: 0; font-size: 28px; font-weight: 950; }
-.vt-subtitle { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
-.vt-header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-
-/* Tabla */
-.vt-card {
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    overflow: hidden;
-    background: var(--panel);
-    box-shadow: var(--shadow2);
-}
-.vt-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-.vt-table thead th {
-    text-align: left;
-    font-size: 11px;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    color: var(--muted);
-    background: rgba(2,6,23,.03);
-    padding: 12px 12px;
-    border-bottom: 1px solid var(--line);
-}
-.vt-table td {
-    padding: 13px 12px;
-    border-bottom: 1px solid var(--line);
-    vertical-align: middle;
-    font-size: 13px;
-}
-.vt-table tbody tr:hover td { background: rgba(2,6,23,.02); }
-.th-right { text-align: right !important; }
-.vt-muted { color: var(--muted); padding: 16px 12px; }
-
-/* Pill de estado dinámico */
-.vt-pill {
+/* Pill de estado dinámico con color personalizado */
+.estado-pill {
     display: inline-flex;
     align-items: center;
     padding: 4px 10px;
@@ -57,41 +9,11 @@
     font-weight: 700;
     font-size: 11px;
     border: 1px solid;
-}
-
-/* Botón pequeño */
-.vt-btn-sm {
-    padding: 6px 10px;
-    border-radius: 8px;
-    font-size: 12px;
-    font-weight: 800;
     white-space: nowrap;
 }
 
-/* Modal ancho para formulario */
-.modal__content--wide {
-    width: min(1000px, calc(100vw - 36px)) !important;
-}
-
-/* Grid de 3 columnas para formulario */
-.vt-grid3 {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0,1fr));
-    gap: 10px;
-}
-@media (max-width: 720px) {
-    .vt-grid3 { grid-template-columns: 1fr; }
-}
-
-/* Tabla de detalle dentro del modal */
-.vt-table--detalle thead th,
-.vt-table--detalle td {
-    padding: 8px 8px;
-    font-size: 12px;
-}
-
 /* Input compacto en tabla de detalle */
-.vt-input-sm {
+.input-sm {
     width: 100%;
     padding: 6px 8px !important;
     border-radius: 8px !important;
@@ -99,72 +21,66 @@
     border: 1px solid var(--line) !important;
 }
 
-/* Totales preview en formulario */
-.vt-totales {
-    display: flex;
-    justify-content: flex-end;
-    gap: 20px;
-    margin-top: 12px;
-    padding: 10px 12px;
-    background: rgba(34,197,94,.06);
-    border: 1px solid rgba(34,197,94,.2);
-    border-radius: 10px;
-    font-size: 13px;
-    color: var(--muted);
-}
-.vt-totales strong { color: var(--text); font-weight: 900; }
-.vt-totales--detalle { margin-top: 16px; }
-
-/* Separador del detalle */
-.vt-detalle-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 18px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--line);
+/* Select compacto */
+select.input-sm {
+    background-color: var(--surface, #fff);
+    cursor: pointer;
 }
 
-/* Info grid en detalle venta */
-.vt-info-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0,1fr));
-    gap: 10px;
-    margin-bottom: 8px;
+/* Badge de stock disponible */
+.stock-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
 }
-@media (max-width: 720px) {
-    .vt-info-grid { grid-template-columns: 1fr; }
+
+.stock-badge.ok {
+    background: #dcfce7;
+    color: #15803d;
 }
-.vt-info-item {
-    background: rgba(2,6,23,.02);
-    border: 1px solid var(--line);
-    border-radius: 10px;
-    padding: 10px 12px;
+
+.stock-badge.agotado {
+    background: #fee2e2;
+    color: #dc2626;
 }
-.vt-info-item span {
+
+.stock-badge.muted {
+    background: #f1f5f9;
+    color: #94a3b8;
+}
+
+/* Precio unitario (readonly) */
+input[readonly].input-sm {
+    background: var(--surface-alt, #f8fafc);
+    color: var(--text-muted, #64748b);
+    cursor: not-allowed;
+}
+
+/* Nota informativa de entrega */
+.info-note {
+    font-size: 12px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: #eff6ff;
+    border-left: 3px solid #3b82f6;
+    color: #1e40af;
+    line-height: 1.4;
+}
+
+/* Hint debajo de campos bloqueados */
+.field-hint {
     display: block;
     font-size: 11px;
-    color: var(--muted);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    margin-bottom: 4px;
-}
-.vt-info-item strong { font-size: 13px; }
-
-/* Notas */
-.vt-notas {
-    margin-top: 12px;
-    font-size: 13px;
-    color: var(--muted);
-    padding: 10px 12px;
-    border-left: 3px solid rgba(34,197,94,.4);
-    background: rgba(34,197,94,.04);
-    border-radius: 0 8px 8px 0;
+    color: var(--text-muted, #94a3b8);
+    margin-top: 3px;
 }
 
-/* Responsive */
-@media (max-width: 900px) {
-    .vt-header { flex-direction: column; align-items: flex-start; }
-    .vt-card   { overflow-x: auto; }
+/* Campos deshabilitados */
+select:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: var(--surface-alt, #f1f5f9);
 }

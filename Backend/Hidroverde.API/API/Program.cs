@@ -4,11 +4,17 @@ using Flujo;
 using DA;
 using DA.Repositorios;
 
+using System.Text.Json;
+using System.Text.Json.Serialization;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(opts =>
+    {
+        opts.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -46,11 +52,18 @@ builder.Services.AddScoped<IClienteDA, ClienteDA>();
 builder.Services.AddScoped<IKpiFlujo, KpiFlujo>();
 builder.Services.AddScoped<IKpiDA, KpiDA>();
 // Después de builder.Services.AddControllers();
+builder.Services.AddScoped<IVentaDA, VentaDA>();
+builder.Services.AddScoped<IVentaFlujo, VentaFlujo>();
+builder.Services.AddScoped<IProveedoresFlujo, ProveedoresFlujo>();
+builder.Services.AddScoped<IPlagasDA, PlagasDA>();
+builder.Services.AddScoped<IPlagasFlujo, PlagasFlujo>();
+builder.Services.AddScoped<ITorresDA, TorresDA>();
+builder.Services.AddScoped<ITorresFlujo, TorresFlujo>();
+
 
 Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true; // <-- aquí
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -59,7 +72,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// 👉 IMPORTANTE: archivos estáticos primero
 app.UseDefaultFiles(); // permite que / cargue index.html
 app.UseStaticFiles();  // habilita wwwroot
 

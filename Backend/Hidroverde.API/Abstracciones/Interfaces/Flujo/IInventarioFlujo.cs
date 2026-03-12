@@ -10,11 +10,14 @@ namespace Abstracciones.Interfaces.Flujo
     public interface IInventarioFlujo
     {
         Task<IEnumerable<InventarioActualResponse>> ListarActual(
-            int? cicloOrigenId,
-            int? productoId,
-            string? lote,
-            bool soloDisponibles
-        );
+    int? cicloOrigenId,
+    int? productoId,
+    string? productoNombre,
+    string? lote,
+    DateTime? desde,
+    DateTime? hasta,
+    bool soloDisponibles
+);
         Task<InventarioActualResponse?> ObtenerActualPorId(int inventarioId);
         Task<IEnumerable<MovimientoInventarioResponse>> ListarMovimientos(
             int inventarioId,

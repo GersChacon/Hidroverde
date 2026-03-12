@@ -14,8 +14,10 @@
     CONSTRAINT [CK_Alerta_Estado] CHECK ([estado]='ACEPTADA' OR [estado]='ACTIVA'),
     CONSTRAINT [CK_Alerta_Tipo] CHECK ([tipo_alerta]='STOCK_BAJO'),
     CONSTRAINT [FK_Alerta_Empleados_Acepta] FOREIGN KEY ([usuario_acepta_id]) REFERENCES [dbo].[Empleados] ([empleado_id]),
-    CONSTRAINT [FK_Alerta_Productos] FOREIGN KEY ([producto_id]) REFERENCES [dbo].[Productos] ([producto_id])
+    CONSTRAINT [FK_Alerta_Productos] FOREIGN KEY ([producto_id]) REFERENCES [dbo].[Productos] ([producto_id]) ON DELETE CASCADE
 );
+
+
 
 
 GO

@@ -1,9 +1,12 @@
 ﻿import { api } from "../lib/http.js";
-import { $, $$, escapeHtml } from "../lib/dom.js";
+import { $, escapeHtml } from "../lib/dom.js";
 import { showModal, setModalTitle } from "../lib/modal.js";
-import { getTrim, getBool } from "../lib/form.js";
+import { getTrim } from "../lib/form.js";
 
 const MODAL_ID = "modalInventarioReal";
+const PRODUCTOS_URL = "/api/Producto";
+
+let inventarioRealInitialized = false;
 
 /* ============================
    Helpers
@@ -13,36 +16,67 @@ function setHidden(el, hidden) {
     if (el) el.hidden = !!hidden;
 }
 
-function getEmpleadoId() {
-    const raw = localStorage.getItem("empleadoId");
-    const parsed = parseInt(raw ?? "", 10);
-
-    if (!Number.isNaN(parsed) && parsed > 0) {
-        return parsed;
-    }
-
-    // fallback de desarrollo
-    const fallback = 1;
-    localStorage.setItem("empleadoId", String(fallback));
-    return fallback;
+function setText(selector, value) {
+    const el = $(selector);
+    if (el) el.textContent = String(value ?? "");
 }
-
 
 function buildQuery(params) {
     const sp = new URLSearchParams();
+
     Object.entries(params).forEach(([k, v]) => {
-        if (!v) return;
+        if (v === null || v === undefined || v === "") return;
         sp.set(k, String(v));
     });
+
     const s = sp.toString();
     return s ? `?${s}` : "";
 }
 
 function formatDate(iso) {
     if (!iso) return "—";
+
     const d = new Date(iso);
     if (Number.isNaN(d.getTime())) return iso;
+
     return d.toLocaleDateString("es-CR");
+}
+
+function parseDateOnly(value) {
+    if (!value) return null;
+
+    const d = new Date(`${value}T00:00:00`);
+    if (Number.isNaN(d.getTime())) return null;
+
+    d.setHours(0, 0, 0, 0);
+    return d;
+}
+
+function normalizeArray(data) {
+    return Array.isArray(data) ? data : [];
+}
+
+function getProductoIdFromItem(item) {
+    return item?.productoId ?? item?.id ?? item?.ProductoId ?? null;
+}
+
+function getProductoLabelFromItem(item) {
+    const nombre =
+        item?.nombreProducto ??
+        item?.nombre ??
+        item?.productoNombre ??
+        item?.NombreProducto ??
+        item?.Nombre ??
+        "";
+
+    const codigo =
+        item?.codigo ??
+        item?.productoCodigo ??
+        item?.Codigo ??
+        "";
+
+    if (codigo && nombre) return `${codigo} - ${nombre}`;
+    return nombre || codigo || "Producto";
 }
 
 /* ============================
@@ -51,8 +85,10 @@ function formatDate(iso) {
 
 function openModal(title, html) {
     setModalTitle(MODAL_ID, title);
+
     const body = $("#modalInventarioRealBody");
     if (body) body.innerHTML = html ?? "";
+
     showModal(MODAL_ID, true);
     document.body.classList.add("modal-open");
 }
@@ -78,12 +114,19 @@ function bindModalClose() {
 function setError(msg) {
     const el = $("#invError");
     if (!el) return;
+
     el.textContent = msg ?? "";
     setHidden(el, !msg);
 }
 
 function setLoading(flag) {
-    setHidden($("#invLoading"), !flag);
+    const isLoading = !!flag;
+
+    setHidden($("#invLoading"), !isLoading);
+
+    $("#btnAplicarFiltros")?.toggleAttribute("disabled", isLoading);
+    $("#btnRefrescarInventario")?.toggleAttribute("disabled", isLoading);
+    $("#btnLimpiarFiltros")?.toggleAttribute("disabled", isLoading);
 }
 
 function setEmpty(flag) {
@@ -91,8 +134,15 @@ function setEmpty(flag) {
 }
 
 function setCount(n) {
-    const el = $("#invCount");
-    if (el) el.textContent = String(n ?? 0);
+    setText("#invCount", n ?? 0);
+}
+
+function resetKpis() {
+    setText("#kpiItems", 0);
+    setText("#kpiUnits", 0);
+    setText("#kpiExpired", 0);
+    setText("#kpiSoon", 0);
+    setText("#kpiZero", 0);
 }
 
 /* ============================
@@ -100,32 +150,91 @@ function setCount(n) {
 ============================ */
 
 function getFiltersFromUI() {
-    const productoId = getTrim("#fProductoId");
-    const ubicacionId = getTrim("#fUbicacionId");
+    const productoSelect = $("#fProductoId");
+    const productoIdRaw = productoSelect ? productoSelect.value : "";
+
+    const lote = getTrim("#fLote");
     const desde = getTrim("#fDesde");
     const hasta = getTrim("#fHasta");
-    const soloDisponibles = getBool("#fSoloDisponibles");
+    const soloDisponibles = $("#fSoloDisponibles")?.checked ?? false;
 
     return {
-        productoId: productoId ? Number(productoId) : "",
-        ubicacionId: ubicacionId ? Number(ubicacionId) : "",
-        soloDisponibles: soloDisponibles ? "true" : "",
+        productoId: productoIdRaw ? Number(productoIdRaw) : "",
+        lote,
         desde,
-        hasta
+        hasta,
+        soloDisponibles: String(soloDisponibles)
     };
 }
 
 function clearFiltersUI() {
-    $("#fProductoId").value = "";
-    $("#fUbicacionId").value = "";
-    $("#fDesde").value = "";
-    $("#fHasta").value = "";
-    $("#fSoloDisponibles").checked = false;
+    const productoId = $("#fProductoId");
+    const lote = $("#fLote");
+    const desde = $("#fDesde");
+    const hasta = $("#fHasta");
+    const solo = $("#fSoloDisponibles");
+
+    if (productoId) productoId.value = "";
+    if (lote) lote.value = "";
+    if (desde) desde.value = "";
+    if (hasta) hasta.value = "";
+    if (solo) solo.checked = false;
+
+    setError("");
+}
+
+function validateFilters(filters) {
+    if (filters.productoId !== "" && (!Number.isInteger(filters.productoId) || filters.productoId <= 0)) {
+        return "El producto seleccionado no es válido.";
+    }
+
+    const desde = parseDateOnly(filters.desde);
+    const hasta = parseDateOnly(filters.hasta);
+
+    if (filters.desde && !desde) {
+        return "La fecha 'Desde' no es válida.";
+    }
+
+    if (filters.hasta && !hasta) {
+        return "La fecha 'Hasta' no es válida.";
+    }
+
+    if (desde && hasta && desde > hasta) {
+        return "La fecha 'Desde' no puede ser mayor que la fecha 'Hasta'.";
+    }
+
+    return "";
+}
+
+function bindFilterInteractions() {
+    const selectors = ["#fProductoId", "#fLote", "#fDesde", "#fHasta", "#fSoloDisponibles"];
+
+    selectors.forEach((selector) => {
+        const el = $(selector);
+        if (!el) return;
+
+        const eventName = el.type === "checkbox" || el.tagName === "SELECT" ? "change" : "input";
+        el.addEventListener(eventName, () => {
+            setError("");
+        });
+    });
+}
+
+function bindFilterEnter() {
+    ["#fLote", "#fDesde", "#fHasta"].forEach((selector) => {
+        $(selector)?.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                cargarInventario();
+            }
+        });
+    });
 }
 
 /* ============================
    Render
 ============================ */
+
 function getCadBadge(it) {
     const qty = Number(it.cantidadDisponible ?? 0);
 
@@ -139,12 +248,10 @@ function getCadBadge(it) {
     const cad = new Date(it.fechaCaducidad);
     cad.setHours(0, 0, 0, 0);
 
-    // Si tiene stock y ya venció
     if (qty > 0 && cad < today) {
         return `<span class="pill pill--danger">Vencido</span>`;
     }
 
-    // Por vencer en 7 días
     const soon = new Date(today);
     soon.setDate(soon.getDate() + 7);
 
@@ -157,6 +264,8 @@ function getCadBadge(it) {
 
 function renderRows(items) {
     const tbody = $("#invTbody");
+    if (!tbody) return;
+
     tbody.innerHTML = "";
 
     for (const it of items) {
@@ -172,10 +281,10 @@ function renderRows(items) {
             <td class="t-right">${escapeHtml(it.cantidadDisponible ?? 0)}</td>
             <td>${escapeHtml(ubicacion)}</td>
             <td>
-              <div class="cell-stack">
-                <div>${escapeHtml(formatDate(it.fechaCaducidad))}</div>
-                <div>${getCadBadge(it)}</div>
-              </div>
+                <div class="cell-stack">
+                    <div>${escapeHtml(formatDate(it.fechaCaducidad))}</div>
+                    <div>${getCadBadge(it)}</div>
+                </div>
             </td>
             <td>${escapeHtml(calidad)}</td>
             <td class="t-right">
@@ -190,18 +299,22 @@ function renderRows(items) {
         tbody.appendChild(tr);
     }
 }
+
 function computeKpis(items) {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    const inDays = (d, days) => {
-        const x = new Date(d);
+    const inDays = (baseDate, days) => {
+        const x = new Date(baseDate);
         x.setDate(x.getDate() + days);
         x.setHours(0, 0, 0, 0);
         return x;
     };
 
-    let units = 0, expired = 0, soon = 0, zero = 0;
+    let units = 0;
+    let expired = 0;
+    let soon = 0;
+    let zero = 0;
 
     for (const it of items) {
         const qty = Number(it.cantidadDisponible ?? 0);
@@ -212,56 +325,94 @@ function computeKpis(items) {
         const cad = it.fechaCaducidad ? new Date(it.fechaCaducidad) : null;
         if (cad) {
             cad.setHours(0, 0, 0, 0);
+
             if (qty > 0 && cad < today) expired++;
             if (qty > 0 && cad >= today && cad <= inDays(today, 7)) soon++;
         }
     }
 
-    $("#kpiItems").textContent = String(items.length);
-    $("#kpiUnits").textContent = String(units);
-    $("#kpiExpired").textContent = String(expired);
-    $("#kpiSoon").textContent = String(soon);
-    $("#kpiZero").textContent = String(zero);
+    setText("#kpiItems", items.length);
+    setText("#kpiUnits", units);
+    setText("#kpiExpired", expired);
+    setText("#kpiSoon", soon);
+    setText("#kpiZero", zero);
 }
 
+function clearTable() {
+    const tbody = $("#invTbody");
+    if (tbody) tbody.innerHTML = "";
+}
 
 /* ============================
    API
 ============================ */
 
-async function getJson(url, empleadoId) {
-    if (api?.getJson) {
-        return await api.getJson(url, {
-            headers: { "X-Empleado-Id": empleadoId }
-        });
+async function getJson(url, options = {}) {
+    const response = await api(url, options);
+    return response?.data ?? null;
+}
+
+async function cargarProductos() {
+    const select = $("#fProductoId");
+    if (!select) return;
+
+    try {
+        select.innerHTML = `<option value="">Todos</option>`;
+
+        const data = await getJson(PRODUCTOS_URL);
+        const items = normalizeArray(data);
+
+        for (const item of items) {
+            const id = getProductoIdFromItem(item);
+            if (!id) continue;
+
+            const option = document.createElement("option");
+            option.value = String(id);
+            option.textContent = getProductoLabelFromItem(item);
+            select.appendChild(option);
+        }
+    } catch (err) {
+        console.error("Error cargando productos", err);
     }
-
-    const res = await fetch(url, {
-        headers: { "X-Empleado-Id": String(empleadoId) }
-    });
-
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
 }
 
 async function cargarInventario() {
-    const empleadoId = getEmpleadoId();
-        setError("");
+    const filters = getFiltersFromUI();
+
+    setError("");
     setEmpty(false);
+
+    const validationError = validateFilters(filters);
+    if (validationError) {
+        clearTable();
+        setCount(0);
+        resetKpis();
+        setEmpty(true);
+        setError(validationError);
+        return;
+    }
+
     setLoading(true);
 
     try {
-        const q = buildQuery(getFiltersFromUI());
-        const data = await getJson(`/api/inventario/actual${q}`, empleadoId);
+        const q = buildQuery(filters);
+        const url = `/api/inventario/actual${q}`;
 
-        const items = Array.isArray(data) ? data : [];
+        console.log("Inventario URL:", url);
+
+        const data = await getJson(url);
+        const items = normalizeArray(data);
+
         setCount(items.length);
         renderRows(items);
         computeKpis(items);
         setEmpty(items.length === 0);
-
     } catch (err) {
         console.error(err);
+        clearTable();
+        setCount(0);
+        resetKpis();
+        setEmpty(false);
         setError("Error cargando inventario.");
     } finally {
         setLoading(false);
@@ -273,49 +424,48 @@ async function cargarInventario() {
 ============================ */
 
 async function verDetalle(id) {
-    const empleadoId = getEmpleadoId();
-    if (!empleadoId) return;
+    if (!id) return;
 
-    openModal(`Detalle inventario #${id}`,
+    openModal(
+        `Detalle inventario #${id}`,
         `<div class="loading"><div class="spinner"></div><p>Cargando...</p></div>`
     );
 
     try {
-        const it = await getJson(`/api/inventario/actual/${id}`, empleadoId);
+        const it = await getJson(`/api/inventario/actual/${id}`);
 
         openModal(`Detalle inventario #${id}`, `
             <div class="kv">
-                <div><span>Lote</span><strong>${escapeHtml(it.lote)}</strong></div>
-                <div><span>Cantidad</span><strong>${escapeHtml(it.cantidadDisponible)}</strong></div>
-                <div><span>Producto</span><strong>${escapeHtml(it.productoNombre)}</strong></div>
-                <div><span>Ubicación</span><strong>${escapeHtml(it.ubicacionNombre ?? it.ubicacionId)}</strong></div>
-                <div><span>Caducidad</span><strong>${escapeHtml(formatDate(it.fechaCaducidad))}</strong></div>
+                <div><span>Lote</span><strong>${escapeHtml(it?.lote ?? "—")}</strong></div>
+                <div><span>Cantidad</span><strong>${escapeHtml(it?.cantidadDisponible ?? 0)}</strong></div>
+                <div><span>Producto</span><strong>${escapeHtml(it?.productoNombre ?? "—")}</strong></div>
+                <div><span>Ubicación</span><strong>${escapeHtml(it?.ubicacionNombre ?? it?.ubicacionId ?? "—")}</strong></div>
+                <div><span>Caducidad</span><strong>${escapeHtml(formatDate(it?.fechaCaducidad))}</strong></div>
             </div>
         `);
-
-    } catch {
-        openModal(`Detalle inventario #${id}`,
+    } catch (err) {
+        console.error(err);
+        openModal(
+            `Detalle inventario #${id}`,
             `<div class="alert alert--error">Error cargando detalle.</div>`
         );
     }
 }
 
 async function verMovimientos(id) {
-    const empleadoId = getEmpleadoId();
-    if (!empleadoId) return;
+    if (!id) return;
 
-    openModal(`Movimientos #${id}`,
+    openModal(
+        `Movimientos #${id}`,
         `<div class="loading"><div class="spinner"></div><p>Cargando...</p></div>`
     );
 
     try {
-        const data = await getJson(`/api/inventario/movimientos?inventarioId=${id}`, empleadoId);
-        const items = Array.isArray(data) ? data : [];
+        const data = await getJson(`/api/inventario/movimientos?inventarioId=${id}`);
+        const items = normalizeArray(data);
 
         if (!items.length) {
-            openModal(`Movimientos #${id}`,
-                `<div class="empty">Sin movimientos.</div>`
-            );
+            openModal(`Movimientos #${id}`, `<div class="empty">Sin movimientos.</div>`);
             return;
         }
 
@@ -333,19 +483,20 @@ async function verMovimientos(id) {
                     <tbody>
                         ${items.map(m => `
                             <tr>
-                                <td>${escapeHtml(m.tipoMovimientoNombre)}</td>
-                                <td>${escapeHtml(m.cantidad)}</td>
+                                <td>${escapeHtml(m.tipoMovimientoNombre ?? "—")}</td>
+                                <td>${escapeHtml(m.cantidad ?? 0)}</td>
                                 <td>${escapeHtml(formatDate(m.fechaMovimiento))}</td>
-                                <td>${escapeHtml(m.motivo)}</td>
+                                <td>${escapeHtml(m.motivo ?? "—")}</td>
                             </tr>
                         `).join("")}
                     </tbody>
                 </table>
             </div>
         `);
-
-    } catch {
-        openModal(`Movimientos #${id}`,
+    } catch (err) {
+        console.error(err);
+        openModal(
+            `Movimientos #${id}`,
             `<div class="alert alert--error">Error cargando movimientos.</div>`
         );
     }
@@ -356,10 +507,18 @@ async function verMovimientos(id) {
 ============================ */
 
 function bindEvents() {
-    $("#btnRefrescarInventario")?.addEventListener("click", cargarInventario);
-    $("#btnAplicarFiltros")?.addEventListener("click", cargarInventario);
+    $("#btnRefrescarInventario")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        cargarInventario();
+    });
 
-    $("#btnLimpiarFiltros")?.addEventListener("click", () => {
+    $("#btnAplicarFiltros")?.addEventListener("click", (e) => {
+        e.preventDefault();
+        cargarInventario();
+    });
+
+    $("#btnLimpiarFiltros")?.addEventListener("click", (e) => {
+        e.preventDefault();
         clearFiltersUI();
         cargarInventario();
     });
@@ -369,8 +528,16 @@ function bindEvents() {
         if (!btn) return;
 
         const id = Number(btn.dataset.id);
-        if (btn.dataset.action === "detalle") verDetalle(id);
-        if (btn.dataset.action === "movs") verMovimientos(id);
+        if (!id) return;
+
+        if (btn.dataset.action === "detalle") {
+            verDetalle(id);
+            return;
+        }
+
+        if (btn.dataset.action === "movs") {
+            verMovimientos(id);
+        }
     });
 }
 
@@ -378,8 +545,24 @@ function bindEvents() {
    Init
 ============================ */
 
-export function init() {
+export async function init() {
+    if (inventarioRealInitialized) return;
+    inventarioRealInitialized = true;
+
+    console.log("inventarioReal init ejecutado");
+
     bindModalClose();
     bindEvents();
-    cargarInventario();
+    bindFilterEnter();
+    bindFilterInteractions();
+    await cargarProductos();
+    await cargarInventario();
+}
+
+/* ============================
+   Auto-init fallback
+============================ */
+
+if (document.querySelector(".inventarioReal")) {
+    init().catch((err) => console.error("Error inicializando inventarioReal:", err));
 }

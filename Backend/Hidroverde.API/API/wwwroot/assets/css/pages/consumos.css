@@ -1,2 +1,8 @@
-﻿body {
+/* consumos.css — usa el sistema global de app.css */
+
+/* Gráfico de consumos */
+.chart-wrap {
+    position: relative;
+    height: 260px;
+    width: 100%;
 }

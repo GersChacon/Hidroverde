@@ -1,129 +1,44 @@
-﻿/* assets/css/pages/proveedores.css */
+/* proveedores.css — usa el sistema global de app.css */
 
-.prov-wrap {
-    max-width: 1100px;
-    margin: 28px auto;
-    padding: 0 18px;
-}
-
-.prov-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-.prov-title {
-    font-size: 28px;
-    font-weight: 800;
-    margin: 0;
-}
-
-.prov-card {
-    background: #fff;
-    border: 1px solid rgba(0,0,0,.08);
-    border-radius: 14px;
-    padding: 14px;
-}
-
-.prov-tableWrap {
-    overflow-x: auto;
-}
-
-.prov-table {
-    width: 100%;
-    border-collapse: collapse;
-    min-width: 760px;
-}
-
-    .prov-table thead th {
-        text-align: left;
-        font-size: 12px;
-        letter-spacing: .04em;
-        text-transform: uppercase;
-        padding: 12px 10px;
-        background: rgba(0,0,0,.03);
-        border-bottom: 1px solid rgba(0,0,0,.08);
-    }
-
-    .prov-table tbody td {
-        padding: 12px 10px;
-        border-bottom: 1px solid rgba(0,0,0,.06);
-        vertical-align: middle;
-    }
-
-    .prov-table tbody tr:hover {
-        background: rgba(0,0,0,.02);
-    }
-
-.prov-empty {
-    padding: 18px 10px;
-    color: rgba(0,0,0,.65);
-    font-size: 14px;
-}
-
-/* Botones simples (por si no hay estilos globales) */
-.prov-header button,
-.prov-table button {
-    border: 1px solid rgba(0,0,0,.18);
-    background: #f7f7f7;
-    padding: 8px 12px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-    .prov-header button:hover,
-    .prov-table button:hover {
-        filter: brightness(0.98);
-    }
-
-.prov-table .btn-pagar {
-    background: #0ea5e9;
-    border-color: rgba(0,0,0,.10);
-    color: #fff;
-}
-
-    .prov-table .btn-pagar:hover {
-        filter: brightness(0.95);
-    }
-/* Modal */
+/* Modal de proveedores alineado al sistema global */
 .prov-modal {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.4);
+    background: rgba(0,0,0,.45);
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 9999;
 }
-
 .prov-modal-content {
-    background: #fff;
-    padding: 22px;
-    border-radius: 14px;
-    width: 380px;
-    max-width: 95%;
-}
-
-.prov-form {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    width: min(420px, 95vw);
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
-
-    .prov-form input {
-        padding: 8px;
-        border-radius: 8px;
-        border: 1px solid rgba(0,0,0,.2);
-    }
-
+.prov-modal-content h3 {
+    margin: 0 0 4px;
+    font-size: 17px;
+    font-weight: 800;
+}
+.prov-modal-content label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
 .prov-modal-actions {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    margin-top: 10px;
+    margin-top: 4px;
 }
 .prov-hist-header {
     display: flex;
@@ -133,37 +48,41 @@
     margin-bottom: 10px;
 }
 
+/* Tag de estado de pago */
 .prov-tag {
-    display: inline-block;
-    padding: 4px 8px;
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
     border-radius: 999px;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 700;
-    border: 1px solid rgba(0,0,0,.15);
+    border: 1px solid var(--line);
+}
+.prov-tag.parcial {
+    background: rgba(234,179,8,.12);
+    border-color: rgba(234,179,8,.35);
+    color: #854d0e;
+}
+.prov-tag.total {
+    background: rgba(34,197,94,.12);
+    border-color: rgba(34,197,94,.35);
+    color: #15803d;
 }
 
-    .prov-tag.parcial {
-        background: rgba(245, 158, 11, .15);
-    }
-
-    .prov-tag.total {
-        background: rgba(34, 197, 94, .15);
-    }
-.prov-tabs {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 12px;
+/* Modal historial más ancho */
+#modalHistorial .prov-modal-content {
+    width: min(760px, 95vw);
 }
 
-.prov-tab {
-    border: 1px solid rgba(0,0,0,.18);
-    background: #fff;
-    padding: 8px 12px;
+/* Botón pagar */
+.btn-pagar {
+    background: rgba(34,197,94,.15);
+    border: 1px solid rgba(34,197,94,.4);
+    color: #15803d;
+    padding: 8px 14px;
     border-radius: 10px;
     cursor: pointer;
     font-weight: 700;
+    font-size: 13px;
 }
-
-    .prov-tab.active {
-        background: rgba(0,0,0,.06);
-    }
+.btn-pagar:hover { filter: brightness(.97); }

@@ -1,43 +1,45 @@
-﻿<section class="page page-ciclos">
-    <header class="ciclosHeader">
-        <div>
-            <h1 class="ciclosTitle">Ciclos Activos</h1>
-            <p class="ciclosSubtitle">Gestiona los ciclos de cultivo en curso</p>
-        </div>
+<section class="page">
 
-        <div class="ciclosHeaderActions">
-            <button class="btn btn-primary" id="btnNuevaSiembra">+ Nueva siembra</button>
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Ciclos Activos</h1>
+            <p class="page-subtitle">Gestiona los ciclos de cultivo en curso</p>
+        </div>
+        <div class="page-actions">
+            <button class="btn primary" id="btnNuevaSiembra">+ Nueva siembra</button>
             <button class="btn" id="btnRefrescarCiclos">Refrescar</button>
         </div>
-    </header>
+    </div>
 
-    <div class="ciclosToolbar">
-        <div class="searchBox">
-            <span class="searchIcon">🔎</span>
+    <div class="ciclos-toolbar" style="margin-bottom:14px;">
+        <div class="search-box">
+            <span>🔎</span>
             <input id="txtBuscarCiclos" type="search" placeholder="Buscar ciclos..." />
         </div>
     </div>
 
-    <div class="ciclosCard">
-        <table class="ciclosTable" id="tblCiclos">
-            <thead>
-                <tr>
-                    <th>Nombre</th>
-                    <th>Cultivo</th>
-                    <th>Inicio</th>
-                    <th>Fin Estimado</th>
-                    <th>Progreso</th>
-                    <th>Estado</th>
-                    <th class="thRight">Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="tblCiclosBody">
-                <tr><td colspan="7" class="muted">Cargando...</td></tr>
-            </tbody>
-        </table>
+    <div class="content-card">
+        <div class="table-wrap">
+            <table class="data-table" id="tblCiclos">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Cultivo</th>
+                        <th>Inicio</th>
+                        <th>Fin Estimado</th>
+                        <th>Progreso</th>
+                        <th>Estado</th>
+                        <th class="col-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tblCiclosBody">
+                    <tr><td colspan="7" class="table-empty">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <!-- Modal Nueva Siembra (igual que el tuyo, solo asegúrate que esté hidden) -->
+    <!-- Modal Nueva Siembra -->
     <div class="modal" id="modalSiembra" hidden aria-hidden="true">
         <div class="modal__backdrop" data-close="modalSiembra"></div>
         <div class="modal__content">
@@ -49,23 +51,58 @@
             <div class="modal__body">
                 <form id="frmSiembra">
                     <div class="grid">
+
+                        <!-- Producto (visible buscador) + productoId (hidden) -->
+                        <div class="field" style="position:relative;">
+                            <label for="productoNombre">
+                                <span>Producto *</span>
+                            </label>
+
+                            <!-- Visible buscador -->
+                            <input type="text"
+                                   id="productoNombre"
+                                   placeholder="Escribe el nombre del producto..."
+                                   autocomplete="off" />
+
+                            <!-- Dropdown -->
+                            <div id="productoSuggs"
+                                 class="autocomplete-list"
+                                 hidden></div>
+
+                            <!-- Hidden que usa guardarSiembra() -->
+                            <input type="hidden" id="productoId" />
+                        </div>
+
+                        <!-- Variedad (visible autopoblado) + variedadId (hidden) -->
                         <label class="field">
-                            <span>ProductoId *</span>
-                            <input type="number" id="productoId" min="1" required />
+                            <span>Variedad *</span>
+                            <input type="text"
+                                   id="variedadNombre"
+                                   placeholder="Se completará automáticamente al seleccionar un producto"
+                                   readonly />
+                            <input type="hidden" id="variedadId" />
                         </label>
 
-                        <label class="field">
-                            <span>VariedadId *</span>
-                            <input type="number" id="variedadId" min="1" required />
-                        </label>
+                        <!-- Torre (matriz visual) + torreId (hidden) -->
+                        <div class="field field--full">
+                            <label>
+                                <span>Torre *</span>
+                            </label>
+
+                            <!-- hidden para mantener tu flujo -->
+                            <input type="hidden" id="torreId" />
+
+                            <!-- hint selección -->
+                            <div class="muted" style="margin-top:6px;">
+                                Seleccioná una torre en la matriz.
+                            </div>
+
+                            <!-- matriz -->
+                            <div id="torresGrid" class="torres-grid" aria-label="Selector de torres"></div>
+                        </div>
 
                         <label class="field">
-                            <span>TorreId *</span>
-                            <input type="number" id="torreId" min="1" required />
-                        </label>
-
-                        <label class="field">
-                            <span>EstadoCicloCodigo *</span>
+                            <span>Estado ciclo *</span>
                             <input type="text" id="estadoCicloCodigo" value="SIEMBRA" required />
                         </label>
 
@@ -93,14 +130,16 @@
                             <span>Notas</span>
                             <textarea id="notas" rows="3"></textarea>
                         </label>
-                    </div>
 
-                    <div class="modal__footer">
-                        <button type="button" class="btn" data-close="modalSiembra">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Guardar</button>
                     </div>
                 </form>
             </div>
+
+            <div class="modal__footer">
+                <button type="button" class="btn" data-close="modalSiembra">Cancelar</button>
+                <button type="submit" form="frmSiembra" class="btn primary">Guardar</button>
+            </div>
         </div>
     </div>
+
 </section>

@@ -34,74 +34,159 @@
         <div class="row">
             <h3>Nuevo producto</h3>
             <button class="btn" id="btnCerrarProducto">Cerrar</button>
+<section class="page">
+
+    <!-- Cabecera -->
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Inventario · Productos</h1>
+            <p class="page-subtitle">Administrá el catálogo de productos</p>
         </div>
-
-        <div class="grid2" style="margin-top:12px;">
-            <label>
-                Código
-                <input id="pCodigo" placeholder="Ej: LEC-001" />
-            </label>
-
-            <label>
-                Nombre producto
-                <input id="pNombreProducto" placeholder="Ej: Lechuga Romana" />
-            </label>
-
-            <label>
-                VariedadId
-                <input id="pVariedadId" type="number" placeholder="Ej: 1" />
-            </label>
-
-            <label>
-                UnidadId
-                <input id="pUnidadId" type="number" placeholder="Ej: 1" />
-            </label>
-
-            <label>
-                Precio base
-                <input id="pPrecioBase" type="number" step="0.01" placeholder="Ej: 1000.00" />
-            </label>
-
-            <label>
-                Días caducidad
-                <input id="pDiasCaducidad" type="number" placeholder="Ej: 10" />
-            </label>
-
-            <label>
-                Stock mínimo
-                <input id="pStockMinimo" type="number" placeholder="Ej: 15" />
-            </label>
-
-            <label>
-                Requiere refrigeración
-                <select id="pRequiereRefrigeracion">
-                    <option value="false">No</option>
-                    <option value="true">Sí</option>
-                </select>
-            </label>
-
-            <label>
-                Activo
-                <select id="pActivo">
-                    <option value="true">Sí</option>
-                    <option value="false">No</option>
-                </select>
-            </label>
-
-            <label style="grid-column:1/-1;">
-                Descripción (opcional)
-                <input id="pDescripcion" placeholder="Opcional" />
-            </label>
-
-            <label style="grid-column:1/-1;">
-                ImagenUrl (opcional)
-                <input id="pImagenUrl" placeholder="/assets/img/..." />
-            </label>
-        </div>
-
-        <div class="row" style="margin-top:12px;">
-            <button class="btn green" id="btnGuardarProducto">Guardar</button>
-            <span class="muted" id="pMsg"></span>
+        <div class="page-actions">
+            <button class="btn primary" id="btnNuevoProducto">+ Nuevo producto</button>
+            <button class="btn" id="btnRefrescarProductos">Refrescar</button>
         </div>
     </div>
-</div>
+
+    <!-- Filtros -->
+    <div class="content-card" style="margin-bottom:12px;">
+        <div class="filter-bar">
+            <label class="field" style="max-width:280px;">
+                <span>Buscar por nombre</span>
+                <input type="text" id="filtroNombre" placeholder="Ej: Lechuga...">
+            </label>
+            <label class="field" style="max-width:200px;">
+                <span>Unidad</span>
+                <select id="filtroUnidad">
+                    <option value="">Todas</option>
+                </select>
+            </label>
+            <label class="field" style="max-width:160px;">
+                <span>Estado</span>
+                <select id="filtroActivo">
+                    <option value="">Todos</option>
+                    <option value="true">Activos</option>
+                    <option value="false">Inactivos</option>
+                </select>
+            </label>
+            <button class="btn btn-sm" id="btnLimpiarFiltros" style="align-self:flex-end;margin-bottom:2px;">Limpiar</button>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="content-card">
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Código</th>
+                        <th>Nombre</th>
+                        <th>Variedad</th>
+                        <th>Unidad</th>
+                        <th class="col-right">Precio base</th>
+                        <th>Estado</th>
+                        <th>Stock mín.</th>
+                        <th class="col-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="productosBody">
+                    <tr><td colspan="9" class="table-empty">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- MODAL — Nuevo / Editar producto -->
+    <div class="modal" id="modalProducto" hidden aria-hidden="true">
+        <div class="modal__backdrop" id="backdropModalProducto"></div>
+        <div class="modal__content modal__content--wide">
+            <div class="modal__header">
+                <h2 class="modalTitle" id="modalProductoTitle">Nuevo producto</h2>
+                <button class="icon-btn" id="btnCerrarModalProducto">✕</button>
+            </div>
+            <div class="modal__body">
+
+                <div class="form-grid2">
+                    <label class="field" style="grid-column:1/-1;">
+                        <span>Nombre del producto *</span>
+                        <input type="text" id="pNombreProducto" placeholder="Ej: Lechuga Romana">
+                    </label>
+                </div>
+
+                <div class="form-grid3" style="margin-top:10px;">
+                    <label class="field">
+                        <span>Unidad de medida *</span>
+                        <select id="pUnidadId"><option value="">Cargando...</option></select>
+                    </label>
+                    <label class="field">
+                        <span>Precio base (₡)</span>
+                        <input type="number" id="pPrecioBase" min="0" step="0.01" placeholder="Ej: 1200.00">
+                    </label>
+                    <label class="field">
+                        <span>Días caducidad</span>
+                        <input type="number" id="pDiasCaducidad" min="0" placeholder="Ej: 7">
+                    </label>
+                </div>
+
+                <div class="form-grid3" style="margin-top:10px;">
+                    <label class="field">
+                        <span>Stock mínimo</span>
+                        <input type="number" id="pStockMinimo" min="0" placeholder="Ej: 15">
+                    </label>
+                    <label class="field">
+                        <span>Requiere refrigeración</span>
+                        <select id="pRequiereRefrigeracion">
+                            <option value="false">No</option>
+                            <option value="true">Sí</option>
+                        </select>
+                    </label>
+                    <label class="field">
+                        <span>Estado</span>
+                        <select id="pActivo">
+                            <option value="true">Activo</option>
+                            <option value="false">Inactivo</option>
+                        </select>
+                    </label>
+                </div>
+
+                <div class="form-grid2" style="margin-top:10px;">
+                    <label class="field">
+                        <span>Descripción (opcional)</span>
+                        <input type="text" id="pDescripcion" placeholder="Opcional">
+                    </label>
+                    <label class="field">
+                        <span>URL imagen (opcional)</span>
+                        <input type="text" id="pImagenUrl" placeholder="/assets/img/...">
+                    </label>
+                </div>
+
+            </div>
+            <div class="modal__footer">
+                <span id="pMsg" class="modal-msg"></span>
+                <button class="btn" id="btnCancelarModalProducto">Cancelar</button>
+                <button class="btn primary" id="btnGuardarProducto">Guardar producto</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL — Detalle producto -->
+    <div class="modal" id="modalDetalleProducto" hidden aria-hidden="true">
+        <div class="modal__backdrop" id="backdropDetalleProducto"></div>
+        <div class="modal__content modal__content--wide">
+            <div class="modal__header">
+                <h2 class="modalTitle" id="detalleProductoTitle">Producto</h2>
+                <button class="icon-btn" id="btnCerrarDetalleProducto">✕</button>
+            </div>
+            <div class="modal__body" id="detalleProductoBody">
+                <div class="table-empty">Cargando...</div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn" id="btnEditarDesdeDetalle">Editar producto</button>
+                <span style="flex:1;"></span>
+                <button class="btn danger" id="btnEliminarDesdeDetalle">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+</section>

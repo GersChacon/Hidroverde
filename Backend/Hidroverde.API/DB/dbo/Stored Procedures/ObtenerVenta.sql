@@ -1,20 +1,23 @@
-﻿CREATE PROCEDURE [dbo].[ObtenerVenta]
+﻿
+CREATE PROCEDURE [dbo].[ObtenerVenta]
     @venta_id INT
 AS
 BEGIN
     SET NOCOUNT ON;
 
-    -- Query 1: cabecera
+    -- Query 1: cabecera con campos extra para el frontend
     SELECT
         v.*,
         c.nombre + ISNULL(' ' + c.apellidos, '')   AS nombre_cliente,
         dc.direccion_exacta                          AS direccion_entrega,
-        e.nombre + ' ' + e.apellidos                AS nombre_vendedor,
+        e.nombre + ' ' + ISNULL(e.apellidos, '')     AS nombre_vendedor,
         ev.nombre   AS nombre_estado_venta,
         ev.color    AS color_estado_venta,
+        ev.orden    AS orden_estado_venta,           -- NUEVO: para filtrar en frontend
         ep.nombre   AS nombre_estado_pago,
         mp.nombre   AS nombre_metodo_pago,
-        te.nombre   AS nombre_tipo_entrega
+        te.nombre   AS nombre_tipo_entrega,
+        te.codigo   AS codigo_tipo_entrega           -- NUEVO: para lógica domicilio/local
     FROM [dbo].[Ventas] v
     INNER JOIN [dbo].[Clientes]              c  ON v.cliente_id          = c.cliente_id
     INNER JOIN [dbo].[Direcciones_Clientes]  dc ON v.direccion_entrega_id = dc.direccion_id
@@ -23,7 +26,7 @@ BEGIN
     INNER JOIN [dbo].[Estados_Pago]          ep ON v.estado_pago_id       = ep.estado_pago_id
     LEFT  JOIN [dbo].[Metodos_Pago]          mp ON v.metodo_pago_id       = mp.metodo_pago_id
     INNER JOIN [dbo].[Tipos_Entrega]         te ON v.tipo_entrega_id      = te.tipo_entrega_id
-    WHERE v.venta_id = @venta_id
+    WHERE v.venta_id = @venta_id;
 
     -- Query 2: detalle
     SELECT
@@ -32,5 +35,5 @@ BEGIN
         p.codigo AS codigo_producto
     FROM [dbo].[Detalle_Ventas] dv
     INNER JOIN [dbo].[Productos] p ON dv.producto_id = p.producto_id
-    WHERE dv.venta_id = @venta_id
+    WHERE dv.venta_id = @venta_id;
 END

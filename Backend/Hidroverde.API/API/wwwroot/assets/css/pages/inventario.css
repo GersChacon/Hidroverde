@@ -1,27 +1,89 @@
-﻿/* SOLO aplica a modales con modal--overlay */
-.modal.modal--overlay[hidden] {
-    display: none !important;
-}
+/* inventario.css — usa el sistema global de app.css, igual que ventas.css */
 
-.modal.modal--overlay {
-    position: fixed;
-    inset: 0;
-    display: flex;
+/* Badge de estado activo/inactivo */
+.estado-pill {
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    padding: 24px;
-    background: rgba(0,0,0,.55);
-    z-index: 9999;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 11px;
+    border: 1px solid;
+    white-space: nowrap;
 }
 
-.modalCard.modalCard--dialog {
-    width: min(760px, 100%);
-    max-height: 90vh;
-    overflow: auto;
-    border-radius: 16px;
+.estado-pill.activo {
+    background: #dcfce7;
+    color: #15803d;
+    border-color: #86efac;
 }
-.modalCard.modalCard--dialog {
-    background: #fff; /* o var(--card) si usás variables */
-    padding: 16px;
-    box-shadow: 0 20px 60px rgba(0,0,0,.35);
+
+.estado-pill.inactivo {
+    background: #fee2e2;
+    color: #dc2626;
+    border-color: #fca5a5;
+}
+
+/* Mensaje en footer del modal */
+.modal-msg {
+    font-size: 13px;
+    color: var(--text-muted, #94a3b8);
+    margin-right: auto;
+}
+
+.modal-msg.error {
+    color: #dc2626;
+}
+
+/* Grid 2 columnas para formulario */
+.form-grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+@media (max-width: 640px) {
+    .form-grid2 { grid-template-columns: 1fr; }
+}
+
+/* Filtros */
+.filter-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: flex-end;
+}
+
+/* Filas info detalle producto */
+.detalle-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+@media (max-width: 640px) {
+    .detalle-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.detalle-field {
+    background: var(--surface-alt, #f8fafc);
+    border: 1px solid var(--line, #e5e7eb);
+    border-radius: 10px;
+    padding: 10px 14px;
+}
+
+.detalle-field .df-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--text-muted, #94a3b8);
+    margin-bottom: 4px;
+}
+
+.detalle-field .df-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text, #1e293b);
 }

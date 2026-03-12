@@ -1,0 +1,61 @@
+/* plagas.css — usa el sistema global de app.css */
+
+.chart-wrap {
+    position: relative;
+    height: 260px;
+    width: 100%;
+}
+#chartPlagas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+.plagas-grid {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 14px;
+}
+@media (max-width: 980px) {
+    .plagas-grid { grid-template-columns: 1fr; }
+}
+
+/* Modal de plagas usa .modal-backdrop + .modal de app.css */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+.modal-backdrop.hidden { display: none; }
+.modal-backdrop .modal-box {
+    width: min(520px, 92vw);
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+.modal-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--line);
+}
+.modal-box-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.modal-box-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    padding: 14px 16px;
+    border-top: 1px solid var(--line);
+}

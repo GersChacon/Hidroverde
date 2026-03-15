@@ -1,6 +1,6 @@
 /* ventas.css — usa el sistema global de app.css */
 
-/* Pill de estado dinámico con color personalizado */
+/* Pill de estado dinámico con color personalizado (via style inline) */
 .estado-pill {
     display: inline-flex;
     align-items: center;
@@ -19,68 +19,4 @@
     border-radius: 8px !important;
     font-size: 12px;
     border: 1px solid var(--line) !important;
-}
-
-/* Select compacto */
-select.input-sm {
-    background-color: var(--surface, #fff);
-    cursor: pointer;
-}
-
-/* Badge de stock disponible */
-.stock-badge {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 3px 8px;
-    border-radius: 6px;
-    white-space: nowrap;
-}
-
-.stock-badge.ok {
-    background: #dcfce7;
-    color: #15803d;
-}
-
-.stock-badge.agotado {
-    background: #fee2e2;
-    color: #dc2626;
-}
-
-.stock-badge.muted {
-    background: #f1f5f9;
-    color: #94a3b8;
-}
-
-/* Precio unitario (readonly) */
-input[readonly].input-sm {
-    background: var(--surface-alt, #f8fafc);
-    color: var(--text-muted, #64748b);
-    cursor: not-allowed;
-}
-
-/* Nota informativa de entrega */
-.info-note {
-    font-size: 12px;
-    padding: 8px 12px;
-    border-radius: 8px;
-    background: #eff6ff;
-    border-left: 3px solid #3b82f6;
-    color: #1e40af;
-    line-height: 1.4;
-}
-
-/* Hint debajo de campos bloqueados */
-.field-hint {
-    display: block;
-    font-size: 11px;
-    color: var(--text-muted, #94a3b8);
-    margin-top: 3px;
-}
-
-/* Campos deshabilitados */
-select:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    background: var(--surface-alt, #f1f5f9);
 }

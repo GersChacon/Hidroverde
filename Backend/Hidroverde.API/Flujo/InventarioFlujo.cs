@@ -11,15 +11,12 @@ namespace Flujo
         public InventarioFlujo(IInventarioDA da) => _da = da;
 
         public Task<IEnumerable<InventarioActualResponse>> ListarActual(
-    int? cicloOrigenId,
-    int? productoId,
-    string? productoNombre,
-    string? lote,
-    DateTime? desde,
-    DateTime? hasta,
-    bool soloDisponibles
-)
-    => _da.ListarActual(cicloOrigenId, productoId, productoNombre, lote, desde, hasta, soloDisponibles);
+            int? cicloOrigenId,
+            int? productoId,
+            string? lote,
+            bool soloDisponibles
+        )
+            => _da.ListarActual(cicloOrigenId, productoId, lote, soloDisponibles);
 
         public Task<InventarioActualResponse?> ObtenerActualPorId(int inventarioId)
         => _da.ObtenerActualPorId(inventarioId);

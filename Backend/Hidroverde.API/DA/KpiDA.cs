@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Data;
 using System.Threading.Tasks;
-
 using Abstracciones.Interfaces.DA;
 using Abstracciones.Modelos.Kpi;
 using Dapper;
@@ -24,14 +22,31 @@ namespace DA
 
         public async Task<IEnumerable<KpiComparisonResponse>> ObtenerComparacion(string periodo, int? año, int? mes)
         {
-            // Mock data for now
-            var mock = new List<KpiComparisonResponse>
+            const string sp = "dbo.sp_Kpi_Comparacion";
+
+            var parameters = new
             {
-                new KpiComparisonResponse { KpiName = "Cosechas (kg)", Actual = 1250, Target = 1500, Unit = "kg", Period = "Febrero 2025" },
-                new KpiComparisonResponse { KpiName = "Ventas (₡)", Actual = 3250000, Target = 3000000, Unit = "₡", Period = "Febrero 2025" },
-                new KpiComparisonResponse { KpiName = "Consumo agua (L)", Actual = 4500, Target = 4000, Unit = "L", Period = "Febrero 2025" }
+                periodo = periodo,
+                año = año,
+                mes = mes
             };
-            return await Task.FromResult(mock);
+
+            try
+            {
+                var result = await _sqlConnection.QueryAsync<KpiComparisonResponse>(
+                    sp,
+                    parameters,
+                    commandType: CommandType.StoredProcedure
+                );
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                // Log the error and rethrow - no mock data
+                Console.WriteLine($"Error in KpiDA.ObtenerComparacion: {ex.Message}");
+                throw;
+            }
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Flujo
             return _productoDA.Editar(productoId, producto);
         }
 
-        public Task Eliminar(int productoId)
+        public Task<int> Eliminar(int productoId)
         {
             return _productoDA.Eliminar(productoId);
         }

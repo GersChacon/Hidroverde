@@ -1,19 +1,20 @@
 ﻿let EMPLEADO_ID = 1; // por ahora fijo. Luego lo hacemos dinámico.
 let CICLOS = [];
-
+const MOCK_CICLOS = [
+    { cicloId: 1, productoId: 1, productoCodigo: "LEC", productoNombre: "Lechuga", variedadNombre: "Romana", torreCodigo: "T-01", fechaSiembra: "2025-03-01", fechaCosechaEstimada: "2025-03-28", cantidadPlantas: 100, estadoNombre: "ACTIVO", esActivo: true },
+    { cicloId: 2, productoId: 2, productoCodigo: "TOM", productoNombre: "Tomate", variedadNombre: "Cherry", torreCodigo: "T-02", fechaSiembra: "2025-03-05", fechaCosechaEstimada: "2025-04-02", cantidadPlantas: 80, estadoNombre: "ACTIVO", esActivo: true }
+];
 export function init() {
     // Buscador
     document.getElementById("txtBuscarCiclos")?.addEventListener("input", (e) => {
         const q = (e.target.value || "").toLowerCase().trim();
         renderTablaFiltrada(q);
     });
-
+    // In init(), after detecting offline
+    //if (offline) document.getElementById("btnNuevaSiembra").disabled = true;
     // Botones
     document.getElementById("btnRefrescarCiclos")?.addEventListener("click", cargarActivos);
-    document.getElementById("btnNuevaSiembra")?.addEventListener("click", async () => {
-        abrirModal("modalSiembra");
-        await cargarTorresParaSelector().catch(console.error);
-    });
+    document.getElementById("btnNuevaSiembra")?.addEventListener("click", () => abrirModal("modalSiembra"));
 
     // Modal close (backdrop o X o Cancelar)
     document.querySelectorAll('[data-close="modalSiembra"]').forEach(el => {
@@ -28,9 +29,7 @@ export function init() {
 
     // Defaults fecha
     setFechasDefault();
-    initProductoAutocomplete();
-    wireFechas();
-    cargarTorresParaSelector().catch(console.error);
+
     // Carga inicial
     cargarActivos();
 
@@ -150,57 +149,31 @@ function setFechasDefault() {
     const hoyStr = `${yyyy}-${mm}-${dd}`;
 
     const fechaSiembra = document.getElementById("fechaSiembra");
-    const fechaCosecha = document.getElementById("fechaCosechaEstimada");
-
     if (fechaSiembra && !fechaSiembra.value) fechaSiembra.value = hoyStr;
-
-    // min de cosecha = siembra
-    if (fechaSiembra && fechaCosecha) {
-        fechaCosecha.min = fechaSiembra.value;
-
-        // si cosecha está vacía o quedó menor que siembra, ajusta
-        if (!fechaCosecha.value || fechaCosecha.value < fechaSiembra.value) {
-            fechaCosecha.value = fechaSiembra.value;
-        }
-    }
 }
+
 async function cargarActivos() {
     const tbody = document.getElementById("tblCiclosBody");
     if (!tbody) return;
-
-    // Tabla nueva: 7 columnas
     tbody.innerHTML = `<tr><td colspan="7" class="muted">Cargando...</td></tr>`;
 
     try {
         const res = await fetch("/api/ciclos/activos");
-
         if (res.status === 204) {
             CICLOS = [];
             tbody.innerHTML = `<tr><td colspan="7" class="muted">No hay ciclos activos.</td></tr>`;
             return;
         }
-
-        if (!res.ok) {
-            const txt = await res.text().catch(() => "");
-            throw new Error(txt || `Error HTTP ${res.status}`);
-        }
-
-        const data = await res.json().catch(() => []);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
         CICLOS = Array.isArray(data) ? data : [];
-
-        if (!CICLOS.length) {
-            tbody.innerHTML = `<tr><td colspan="7" class="muted">No hay ciclos activos.</td></tr>`;
-            return;
-        }
-
-        const q = (document.getElementById("txtBuscarCiclos")?.value || "").toLowerCase().trim();
-        renderTablaFiltrada(q);
     } catch (err) {
-        console.error(err);
-        CICLOS = [];
-        tbody.innerHTML = `<tr><td colspan="7" class="muted">Error cargando ciclos.</td></tr>`;
-        alert("Error cargando ciclos. Revisá consola.");
+        console.warn("Offline mode, showing mock ciclos", err);
+        CICLOS = MOCK_CICLOS;
     }
+
+    const q = (document.getElementById("txtBuscarCiclos")?.value || "").toLowerCase().trim();
+    renderTablaFiltrada(q);
 }
 
 /* =========================
@@ -294,9 +267,8 @@ async function guardarSiembra() {
     const notas = emptyToNull(val("notas"));
 
     if (productoId <= 0 || variedadId <= 0 || torreId <= 0) {
-        alert("Debes seleccionar un Producto/Variedad y una Torre.");
+        alert("ProductoId, VariedadId y TorreId deben ser mayores a 0.");
         return;
-    
     }
     if (!estadoCicloCodigo) {
         alert("EstadoCicloCodigo es requerido.");
@@ -352,7 +324,6 @@ async function guardarSiembra() {
 
         cerrarModal("modalSiembra");
         await cargarActivos();
-        await cargarTorresParaSelector().catch(console.error);
     } catch (err) {
         console.error(err);
         alert(err?.message || "Error registrando siembra.");
@@ -371,19 +342,6 @@ function cerrarModal(id) {
     if (!m) return;
     m.hidden = true;
     m.setAttribute("aria-hidden", "true");
-
-    if (id === "modalSiembra") {
-        // reset campos
-        document.getElementById("frmSiembra")?.reset();
-
-        // reset hidden ids (porque ahora hay hidden)
-        document.getElementById("productoId").value = "";
-        document.getElementById("variedadId").value = "";
-        document.getElementById("torreId").value = "";
-
-        // limpiar selección visual
-        document.querySelectorAll("#torresGrid .torre-cell.selected").forEach(x => x.classList.remove("selected"));
-    }
 }
 
 /* =========================
@@ -411,255 +369,4 @@ function safe(v) {
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
-}
-/* =========================
-   Paso 1: Autocomplete Producto (usa GET /api/Producto)
-   - Muestra dropdown en #productoSuggs
-   - Al seleccionar: setea productoId/variedadId (hidden) y variedadNombre (visible)
-   ========================= */
-
-let _productosAll = null;   // cache de /api/Producto
-let _prodCache = [];
-let _prodDebounce = null;
-
-function initProductoAutocomplete() {
-    const inp = document.getElementById("productoNombre");
-    const box = document.getElementById("productoSuggs");
-    if (!inp || !box) return;
-
-    inp.addEventListener("focus", async () => {
-        // precargar lista al enfocar (solo 1 vez)
-        if (_productosAll === null) {
-            try { _productosAll = await cargarProductosAll(); }
-            catch (e) { console.error(e); _productosAll = []; }
-        }
-    });
-
-    inp.addEventListener("input", () => {
-        const q = (inp.value || "").trim().toLowerCase();
-
-        // si el usuario edita, invalida selección previa
-        document.getElementById("productoId").value = "";
-        document.getElementById("variedadId").value = "";
-        const vNom = document.getElementById("variedadNombre");
-        if (vNom) vNom.value = "";
-
-        if (_prodDebounce) clearTimeout(_prodDebounce);
-        _prodDebounce = setTimeout(async () => {
-            if (_productosAll === null) {
-                try { _productosAll = await cargarProductosAll(); }
-                catch (e) { console.error(e); _productosAll = []; }
-            }
-
-            if (q.length < 2) {
-                box.hidden = true;
-                box.innerHTML = "";
-                return;
-            }
-
-            const items = filtrarProductosLocal(_productosAll, q);
-            _prodCache = items.slice(0, 12); // límite para no saturar UI
-            renderProductoSuggs(_prodCache);
-        }, 180);
-    });
-
-    // click afuera cierra
-    document.addEventListener("click", (e) => {
-        if (!box.hidden && !box.contains(e.target) && e.target !== inp) {
-            box.hidden = true;
-        }
-    });
-}
-
-async function cargarProductosAll() {
-    const res = await fetch("/api/Producto");
-    if (!res.ok) throw new Error(`No se pudo cargar productos: HTTP ${res.status}`);
-    const data = await res.json().catch(() => []);
-    return Array.isArray(data) ? data : [];
-}
-
-function filtrarProductosLocal(arr, q) {
-    return (arr || []).filter(x => {
-        const nombre = (x.nombreProducto || "").toLowerCase();
-        const codigo = (x.codigo || "").toLowerCase();
-        const variedad = (x.nombreVariedad || "").toLowerCase();
-        return nombre.includes(q) || codigo.includes(q) || variedad.includes(q);
-    });
-}
-
-function renderProductoSuggs(items) {
-    const box = document.getElementById("productoSuggs");
-    if (!box) return;
-
-    box.innerHTML = "";
-    if (!items.length) {
-        box.hidden = true;
-        return;
-    }
-
-    items.forEach((p, idx) => {
-        const div = document.createElement("div");
-        div.className = "autocomplete-item";
-
-        // texto sugerencia: CODIGO - Nombre — Variedad
-        const left = `${p.codigo ? p.codigo + " - " : ""}${p.nombreProducto || ""}`.trim();
-        const right = p.nombreVariedad ? ` — ${p.nombreVariedad}` : "";
-        div.textContent = `${left}${right}`;
-
-        div.addEventListener("mousedown", (e) => {
-            e.preventDefault();
-            seleccionarProducto(idx);
-        });
-
-        box.appendChild(div);
-    });
-
-    box.hidden = false;
-}
-
-function seleccionarProducto(idx) {
-    const p = _prodCache[idx];
-    if (!p) return;
-
-    // Visible
-    document.getElementById("productoNombre").value = p.nombreProducto || "";
-    const vNom = document.getElementById("variedadNombre");
-    if (vNom) vNom.value = p.nombreVariedad || "";
-
-    // Hidden (para tu guardarSiembra existente)
-    document.getElementById("productoId").value = String(p.productoId || "");
-    document.getElementById("variedadId").value = String(p.variedadId || "");
-
-    // cerrar lista
-    const box = document.getElementById("productoSuggs");
-    if (box) box.hidden = true;
-}
-function wireFechas() {
-    const fechaSiembra = document.getElementById("fechaSiembra");
-    const fechaCosecha = document.getElementById("fechaCosechaEstimada");
-    if (!fechaSiembra || !fechaCosecha) return;
-
-    const syncMin = () => {
-        fechaCosecha.min = fechaSiembra.value || "";
-
-        if (fechaCosecha.value && fechaSiembra.value && fechaCosecha.value < fechaSiembra.value) {
-            fechaCosecha.value = fechaSiembra.value;
-        }
-    };
-
-    // cuando el usuario cambia fechaSiembra, actualiza min y corrige cosecha si hace falta
-    fechaSiembra.addEventListener("change", syncMin);
-
-    // cuando el usuario elige cosecha, si por alguna razón queda inválida, corrige
-    fechaCosecha.addEventListener("change", () => {
-        if (fechaCosecha.value && fechaSiembra.value && fechaCosecha.value < fechaSiembra.value) {
-            alert("La fecha de cosecha estimada no puede ser menor a la fecha de siembra.");
-            fechaCosecha.value = fechaSiembra.value;
-        }
-    });
-
-    syncMin();
-}
-/* =========================
-   Torres: selector matriz
-   ========================= */
-
-let TORRES = [];
-
-async function cargarTorresParaSelector() {
-    const grid = document.getElementById("torresGrid");
-    if (!grid) return;
-
-    const res = await fetch("/api/torres", { cache: "no-store" });
-    if (!res.ok) throw new Error(`No se pudo cargar torres: HTTP ${res.status}`);
-
-    const data = await res.json().catch(() => []);
-    TORRES = Array.isArray(data) ? data : [];
-
-    renderTorresGrid(TORRES);
-}
-
-function renderTorresGrid(torres) {
-    const grid = document.getElementById("torresGrid");
-    if (!grid) return;
-
-    const filas = {};
-    torres.forEach(t => {
-        const fila = String(t.fila ?? t.Fila ?? "").toUpperCase();
-        if (!filas[fila]) filas[fila] = [];
-        filas[fila].push(t);
-    });
-
-    const ordenFilas = Object.keys(filas).sort();
-
-    grid.innerHTML = ordenFilas.map(f => {
-        const arr = filas[f]
-            .slice()
-            .sort((a, b) =>
-                extraerNumTorre(a.codigoTorre ?? a.codigo_torre ?? a.CodigoTorre) -
-                extraerNumTorre(b.codigoTorre ?? b.codigo_torre ?? b.CodigoTorre)
-            );
-
-        const cells = arr.map(t => {
-            const torreId = t.torreId ?? t.torre_id ?? t.TorreId;
-            const codigo = t.codigoTorre ?? t.codigo_torre ?? t.CodigoTorre ?? "";
-
-            const capRaw = t.capacidadMaximaPlantas ?? t.capacidad_maxima_plantas ?? t.CapacidadMaximaPlantas;
-            const cap = Number.isFinite(Number(capRaw)) ? Number(capRaw) : 0;
-
-            const dispRaw = t.huecosDisponibles ?? t.huecos_disponibles ?? t.HuecosDisponibles;
-            const disp = Number.isFinite(Number(dispRaw)) ? Number(dispRaw) : null;
-
-            let estadoClass = "free";
-            if (disp !== null) {
-                if (disp <= 0) estadoClass = "full";
-                else if (disp < cap) estadoClass = "partial";
-            }
-
-            const textoDisponibles = (disp === null) ? "—" : `${disp} disponibles`;
-
-            return `
-              <div class="torre-cell ${estadoClass}"
-                   data-torre-id="${torreId}"
-                   data-codigo="${safe(codigo)}"
-                   data-disponibles="${disp ?? ""}">
-                <div class="torre-code">${safe(String(codigo).replace("TORRE-", ""))}</div>
-                <div class="torre-cap">${safe(textoDisponibles)}</div>
-              </div>`;
-        }).join("");
-
-        return `
-          <div class="torres-row" data-fila="${safe(f)}">
-            <div class="torres-row-label">${safe(f)}</div>
-            ${cells}
-          </div>`;
-    }).join("");
-
-    if (!grid.dataset.boundClick) {
-        grid.addEventListener("click", (e) => {
-            const cell = e.target.closest(".torre-cell");
-            if (!cell) return;
-
-            const dispStr = cell.dataset.disponibles;
-            const disp = dispStr === "" ? null : parseInt(dispStr, 10);
-
-            if (disp !== null && disp <= 0) {
-                alert("Esta torre está llena. Seleccioná otra.");
-                return;
-            }
-
-            grid.querySelectorAll(".torre-cell.selected").forEach(x => x.classList.remove("selected"));
-            cell.classList.add("selected");
-
-            document.getElementById("torreId").value = cell.dataset.torreId;
-        });
-
-        grid.dataset.boundClick = "1";
-    }
-}
-
-function extraerNumTorre(codigo) {
-    // "TORRE-A11" -> 11
-    const m = String(codigo || "").match(/(\d+)$/);
-    return m ? parseInt(m[1], 10) : 0;
 }

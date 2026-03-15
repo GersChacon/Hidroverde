@@ -89,17 +89,18 @@ namespace DA
             return resultado;
         }
 
-        public async Task Eliminar(int productoId)
+        public async Task<int> Eliminar(int productoId)
         {
             await VerificarProductoExiste(productoId);
 
-            await _sqlConnection.ExecuteAsync(
+            var resultado = await _sqlConnection.ExecuteScalarAsync<int>(
                 "EliminarProducto",
                 new { producto_id = productoId },
                 commandType: CommandType.StoredProcedure
             );
-        }
 
+            return resultado;
+        }
 
         private async Task VerificarProductoExiste(int productoId)
         {

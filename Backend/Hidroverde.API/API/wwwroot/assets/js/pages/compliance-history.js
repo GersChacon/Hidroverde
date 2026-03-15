@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ﻿// compliance-history.js - Full functionality for Compliance History page
 
 // Helper functions
@@ -303,9 +302,4 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
 } else {
     init();
-=======
-﻿export function init() {
-    console.log("Compliance page loaded");
-    // The inline script in checklist.html already handles everything
->>>>>>> c258a47c036e1f2f3bda8cbc9ae982b2e22d35a1
 }

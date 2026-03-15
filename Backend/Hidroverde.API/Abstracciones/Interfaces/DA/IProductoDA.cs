@@ -8,6 +8,6 @@ namespace Abstracciones.Interfaces.DA
         Task<ProductoResponse> Obtener(int productoId);
         Task<int> Agregar(ProductoRequest producto);
         Task<int> Editar(int productoId, ProductoRequest producto);
-        Task Eliminar(int productoId);
+        Task<int> Eliminar(int productoId);
     }
 }

@@ -1,145 +1,115 @@
-<section class="page">
-
-    <div class="page-header">
+﻿<section class="page page-ciclos">
+    <header class="ciclosHeader">
         <div>
-            <h1 class="page-title">Ciclos Activos</h1>
-            <p class="page-subtitle">Gestiona los ciclos de cultivo en curso</p>
+            <h1 class="ciclosTitle">Ciclos Activos</h1>
+            <p class="ciclosSubtitle">Gestiona los ciclos de cultivo en curso</p>
         </div>
-        <div class="page-actions">
-            <button class="btn primary" id="btnNuevaSiembra">+ Nueva siembra</button>
+
+        <div class="ciclosHeaderActions">
+            <button class="btn btn-primary" id="btnNuevaSiembra">+ Nueva siembra</button>
             <button class="btn" id="btnRefrescarCiclos">Refrescar</button>
         </div>
-    </div>
+    </header>
 
-    <div class="ciclos-toolbar" style="margin-bottom:14px;">
-        <div class="search-box">
-            <span>🔎</span>
+    <div class="ciclosToolbar">
+        <div class="searchBox">
+            <span class="searchIcon">🔎</span>
             <input id="txtBuscarCiclos" type="search" placeholder="Buscar ciclos..." />
         </div>
     </div>
 
-    <div class="content-card">
-        <div class="table-wrap">
-            <table class="data-table" id="tblCiclos">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Cultivo</th>
-                        <th>Inicio</th>
-                        <th>Fin Estimado</th>
-                        <th>Progreso</th>
-                        <th>Estado</th>
-                        <th class="col-right">Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="tblCiclosBody">
-                    <tr><td colspan="7" class="table-empty">Cargando...</td></tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="ciclosCard">
+        <table class="ciclosTable" id="tblCiclos">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Cultivo</th>
+                    <th>Inicio</th>
+                    <th>Fin Estimado</th>
+                    <th>Progreso</th>
+                    <th>Estado</th>
+                    <th class="thRight">Acciones</th>
+                </tr>
+            </thead>
+            <tbody id="tblCiclosBody">
+                <tr><td colspan="7" class="muted">Cargando...</td></tr>
+            </tbody>
+        </table>
     </div>
 
-    <!-- Modal Nueva Siembra -->
+    <!-- Modal Nueva Siembra (CORREGIDO - SIN DUPLICADOS) -->
     <div class="modal" id="modalSiembra" hidden aria-hidden="true">
-        <div class="modal__backdrop" data-close="modalSiembra"></div>
-        <div class="modal__content">
-            <div class="modal__header">
-                <h2>Nueva siembra</h2>
-                <button class="icon-btn" data-close="modalSiembra">✕</button>
+        <div class="modal__backdrop" data-close="modalSiembra" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5);"></div>
+        <div class="modal__content" style="position: relative; width: min(650px, 94vw); background: white; border-radius: 18px; box-shadow: 0 20px 35px rgba(0,0,0,0.2); overflow: hidden;">
+            <div class="modal__header" style="display: flex; justify-content: space-between; align-items: center; padding: 18px 24px; border-bottom: 1px solid var(--line, #e2e8f0);">
+                <h2 style="margin: 0; font-size: 1.5rem;">Nueva siembra</h2>
+                <button class="icon-btn" data-close="modalSiembra" style="background: none; border: none; font-size: 24px; cursor: pointer; line-height: 1;">✕</button>
             </div>
 
-            <div class="modal__body">
+            <div class="modal__body" style="padding: 24px;">
                 <form id="frmSiembra">
-                    <div class="grid">
-
-                        <!-- Producto (visible buscador) + productoId (hidden) -->
-                        <div class="field" style="position:relative;">
-                            <label for="productoNombre">
-                                <span>Producto *</span>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <!-- Columna izquierda -->
+                        <div>
+                            <label style="display: block; margin-bottom: 18px;">
+                                <span style="display: block; margin-bottom: 6px; font-weight: 600; color: #1e293b;">ProductoId *</span>
+                                <input type="number" id="productoId" min="1" required style="width: 100%; padding: 10px 14px; border: 1px solid var(--line, #cbd5e1); border-radius: 12px; font-size: 14px;" />
                             </label>
 
-                            <!-- Visible buscador -->
-                            <input type="text"
-                                   id="productoNombre"
-                                   placeholder="Escribe el nombre del producto..."
-                                   autocomplete="off" />
-
-                            <!-- Dropdown -->
-                            <div id="productoSuggs"
-                                 class="autocomplete-list"
-                                 hidden></div>
-
-                            <!-- Hidden que usa guardarSiembra() -->
-                            <input type="hidden" id="productoId" />
-                        </div>
-
-                        <!-- Variedad (visible autopoblado) + variedadId (hidden) -->
-                        <label class="field">
-                            <span>Variedad *</span>
-                            <input type="text"
-                                   id="variedadNombre"
-                                   placeholder="Se completará automáticamente al seleccionar un producto"
-                                   readonly />
-                            <input type="hidden" id="variedadId" />
-                        </label>
-
-                        <!-- Torre (matriz visual) + torreId (hidden) -->
-                        <div class="field field--full">
-                            <label>
-                                <span>Torre *</span>
+                            <label style="display: block; margin-bottom: 18px;">
+                                <span style="display: block; margin-bottom: 6px; font-weight: 600; color: #1e293b;">VariedadId *</span>
+                                <input type="number" id="variedadId" min="1" required style="width: 100%; padding: 10px 14px; border: 1px solid var(--line, #cbd5e1); border-radius: 12px; font-size: 14px;" />
                             </label>
 
-                            <!-- hidden para mantener tu flujo -->
-                            <input type="hidden" id="torreId" />
+                            <label style="display: block; margin-bottom: 18px;">
+                                <span style="display: block; margin-bottom: 6px; font-weight: 600; color: #1e293b;">TorreId *</span>
+                                <input type="number" id="torreId" min="1" required style="width: 100%; padding: 10px 14px; border: 1px solid var(--line, #cbd5e1); border-radius: 12px; font-size: 14px;" />
+                            </label>
 
-                            <!-- hint selección -->
-                            <div class="muted" style="margin-top:6px;">
-                                Seleccioná una torre en la matriz.
-                            </div>
-
-                            <!-- matriz -->
-                            <div id="torresGrid" class="torres-grid" aria-label="Selector de torres"></div>
+                            <label style="display: block; margin-bottom: 18px;">
+                                <span style="display: block; margin-bottom: 6px; font-weight: 600; color: #1e293b;">EstadoCicloCodigo *</span>
+                                <input type="text" id="estadoCicloCodigo" value="SIEMBRA" required style="width: 100%; padding: 10px 14px; border: 1px solid var(--line, #cbd5e1); border-radius: 12px; font-size: 14px;" />
+                            </label>
                         </div>
 
-                        <label class="field">
-                            <span>Estado ciclo *</span>
-                            <input type="text" id="estadoCicloCodigo" value="SIEMBRA" required />
-                        </label>
+                        <!-- Columna derecha -->
+                        <div>
+                            <label style="display: block; margin-bottom: 18px;">
+                                <span style="display: block; margin-bottom: 6px; font-weight: 600; color: #1e293b;">Fecha siembra *</span>
+                                <input type="date" id="fechaSiembra" required style="width: 100%; padding: 10px 14px; border: 1px solid var(--line, #cbd5e1); border-radius: 12px; font-size: 14px;" />
+                            </label>
 
-                        <label class="field">
-                            <span>Fecha siembra *</span>
-                            <input type="date" id="fechaSiembra" required />
-                        </label>
+                            <label style="display: block; margin-bottom: 18px;">
+                                <span style="display: block; margin-bottom: 6px; font-weight: 600; color: #1e293b;">Fecha cosecha estimada *</span>
+                                <input type="date" id="fechaCosechaEstimada" required style="width: 100%; padding: 10px 14px; border: 1px solid var(--line, #cbd5e1); border-radius: 12px; font-size: 14px;" />
+                            </label>
 
-                        <label class="field">
-                            <span>Fecha cosecha estimada *</span>
-                            <input type="date" id="fechaCosechaEstimada" required />
-                        </label>
+                            <label style="display: block; margin-bottom: 18px;">
+                                <span style="display: block; margin-bottom: 6px; font-weight: 600; color: #1e293b;">Cantidad plantas *</span>
+                                <input type="number" id="cantidadPlantas" min="1" required style="width: 100%; padding: 10px 14px; border: 1px solid var(--line, #cbd5e1); border-radius: 12px; font-size: 14px;" />
+                            </label>
 
-                        <label class="field">
-                            <span>Cantidad plantas *</span>
-                            <input type="number" id="cantidadPlantas" min="1" required />
-                        </label>
+                            <label style="display: block; margin-bottom: 18px;">
+                                <span style="display: block; margin-bottom: 6px; font-weight: 600; color: #1e293b;">Lote semilla</span>
+                                <input type="text" id="loteSemilla" style="width: 100%; padding: 10px 14px; border: 1px solid var(--line, #cbd5e1); border-radius: 12px; font-size: 14px;" />
+                            </label>
+                        </div>
+                    </div>
 
-                        <label class="field">
-                            <span>Lote semilla</span>
-                            <input type="text" id="loteSemilla" />
+                    <!-- Fila completa para Notas -->
+                    <div style="margin-top: 10px;">
+                        <label style="display: block;">
+                            <span style="display: block; margin-bottom: 6px; font-weight: 600; color: #1e293b;">Notas</span>
+                            <textarea id="notas" rows="3" style="width: 100%; padding: 10px 14px; border: 1px solid var(--line, #cbd5e1); border-radius: 12px; font-size: 14px; resize: vertical;"></textarea>
                         </label>
+                    </div>
 
-                        <label class="field field--full">
-                            <span>Notas</span>
-                            <textarea id="notas" rows="3"></textarea>
-                        </label>
-
+                    <div class="modal__footer" style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--line, #e2e8f0);">
+                        <button type="button" class="btn" data-close="modalSiembra" style="padding: 10px 24px; border: 1px solid var(--line, #cbd5e1); background: white; border-radius: 30px; font-weight: 600; cursor: pointer;">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" style="padding: 10px 28px; background: #16a34a; color: white; border: none; border-radius: 30px; font-weight: 600; cursor: pointer;">Guardar</button>
                     </div>
                 </form>
             </div>
-
-            <div class="modal__footer">
-                <button type="button" class="btn" data-close="modalSiembra">Cancelar</button>
-                <button type="submit" form="frmSiembra" class="btn primary">Guardar</button>
-            </div>
         </div>
     </div>
-
 </section>

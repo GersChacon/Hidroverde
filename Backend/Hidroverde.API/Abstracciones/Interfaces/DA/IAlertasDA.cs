@@ -4,9 +4,9 @@ namespace Abstracciones.Interfaces.DA
 {
     public interface IAlertasDA
     {
-        void GenerarAlertasStockBajo();
-        AlertaBadgeDto ObtenerBadge();
-        IEnumerable<AlertaActivaDto> ListarAlertasActivas();
-        void AceptarAlerta(int alertaId, int empleadoId);
+        Task GenerarAlertasStockBajo(); // changed to Task
+        Task<AlertaBadgeDto> ObtenerBadge();
+        Task<IEnumerable<AlertaActivaDto>> ListarAlertasActivas();
+        Task AceptarAlerta(int alertaId, int empleadoId);
     }
 }

@@ -1,5 +1,32 @@
 ﻿// wwwroot/assets/js/pages/consumos.js
 
+const MOCK_CONSUMOS = [
+    { consumoId: 1, cicloId: 1, tipoRecursoId: 1, recursoNombre: "Agua", unidad: "L", cantidad: 150, fechaConsumo: new Date().toISOString(), registradoPorEmpleadoId: 1 },
+    { consumoId: 2, cicloId: 1, tipoRecursoId: 2, recursoNombre: "Nutriente A", unidad: "ml", cantidad: 30, fechaConsumo: new Date(Date.now() - 86400000).toISOString(), registradoPorEmpleadoId: 2 },
+    { consumoId: 3, cicloId: 2, tipoRecursoId: 1, recursoNombre: "Agua", unidad: "L", cantidad: 200, fechaConsumo: new Date().toISOString(), registradoPorEmpleadoId: 1 }
+];
+
+// In cargarConsumos(), wrap the apiFetch in try/catch
+async function cargarConsumos() {
+    const filtros = leerFiltros();
+    const url = `${API_BASE}${qsFromFilters(filtros)}`;
+
+    try {
+        const data = await apiFetch(url);
+        renderTablaConsumos(Array.isArray(data) ? data : []);
+    } catch (err) {
+        console.warn("Offline mode, showing mock consumos", err);
+        // Optionally disable "Nuevo consumo" button
+        const btnNuevo = getElem("btnNuevoConsumo");
+        if (btnNuevo) btnNuevo.disabled = true;
+        // Apply filters to mock (simple)
+        let mock = MOCK_CONSUMOS;
+        if (filtros.cicloId) mock = mock.filter(c => c.cicloId == filtros.cicloId);
+        if (filtros.fechaDesde) mock = mock.filter(c => new Date(c.fechaConsumo) >= new Date(filtros.fechaDesde));
+        if (filtros.fechaHasta) mock = mock.filter(c => new Date(c.fechaConsumo) <= new Date(filtros.fechaHasta));
+        renderTablaConsumos(mock);
+    }
+}
 const $ = (id) => document.getElementById(id);
 
 const EMPLEADO_ID = 1;          // fijo por ahora (tu convención actual)
@@ -264,6 +291,10 @@ function leerFormConsumoParaCrear() {
 }
 
 async function guardarConsumo() {
+    if (offlineMode) {
+        alert("No se puede guardar en modo offline.");
+        return;
+    }
     try {
         const body = leerFormConsumoParaCrear();
 

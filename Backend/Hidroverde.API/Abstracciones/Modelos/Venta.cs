@@ -34,8 +34,6 @@
         public string? NombreMetodoPago { get; set; }
         public int TipoEntregaId { get; set; }
         public string NombreTipoEntrega { get; set; }
-        public string CodigoTipoEntrega { get; set; }   // RECOGE / ENVIO / EXPRESS
-        public int OrdenEstadoVenta { get; set; }        // para bloquear retroceso en frontend
         public string? NumeroFactura { get; set; }
         public DateTime FechaPedido { get; set; }
         public DateTime? FechaEntrega { get; set; }

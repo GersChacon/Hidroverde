@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 namespace Abstracciones.Modelos.Checklist
 {
     public class ChecklistTaskDto
@@ -14,5 +13,7 @@ namespace Abstracciones.Modelos.Checklist
         public bool IsCompleted { get; set; }
         public DateTime? DueDate { get; set; }
         public int? AssignedUserId { get; set; }
+        public int Orden { get; set; } = 10;
+        public bool EsCritica { get; set; } = false;
     }
 }

@@ -1,11 +1,11 @@
 ﻿using Abstracciones.Interfaces.DA;
 using Abstracciones.Interfaces.Flujo;
+using Abstracciones.Interfaces.Servicios;
 using Abstracciones.Modelos.Reportes;
+using Dapper;
+using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Text.Json;
-using Microsoft.Data.SqlClient;
-using Dapper;
-using Abstracciones.Interfaces.Servicios;
 
 namespace Flujo
 {
@@ -13,7 +13,7 @@ namespace Flujo
     {
         private readonly IReportesDA _reportesDA;
         private readonly IRepositorioDapper _repositorioDapper;
-        private readonly IExportService _exportService; // lo crearemos luego
+        private readonly IExportService _exportService;
 
         public ReportesFlujo(IReportesDA reportesDA, IRepositorioDapper repositorioDapper, IExportService exportService)
         {
@@ -22,11 +22,8 @@ namespace Flujo
             _exportService = exportService;
         }
 
-        // Helper para obtener roles del usuario (simplificado; en producción puedes obtener de DB o claims)
         private async Task<List<string>> ObtenerRolesUsuario(int usuarioId)
         {
-            // Aquí deberías consultar los roles del empleado desde la base de datos.
-            // Por simplicidad, asumimos que el empleado tiene un solo rol y lo obtenemos de Empleados.
             using var conn = _repositorioDapper.ObtenerRepositorio();
             var rol = await conn.QueryFirstOrDefaultAsync<string>(
                 @"SELECT r.Nombre 
@@ -37,7 +34,6 @@ namespace Flujo
             return rol != null ? new List<string> { rol } : new List<string>();
         }
 
-        // Verifica si el usuario tiene permiso para acceder a una definición
         private async Task<bool> UsuarioPuedeAccederDefinicion(int usuarioId, ReporteDefinicionDto definicion)
         {
             if (string.IsNullOrEmpty(definicion.RolesPermitidos))
@@ -70,13 +66,11 @@ namespace Flujo
 
         public async Task<int> CrearProgramacion(ReporteProgramacionDto programacion, int usuarioId)
         {
-            // Validar que el reporte existe y el usuario tiene permiso
             var def = await ObtenerDefinicion(programacion.ReporteId, usuarioId);
             if (def == null)
                 throw new KeyNotFoundException("Reporte no encontrado o sin permisos.");
 
             programacion.CreadoPor = usuarioId;
-            // Calcular próxima ejecución según frecuencia
             programacion.ProximaEjecucion = CalcularProximaEjecucion(programacion.Frecuencia);
             programacion.Activo = true;
             return await _reportesDA.CrearProgramacion(programacion);
@@ -87,7 +81,6 @@ namespace Flujo
             var progExistente = (await _reportesDA.ListarProgramaciones()).FirstOrDefault(p => p.ProgramacionId == programacionId);
             if (progExistente == null)
                 throw new KeyNotFoundException("Programación no encontrada.");
-            // Solo el creador puede editar? Podríamos verificar.
             programacion.ProgramacionId = programacionId;
             await _reportesDA.EditarProgramacion(programacion);
         }
@@ -99,7 +92,6 @@ namespace Flujo
 
         public async Task<IEnumerable<ReporteProgramacionDto>> ListarProgramaciones(int usuarioId)
         {
-            // Podríamos filtrar por creador, pero por ahora listamos todas (en SP ya filtra por usuario si se pasa)
             return await _reportesDA.ListarProgramaciones(usuarioId);
         }
 
@@ -109,7 +101,6 @@ namespace Flujo
             if (def == null)
                 throw new UnauthorizedAccessException("No tiene permiso para generar este reporte.");
 
-            // Ejecutar el SP de datos y obtener JSON
             var datosJson = await EjecutarSpYSerializar(def.Procedimiento, parametros);
             var generadoId = await _reportesDA.CrearReporteGenerado(reporteId, datosJson, null);
             return generadoId;
@@ -117,10 +108,8 @@ namespace Flujo
 
         public async Task<IEnumerable<ReporteGeneradoDto>> ListarGenerados(int usuarioId, int? reporteId)
         {
-            // Primero obtener definiciones a las que el usuario tiene acceso
             var definicionesAccesibles = await ObtenerDefiniciones(usuarioId);
             var idsAccesibles = definicionesAccesibles.Select(d => d.ReporteId).ToHashSet();
-
             var todosGenerados = await _reportesDA.ListarReportesGenerados(reporteId);
             return todosGenerados.Where(g => idsAccesibles.Contains(g.ReporteId)).ToList();
         }
@@ -142,9 +131,7 @@ namespace Flujo
             if (generado == null)
                 throw new KeyNotFoundException("Reporte no encontrado.");
 
-            // Parsear JSON a objeto para exportar
             var datos = JsonSerializer.Deserialize<IEnumerable<dynamic>>(generado.DatosJson) ?? new List<dynamic>();
-
             byte[] archivo;
             if (formato.ToLower() == "pdf")
                 archivo = _exportService.GenerarPDF($"Reporte {generado.ReporteNombre}", datos, new Dictionary<string, string>());
@@ -153,9 +140,7 @@ namespace Flujo
             else
                 throw new ArgumentException("Formato no soportado");
 
-            // Registrar exportación
             await _reportesDA.InsertarExportLog(generadoId, usuarioId, formato.ToUpper());
-
             return archivo;
         }
 
@@ -173,15 +158,10 @@ namespace Flujo
             var def = await _reportesDA.ObtenerDefinicion(prog.ReporteId);
             if (def == null) return 0;
 
-            // Ejecutar SP con parámetros guardados
             var datosJson = await EjecutarSpYSerializar(def.Procedimiento, prog.Parametros);
             var generadoId = await _reportesDA.CrearReporteGenerado(prog.ReporteId, datosJson, programacionId);
-
-            // Actualizar próxima ejecución
             prog.ProximaEjecucion = CalcularProximaEjecucion(prog.Frecuencia, prog.ProximaEjecucion);
             await _reportesDA.EditarProgramacion(prog);
-
-            // Aquí podrías enviar notificación (opcional)
             return generadoId;
         }
 
@@ -200,7 +180,6 @@ namespace Flujo
         private async Task<string> EjecutarSpYSerializar(string spName, string? parametrosJson)
         {
             using var conn = _repositorioDapper.ObtenerRepositorio();
-            // Parsear parámetros si vienen
             var parametros = new DynamicParameters();
             if (!string.IsNullOrEmpty(parametrosJson))
             {
@@ -209,12 +188,10 @@ namespace Flujo
                 {
                     foreach (var kv in dict)
                     {
-                        // Asumimos que los parámetros son tipos simples (int, date, string)
                         parametros.Add($"@{kv.Key}", kv.Value?.ToString());
                     }
                 }
             }
-
             var result = await conn.QueryAsync(spName, parametros, commandType: CommandType.StoredProcedure);
             return JsonSerializer.Serialize(result);
         }

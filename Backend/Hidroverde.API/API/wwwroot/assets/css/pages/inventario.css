@@ -1,89 +1,168 @@
-/* inventario.css — usa el sistema global de app.css, igual que ventas.css */
-
-/* Badge de estado activo/inactivo */
-.estado-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-weight: 700;
-    font-size: 11px;
-    border: 1px solid;
+/* ================================
+   TABLA - COLUMNA ACCIONES
+================================ */
+.col-acciones {
+    width: 220px;
+    text-align: center;
     white-space: nowrap;
 }
 
-.estado-pill.activo {
+.acciones-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+
+/* ================================
+   TOOLBAR INVENTARIO
+================================ */
+.card > .row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+    .card > .row h2 {
+        margin-right: auto;
+    }
+
+    .card > .row .btn {
+        height: 38px;
+        padding: 0 14px;
+        border-radius: 12px;
+    }
+
+#btnNuevoProducto {
     background: #dcfce7;
-    color: #15803d;
-    border-color: #86efac;
+    border: 1px solid #86efac;
+    color: #166534;
 }
 
-.estado-pill.inactivo {
-    background: #fee2e2;
-    color: #dc2626;
-    border-color: #fca5a5;
+
+/* ================================
+   MODAL OVERLAY
+================================ */
+#modalProducto.modal--overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, .55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 9999;
 }
 
-/* Mensaje en footer del modal */
-.modal-msg {
-    font-size: 13px;
-    color: var(--text-muted, #94a3b8);
+#modalProducto[hidden] {
+    display: none !important;
+}
+
+
+/* ================================
+   MODAL CARD
+================================ */
+#modalProducto .modalCard--dialog {
+    width: min(820px, 95vw);
+    max-height: 85vh;
+    overflow: auto;
+    background: #fff;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 20px 50px rgba(0,0,0,.25);
+}
+
+
+    /* ================================
+   MODAL HEADER
+================================ */
+    #modalProducto .modalCard--dialog > .row:first-child {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding-bottom: 14px;
+        border-bottom: 1px solid #e5e7eb;
+        margin-bottom: 16px;
+    }
+
+#modalProducto .modalTitle {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 800;
+}
+
+
+/* ================================
+   FORM GRID
+================================ */
+#modalProducto .grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+@media (max-width: 720px) {
+    #modalProducto .grid2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+#modalProducto label {
+    display: block;
+    font-weight: 700;
+    color: #64748b;
+}
+
+#modalProducto input,
+#modalProducto select {
+    margin-top: 6px;
+    width: 100%;
+}
+
+
+/* ================================
+   MODAL FOOTER (BOTONES JUNTOS)
+================================ */
+/* Footer: mensaje a la izquierda, botones juntos a la derecha */
+#modalProducto .modalCard--dialog > .row:last-child{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding-top:18px;
+  border-top:1px solid #e5e7eb;
+  margin-top:18px;
+}
+
+/* Mensaje a la izquierda */
+#modalProducto #pMsg {
     margin-right: auto;
 }
 
-.modal-msg.error {
-    color: #dc2626;
+/* Botones a la derecha */
+#modalProducto #btnCerrarProducto,
+#modalProducto #btnGuardarProducto {
+    height: 38px;
+    padding: 0 14px;
+    border-radius: 12px;
 }
 
-/* Grid 2 columnas para formulario */
-.form-grid2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+/* ================================
+   BOTONES MODAL
+================================ */
+#btnCerrarProducto {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    color: #334155;
 }
 
-@media (max-width: 640px) {
-    .form-grid2 { grid-template-columns: 1fr; }
-}
-
-/* Filtros */
-.filter-bar {
-    display: flex;
-    gap: 12px;
-    flex-wrap: wrap;
-    align-items: flex-end;
-}
-
-/* Filas info detalle producto */
-.detalle-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 18px;
-}
-
-@media (max-width: 640px) {
-    .detalle-grid { grid-template-columns: 1fr 1fr; }
-}
-
-.detalle-field {
-    background: var(--surface-alt, #f8fafc);
-    border: 1px solid var(--line, #e5e7eb);
-    border-radius: 10px;
-    padding: 10px 14px;
-}
-
-.detalle-field .df-label {
-    font-size: 10px;
+#btnGuardarProducto {
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    color: #166534;
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .05em;
-    color: var(--text-muted, #94a3b8);
-    margin-bottom: 4px;
 }
 
-.detalle-field .df-value {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text, #1e293b);
+#btnGuardarProducto:hover {
+    background: #bbf7d0;
 }

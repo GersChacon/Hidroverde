@@ -1,9 +1,5 @@
-<<<<<<< HEAD
-﻿// checklist.js - Full functionality with Database + Fallback (mock data from file)
-
-let currentEmpleadoId = 1;
+﻿let currentEmpleadoId = 1;
 const API_BASE = '/api/checklist';
-const MOCK_URL = '/mock/checklist-tasks.json';
 
 // Helper functions
 function escapeHtml(unsafe) {
@@ -16,82 +12,45 @@ function escapeHtml(unsafe) {
         .replace(/'/g, "&#039;");
 }
 
-// Check if we're in offline/mock mode
-let isOfflineMode = false;
-
-// Generic API caller with fallback
+// API caller - throws errors if fails
 async function callApi(url, options = {}) {
-    if (isOfflineMode) {
-        console.log('📴 Offline mode - skipping API call');
-        return { success: false, offline: true };
+    const response = await fetch(url, {
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Empleado-Id': currentEmpleadoId
+        },
+        ...options
+    });
+
+    if (!response.ok) {
+        const errorText = await response.text().catch(() => 'Unknown error');
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
     }
 
-    try {
-        const response = await fetch(url, {
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Empleado-Id': currentEmpleadoId
-            },
-            ...options
-        });
-
-        if (!response.ok) {
-            if (response.status === 404) {
-                console.log('🔌 API endpoint not found - switching to offline mode');
-                isOfflineMode = true;
-                return { success: false, offline: true };
-            }
-            throw new Error(`HTTP ${response.status}`);
-        }
-
-        const data = await response.json().catch(() => ({}));
-        return { success: true, data };
-    } catch (err) {
-        console.warn('⚠️ API call failed:', err);
-        isOfflineMode = true;
-        return { success: false, offline: true };
+    // Handle 204 No Content
+    if (response.status === 204) {
+        return { success: true, data: null };
     }
+
+    const data = await response.json().catch(() => ({}));
+    return { success: true, data };
 }
 
-// Load tasks from localStorage (offline store)
-function loadLocalTasks() {
-    return JSON.parse(localStorage.getItem('misTareas') || '[]');
-}
-
-function saveLocalTasks(tasks) {
-    localStorage.setItem('misTareas', JSON.stringify(tasks));
-}
-
-// Check if a task exists in localStorage (by ID)
-function isLocalTask(taskId) {
-    const tasks = loadLocalTasks();
-    return tasks.some(t => t.taskId == taskId);
-}
-
-// Delete task (API first, then localStorage fallback)
+// Delete task
 async function deleteTask(taskId) {
     console.log('🗑️ deleteTask() called for task', taskId);
 
     if (!confirm('¿Eliminar esta tarea?')) return;
 
-    if (isLocalTask(taskId)) {
-        let tasks = loadLocalTasks();
-        tasks = tasks.filter(t => t.taskId != taskId);
-        saveLocalTasks(tasks);
-        alert('✅ Tarea eliminada (modo offline)');
-        loadTasks();
-        return;
-    }
-
-    const result = await callApi(`${API_BASE}/tasks/${taskId}`, {
-        method: 'DELETE'
-    });
-
-    if (result.success) {
+    try {
+        await callApi(`${API_BASE}/tasks/${taskId}`, {
+            method: 'DELETE'
+        });
         alert('✅ Tarea eliminada de la base de datos');
         loadTasks();
-    } else {
-        alert('❌ No se puede eliminar una tarea de la base de datos sin conexión.');
+    } catch (err) {
+        alert('❌ Error al eliminar: ' + err.message);
+        console.error(err);
     }
 }
 
@@ -143,29 +102,19 @@ async function guardarNuevaTarea() {
 
     console.log('📦 New task:', nuevaTarea);
 
-    const result = await callApi(`${API_BASE}/tasks`, {
-        method: 'POST',
-        body: JSON.stringify(nuevaTarea)
-    });
+    try {
+        await callApi(`${API_BASE}/tasks`, {
+            method: 'POST',
+            body: JSON.stringify(nuevaTarea)
+        });
 
-    if (result.success) {
         alert('✅ Tarea creada exitosamente en la base de datos');
-    } else {
-        // Fallback to localStorage
-        console.log('💾 Saving to localStorage instead');
-        const tareasLocales = loadLocalTasks();
-        const tareaConId = {
-            ...nuevaTarea,
-            taskId: Date.now(), // Local ID
-            dueDate: new Date().toISOString().split('T')[0]
-        };
-        tareasLocales.push(tareaConId);
-        saveLocalTasks(tareasLocales);
-        alert('✅ Tarea creada (guardada localmente - modo offline)');
+        cerrarModalNuevaTarea();
+        loadTasks();
+    } catch (err) {
+        alert('❌ Error al crear tarea: ' + err.message);
+        console.error(err);
     }
-
-    cerrarModalNuevaTarea();
-    loadTasks();
 }
 
 // Mark task as complete
@@ -174,59 +123,22 @@ async function markComplete(taskId) {
 
     if (!confirm('¿Marcar esta tarea como completada?')) return;
 
-    const result = await callApi(`${API_BASE}/task/${taskId}/complete`, {
-        method: 'PATCH',
-        body: JSON.stringify({
-            taskId: taskId,
-            empleadoId: currentEmpleadoId,
-            timestamp: new Date().toISOString()
-        })
-    });
+    try {
+        await callApi(`${API_BASE}/task/${taskId}/complete`, {
+            method: 'PATCH',
+            body: JSON.stringify({
+                taskId: taskId,
+                empleadoId: currentEmpleadoId,
+                timestamp: new Date().toISOString()
+            })
+        });
 
-    if (result.success) {
         alert('✅ Tarea marcada como completada en la base de datos');
-        updateTaskStatusInUI(taskId, true);
-    } else {
-        // Fallback: Update in localStorage
-        console.log('💾 Updating task in localStorage');
-        const tareasLocales = loadLocalTasks();
-        const tareaIndex = tareasLocales.findIndex(t => t.taskId == taskId);
-
-        if (tareaIndex !== -1) {
-            tareasLocales[tareaIndex].isCompleted = true;
-            saveLocalTasks(tareasLocales);
-            alert('✅ Tarea marcada como completada (modo offline)');
-            updateTaskStatusInUI(taskId, true);
-        } else {
-            if (confirm('⚠️ Esta tarea está en la base de datos pero no hay conexión. ¿Marcar como completada temporalmente?')) {
-                updateTaskStatusInUI(taskId, true);
-                alert('✅ Tarea marcada como completada (solo visual - los cambios se perderán al recargar)');
-            }
-        }
+        loadTasks();
+    } catch (err) {
+        alert('❌ Error al completar tarea: ' + err.message);
+        console.error(err);
     }
-    setTimeout(() => loadTasks(), 500);
-}
-
-// Update task status in UI
-function updateTaskStatusInUI(taskId, isCompleted) {
-    document.querySelectorAll('#checklistTableBody tr').forEach(row => {
-        const taskIdCell = row.querySelector('td:first-child');
-        if (taskIdCell && taskIdCell.textContent == taskId) {
-            const statusCell = row.querySelector('td:nth-child(4)');
-            const actionsCell = row.querySelector('td:last-child');
-
-            if (statusCell) {
-                statusCell.innerHTML = isCompleted
-                    ? '<span class="badge badge-success">Completada</span>'
-                    : '<span class="badge badge-warning">Pendiente</span>';
-            }
-
-            if (actionsCell && isCompleted) {
-                const completeBtn = actionsCell.querySelector('.btn-complete');
-                if (completeBtn) completeBtn.remove();
-            }
-        }
-    });
 }
 
 // Open evidence modal
@@ -263,21 +175,22 @@ async function uploadEvidence() {
             body: formData
         });
 
-        if (response.ok) {
-            const data = await response.json();
-            alert('✅ Evidencia subida a la base de datos. ID: ' + (data.evidenceId || 'OK'));
-            document.getElementById('evidenceModal').hidden = true;
-            return;
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText);
         }
-    } catch (err) {
-        console.warn('⚠️ Could not upload to DB:', err);
-    }
 
-    alert('📁 Evidencia guardada localmente (modo offline) - El archivo no se subió al servidor');
-    document.getElementById('evidenceModal').hidden = true;
+        const data = await response.json();
+        alert('✅ Evidencia subida a la base de datos. ID: ' + (data.evidenceId || 'OK'));
+        document.getElementById('evidenceModal').hidden = true;
+        loadTasks();
+    } catch (err) {
+        alert('❌ Error al subir evidencia: ' + err.message);
+        console.error(err);
+    }
 }
 
-// Load tasks (DB first, then localStorage, then mock file)
+// Load tasks from database only
 async function loadTasks() {
     console.log('🔄 loadTasks() called');
 
@@ -287,55 +200,16 @@ async function loadTasks() {
     const tbody = document.getElementById('checklistTableBody');
     tbody.innerHTML = '<tr><td colspan="5" class="muted">Cargando...</td></tr>';
 
-    let tasks = [];
+    try {
+        const result = await callApi(`${API_BASE}/today?empleadoId=${empleadoId}`);
+        const tasks = result.data || [];
 
-    const result = await callApi(`${API_BASE}/today?empleadoId=${empleadoId}`);
-
-    if (result.success && Array.isArray(result.data)) {
-        console.log('✅ Tasks loaded from database:', result.data.length);
-        tasks = result.data;
-
-        const statusDiv = document.createElement('div');
-        statusDiv.className = 'connection-status success';
-        statusDiv.textContent = '✓ Conectado a la base de datos';
-        statusDiv.style.cssText = 'position:fixed; bottom:10px; right:10px; background:#4CAF50; color:white; padding:5px 10px; border-radius:4px; z-index:9999;';
-        document.body.appendChild(statusDiv);
-        setTimeout(() => statusDiv.remove(), 3000);
-    } else {
-        console.log('📴 Using localStorage fallback');
-        const tareasLocales = loadLocalTasks();
-        const tareasFiltradas = tareasLocales.filter(t => t.assignedUserId == empleadoId);
-
-        if (tareasFiltradas.length > 0) {
-            tasks = tareasFiltradas;
-
-            const statusDiv = document.createElement('div');
-            statusDiv.className = 'connection-status warning';
-            statusDiv.textContent = '⚠ Usando datos locales (modo offline)';
-            statusDiv.style.cssText = 'position:fixed; bottom:10px; right:10px; background:#FF9800; color:white; padding:5px 10px; border-radius:4px; z-index:9999;';
-            document.body.appendChild(statusDiv);
-            setTimeout(() => statusDiv.remove(), 3000);
-        } else {
-            // Fetch mock data from JSON file
-            console.log('🎭 Fetching mock data from file');
-            try {
-                const response = await fetch(MOCK_URL);
-                if (!response.ok) throw new Error('Mock file not found');
-                const mockTasks = await response.json();
-                // Apply filter if needed
-                tasks = mockTasks.filter(t => t.assignedUserId == empleadoId);
-                if (tasks.length === 0) tasks = mockTasks;
-            } catch (e) {
-                console.error('Failed to load mock file, using minimal fallback', e);
-                // Ultra minimal fallback (should never happen if file exists)
-                tasks = [
-                    { taskId: 1, description: "Tarea de ejemplo", responsible: "Sistema", isCompleted: false, assignedUserId: 1 }
-                ];
-            }
-        }
+        console.log('✅ Tasks loaded from database:', tasks.length);
+        renderTasks(tasks);
+    } catch (err) {
+        console.error('❌ Failed to load tasks:', err);
+        tbody.innerHTML = `<tr><td colspan="5" class="danger">Error al cargar tareas: ${err.message}</td></tr>`;
     }
-
-    renderTasks(tasks);
 }
 
 // Render tasks in table
@@ -396,15 +270,12 @@ function renderTasks(tasks) {
 
 // Initialize the page
 export function init() {
-    console.log('🚀 Initializing checklist with DB support...');
+    console.log('🚀 Initializing checklist with REAL DATABASE...');
 
-    fetch(`${API_BASE}/today`, { method: 'HEAD' })
-        .then(() => console.log('✅ Database connection available'))
-        .catch(() => {
-            console.log('📴 Database not available - will use fallback');
-            isOfflineMode = true;
-        });
+    // Load tasks immediately
+    loadTasks();
 
+    // Event listeners
     document.getElementById('refreshTasks')?.addEventListener('click', (e) => {
         e.preventDefault();
         loadTasks();
@@ -434,8 +305,6 @@ export function init() {
         e.preventDefault();
         document.getElementById('evidenceModal').hidden = true;
     });
-
-    loadTasks();
 }
 
 // Auto-run if loaded directly
@@ -443,9 +312,4 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
 } else {
     init();
-=======
-﻿export function init() {
-    console.log("Checklist page loaded");
-    // The inline script in checklist.html already handles everything
->>>>>>> c258a47c036e1f2f3bda8cbc9ae982b2e22d35a1
 }

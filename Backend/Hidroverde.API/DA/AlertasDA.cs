@@ -8,84 +8,52 @@ namespace DA
     public class AlertasDA : IAlertasDA
     {
         private readonly IRepositorioDapper _repositorioDapper;
-        private readonly SqlConnection _sqlConnection;
 
         public AlertasDA(IRepositorioDapper repositorioDapper)
         {
             _repositorioDapper = repositorioDapper;
-            _sqlConnection = _repositorioDapper.ObtenerRepositorio();
-        }
-        public void GenerarAlertasStockBajo()
-        {
-            const string sp = @"notif.sp_Alertas_StockBajo_GenerarYListar";
-
-            // Ejecuta el SP y descarta los datasets (no los necesitamos aquí)
-            _sqlConnection.Execute(sp, commandType: System.Data.CommandType.StoredProcedure);
         }
 
-        public AlertaBadgeDto ObtenerBadge()
+        public async Task GenerarAlertasStockBajo()
         {
-            // SP: notif.sp_Alertas_Badge -> retorna columna badge_count
-            const string sp = @"notif.sp_Alertas_Badge";
+            const string sp = "notif.sp_Alertas_StockBajo_GenerarYListar";
+            using var connection = _repositorioDapper.ObtenerRepositorio();
+            await connection.ExecuteAsync(sp, commandType: System.Data.CommandType.StoredProcedure);
+        }
 
-            // QueryFirstOrDefault para traer 1 fila
-            // Mapeo manual porque el SP devuelve badge_count y nuestro DTO es BadgeCount
-            var row = _sqlConnection.QueryFirstOrDefault(sp, commandType: System.Data.CommandType.StoredProcedure);
+        public async Task<AlertaBadgeDto> ObtenerBadge()
+        {
+            const string sp = "notif.sp_Alertas_Badge";
+            using var connection = _repositorioDapper.ObtenerRepositorio();
+            var row = await connection.QueryFirstOrDefaultAsync(sp, commandType: System.Data.CommandType.StoredProcedure);
+            return new AlertaBadgeDto { BadgeCount = row?.badge_count ?? 0 };
+        }
 
-            var badge = 0;
-            if (row != null)
+        public async Task<IEnumerable<AlertaActivaDto>> ListarAlertasActivas()
+        {
+            const string sp = "notif.sp_Alertas_ListarActivas";
+            using var connection = _repositorioDapper.ObtenerRepositorio();
+            var rows = await connection.QueryAsync(sp, commandType: System.Data.CommandType.StoredProcedure);
+            return rows.Select(r => new AlertaActivaDto
             {
-                // dynamic: row.badge_count
-                // Si cambia el nombre, se rompe: es intencional para no asumir.
-                badge = (int)row.badge_count;
-            }
-
-            return new AlertaBadgeDto { BadgeCount = badge };
+                AlertaId = r.alerta_id,
+                TipoAlerta = r.tipo_alerta,
+                Estado = r.estado,
+                FechaCreacion = r.fecha_creacion,
+                Mensaje = r.mensaje,
+                ProductoId = r.producto_id,
+                NombreProducto = r.nombre_producto,
+                SnapshotDisponible = r.snapshot_disponible,
+                SnapshotMinimo = r.snapshot_minimo
+            }).ToList();
         }
 
-        public IEnumerable<AlertaActivaDto> ListarAlertasActivas()
+        public async Task AceptarAlerta(int alertaId, int empleadoId)
         {
-            // SP: notif.sp_Alertas_ListarActivas
-            const string sp = @"notif.sp_Alertas_ListarActivas";
-
-            // Para evitar problemas de mapeo por nombres con guiones bajos,
-            // hacemos alias explícitos en el SP o mapeo manual.
-            // Como NO vamos a tocar el SP aquí, hacemos una consulta dinámica y transformamos.
-            var rows = _sqlConnection.Query(sp, commandType: System.Data.CommandType.StoredProcedure);
-
-            var lista = new List<AlertaActivaDto>();
-            foreach (var r in rows)
-            {
-                // Estos nombres vienen del SP que definimos:
-                // alerta_id, tipo_alerta, estado, fecha_creacion, mensaje, producto_id, nombre_producto, snapshot_disponible, snapshot_minimo
-                lista.Add(new AlertaActivaDto
-                {
-                    AlertaId = (int)r.alerta_id,
-                    TipoAlerta = (string)r.tipo_alerta,
-                    Estado = (string)r.estado,
-                    FechaCreacion = (DateTime)r.fecha_creacion,
-                    Mensaje = (string)r.mensaje,
-                    ProductoId = (int)r.producto_id,
-                    NombreProducto = (string)r.nombre_producto,
-                    SnapshotDisponible = (int)r.snapshot_disponible,
-                    SnapshotMinimo = (int)r.snapshot_minimo
-                });
-            }
-
-            return lista;
-        }
-
-        public void AceptarAlerta(int alertaId, int empleadoId)
-        {
-            // SP: notif.sp_Alertas_Aceptar
-            const string sp = @"notif.sp_Alertas_Aceptar";
-
-            _sqlConnection.Execute(
-                sp,
-                new { alerta_id = alertaId, empleado_id = empleadoId },
-                commandType: System.Data.CommandType.StoredProcedure
-            );
-
+            const string sp = "notif.sp_Alertas_Aceptar";
+            using var connection = _repositorioDapper.ObtenerRepositorio();
+            await connection.ExecuteAsync(sp, new { alerta_id = alertaId, empleado_id = empleadoId },
+                commandType: System.Data.CommandType.StoredProcedure);
         }
     }
 }

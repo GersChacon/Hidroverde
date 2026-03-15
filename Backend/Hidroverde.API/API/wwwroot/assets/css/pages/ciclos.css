@@ -1,125 +1,75 @@
-/* ciclos.css — usa el sistema global de app.css */
+﻿<!-- Modal Nueva Siembra -->
+<div class="modal" id="modalSiembra" hidden aria-hidden="true">
+    <div class="modal__backdrop" data-close="modalSiembra"></div>
+    <div class="modal__content">
+        <div class="modal__header">
+            <h2>Nueva siembra</h2>
+            <button class="icon-btn" data-close="modalSiembra">✕</button>
+        </div>
 
-/* Barra de búsqueda específica de ciclos */
-.ciclos-toolbar {
-    margin: 0 0 14px;
-}
+        <div class="modal__body">
+            <form id="frmSiembra">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <!-- Column 1 -->
+                    <div>
+                        <label style="display: block; margin-bottom: 8px;">
+                            <span style="display: block; margin-bottom: 4px; font-weight: bold;">ProductoId *</span>
+                            <input type="number" id="productoId" min="1" required style="width: 100%; padding: 8px;" />
+                        </label>
 
-/* Barra de progreso dentro de la tabla */
-.progress-bar-wrap {
-    background: rgba(2,6,23,.07);
-    border-radius: 999px;
-    height: 8px;
-    min-width: 100px;
-    overflow: hidden;
-}
-.progress-bar-fill {
-    height: 100%;
-    border-radius: 999px;
-    background: var(--primary);
-    transition: width .3s;
-}
+                        <label style="display: block; margin-bottom: 8px;">
+                            <span style="display: block; margin-bottom: 4px; font-weight: bold;">VariedadId *</span>
+                            <input type="number" id="variedadId" min="1" required style="width: 100%; padding: 8px;" />
+                        </label>
 
-/* Modal de ciclos (cosechar/cancelar) reutiliza modal global */
+                        <label style="display: block; margin-bottom: 8px;">
+                            <span style="display: block; margin-bottom: 4px; font-weight: bold;">TorreId *</span>
+                            <input type="number" id="torreId" min="1" required style="width: 100%; padding: 8px;" />
+                        </label>
 
+                        <label style="display: block; margin-bottom: 8px;">
+                            <span style="display: block; margin-bottom: 4px; font-weight: bold;">EstadoCicloCodigo *</span>
+                            <input type="text" id="estadoCicloCodigo" value="SIEMBRA" required style="width: 100%; padding: 8px;" />
+                        </label>
+                    </div>
 
+                    <!-- Column 2 -->
+                    <div>
+                        <label style="display: block; margin-bottom: 8px;">
+                            <span style="display: block; margin-bottom: 4px; font-weight: bold;">Fecha siembra *</span>
+                            <input type="date" id="fechaSiembra" required style="width: 100%; padding: 8px;" />
+                        </label>
 
-.autocomplete-list {
-    position: absolute;
-    left: 0;
-    right: 0;
-    top: calc(100% + 6px);
-    background: #fff;
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    max-height: 240px;
-    overflow: auto;
-    z-index: 9999;
-    box-shadow: 0 10px 20px rgba(0,0,0,.08);
-}
+                        <label style="display: block; margin-bottom: 8px;">
+                            <span style="display: block; margin-bottom: 4px; font-weight: bold;">Fecha cosecha estimada *</span>
+                            <input type="date" id="fechaCosechaEstimada" required style="width: 100%; padding: 8px;" />
+                        </label>
 
-.autocomplete-item {
-    padding: 10px 12px;
-    cursor: pointer;
-}
+                        <label style="display: block; margin-bottom: 8px;">
+                            <span style="display: block; margin-bottom: 4px; font-weight: bold;">Cantidad plantas *</span>
+                            <input type="number" id="cantidadPlantas" min="1" required style="width: 100%; padding: 8px;" />
+                        </label>
 
-    .autocomplete-item:hover {
-        background: #f3f4f6;
-    }
+                        <label style="display: block; margin-bottom: 8px;">
+                            <span style="display: block; margin-bottom: 4px; font-weight: bold;">Lote semilla</span>
+                            <input type="text" id="loteSemilla" style="width: 100%; padding: 8px;" />
+                        </label>
+                    </div>
+                </div>
 
-.torres-grid {
-    display: grid;
-    gap: 10px;
-    margin-top: 10px;
-}
+                <!-- Full width row for Notas -->
+                <div style="margin-top: 16px;">
+                    <label style="display: block;">
+                        <span style="display: block; margin-bottom: 4px; font-weight: bold;">Notas</span>
+                        <textarea id="notas" rows="3" style="width: 100%; padding: 8px;"></textarea>
+                    </label>
+                </div>
 
-/* fila (A, B, C...) */
-.torres-row {
-    display: grid;
-    grid-template-columns: 32px repeat(11, minmax(0, 1fr));
-    gap: 8px;
-    align-items: center;
-}
-
-.torres-row-label {
-    font-weight: 700;
-    color: #6b7280;
-    text-align: center;
-}
-
-/* celda torre */
-.torre-cell {
-    border: 1px solid #e5e7eb;
-    border-radius: 10px;
-    padding: 8px 6px;
-    text-align: center;
-    cursor: pointer;
-    user-select: none;
-    background: #ffffff;
-    font-size: 12px;
-}
-
-    .torre-cell:hover {
-        background: #f9fafb;
-    }
-
-    .torre-cell.selected {
-        outline: 2px solid #111827;
-        border-color: #111827;
-    }
-
-/* pequeño label dentro */
-.torre-code {
-    font-weight: 700;
-    font-size: 12px;
-}
-
-.torre-cap {
-    font-size: 11px;
-    color: #6b7280;
-    margin-top: 2px;
-}
-
-.torre-cell.free {
-    background: #ffffff;
-    border-color: #d1d5db;
-}
-
-.torre-cell.partial {
-    background: #fff7d6;
-    border-color: #f59e0b;
-}
-
-.torre-cell.full {
-    background: #dcfce7;
-    border-color: #22c55e;
-}
-
-/* Header: solo alinear texto */
-table th:last-child {
-    
-}
-/* Filas: aquí sí usamos flex para los botones */
-table td:last-child {
-    width: 220px;
-}
+                <div class="modal__footer" style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px;">
+                    <button type="button" class="btn" data-close="modalSiembra">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

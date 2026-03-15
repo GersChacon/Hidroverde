@@ -1,10 +1,118 @@
-﻿
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
+﻿<section class="page">
+    <div class="page-header">
+        <div>
+            <h1 class="page-title">Reportes Financieros</h1>
+            <p class="page-subtitle">Visualiza y exporta reportes automáticos</p>
+        </div>
+        <div class="page-actions">
+            <button class="btn primary" id="btnConfigurarReporte">Configurar reporte automático</button>
+            <button class="btn" id="btnRefrescar">Refrescar</button>
+        </div>
+    </div>
 
-</body>
-</html>
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="generados">Reportes generados</button>
+        <button class="tab-btn" data-tab="programaciones">Programaciones</button>
+    </div>
+
+    <div id="tabGenerados" class="tab-content">
+        <div class="filter-bar">
+            <select id="filtroReporte">
+                <option value="">Todos los reportes</option>
+            </select>
+            <button class="btn" id="btnAplicarFiltro">Aplicar</button>
+            <button class="btn" id="btnLimpiarFiltro">Limpiar</button>
+            <button class="btn primary" id="btnGenerarAhora">Generar ahora</button>
+        </div>
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Reporte</th>
+                        <th>Fecha generación</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaGenerados">
+                    <tr><td colspan="3" class="table-empty">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="tabProgramaciones" class="tab-content" style="display:none;">
+        <div class="table-wrap">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Reporte</th>
+                        <th>Frecuencia</th>
+                        <th>Próxima ejecución</th>
+                        <th>Parámetros</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tablaProgramaciones">
+                    <tr><td colspan="6" class="table-empty">Cargando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <button class="btn primary" id="btnNuevaProgramacion">+ Nueva programación</button>
+    </div>
+
+    <!-- Modal nueva programación -->
+    <div class="modal" id="modalProgramacion" hidden>
+        <div class="modal__backdrop" data-close="modalProgramacion"></div>
+        <div class="modal__content">
+            <div class="modal__header">
+                <h2 id="modalProgramacionTitle">Nueva programación</h2>
+                <button class="icon-btn" data-close="modalProgramacion">✕</button>
+            </div>
+            <div class="modal__body">
+                <form id="frmProgramacion">
+                    <div class="field">
+                        <label>Reporte *</label>
+                        <select id="progReporteId" required></select>
+                    </div>
+                    <div class="field">
+                        <label>Frecuencia *</label>
+                        <select id="progFrecuencia" required>
+                            <option value="DIARIO">Diario</option>
+                            <option value="SEMANAL">Semanal</option>
+                            <option value="MENSUAL">Mensual</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>Parámetros (JSON)</label>
+                        <textarea id="progParametros" rows="4" placeholder='{"fecha_desde":"2025-01-01","fecha_hasta":"2025-01-31"}'></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal__footer">
+                <button class="btn" data-close="modalProgramacion">Cancelar</button>
+                <button class="btn primary" id="btnGuardarProgramacion">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal ver/exportar reporte -->
+    <div class="modal" id="modalVerReporte" hidden>
+        <div class="modal__backdrop" data-close="modalVerReporte"></div>
+        <div class="modal__content modal__content--wide">
+            <div class="modal__header">
+                <h2 id="modalVerReporteTitle">Reporte</h2>
+                <button class="icon-btn" data-close="modalVerReporte">✕</button>
+            </div>
+            <div class="modal__body">
+                <div id="reporteDatosPreview" style="max-height:400px; overflow:auto;"></div>
+            </div>
+            <div class="modal__footer">
+                <button class="btn" id="btnExportPdf">Exportar PDF</button>
+                <button class="btn" id="btnExportExcel">Exportar Excel</button>
+                <span style="flex:1;"></span>
+                <button class="btn" data-close="modalVerReporte">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</section>

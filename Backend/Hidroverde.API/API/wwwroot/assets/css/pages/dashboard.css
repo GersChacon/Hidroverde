@@ -1,28 +1,2 @@
-/* dashboard.css — usa el sistema global de app.css */
-
-.dashboard-kpis {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 14px;
-    margin-bottom: 16px;
-}
-.kpi-card {
-    background: var(--panel);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    padding: 16px;
-    box-shadow: var(--shadow2);
-}
-.kpi-label {
-    font-size: 12px;
-    color: var(--muted);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: .04em;
-    margin-bottom: 8px;
-}
-.kpi-value {
-    font-size: 28px;
-    font-weight: 900;
-    color: var(--text);
+﻿body {
 }

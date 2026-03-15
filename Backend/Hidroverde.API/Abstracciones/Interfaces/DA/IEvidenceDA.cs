@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Abstracciones.Modelos.Evidence;
-
-namespace Abstracciones.Interfaces.DA
+﻿namespace Abstracciones.Interfaces.DA
 {
     public interface IEvidenceDA
     {

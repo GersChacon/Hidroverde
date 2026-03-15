@@ -11,5 +11,7 @@ namespace Abstracciones.Interfaces.DA
     {
         Task<IEnumerable<ChecklistTaskDto>> ObtenerChecklistHoy(int? usuarioId = null);
         Task<int> MarcarTareaCompletada(int tareaId, int empleadoId, DateTime timestamp);
+        Task<int> EliminarTarea(int tareaId);
+        Task<int> CrearTarea(ChecklistTaskDto tarea);
     }
 }

@@ -103,7 +103,6 @@ namespace DA
 
         public async Task<IEnumerable<ReporteGeneradoDto>> ListarReportesGenerados(int? reporteId = null)
         {
-            // Nota: este SP no necesita usuarioId porque se filtra después en flujo según roles.
             return await _sqlConnection.QueryAsync<ReporteGeneradoDto>(
                 "Reportes_Generados_Listar",
                 new { reporte_id = reporteId },

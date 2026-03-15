@@ -1,6 +1,6 @@
 ﻿using Abstracciones.Interfaces.DA;
 using Abstracciones.Modelos;
-using Dapper; 
+using Dapper;
 using Microsoft.Data.SqlClient;
 using System.Data;
 
@@ -8,33 +8,27 @@ namespace DA
 {
     public class InventarioDA : IInventarioDA
     {
-        private readonly SqlConnection _conn;
+        private readonly IRepositorioDapper _repositorioDapper;
 
-        public InventarioDA(IRepositorioDapper repo)
+        public InventarioDA(IRepositorioDapper repositorioDapper)
         {
-            _conn = repo.ObtenerRepositorio();
+            _repositorioDapper = repositorioDapper;
         }
 
         public async Task<IEnumerable<InventarioActualResponse>> ListarActual(
-    int? cicloOrigenId,
-    int? productoId,
-    string? productoNombre,
-    string? lote,
-    DateTime? desde,
-    DateTime? hasta,
-    bool soloDisponibles
-)
+            int? cicloOrigenId,
+            int? productoId,
+            string? lote,
+            bool soloDisponibles)
         {
-            return await _conn.QueryAsync<InventarioActualResponse>(
+            using var connection = _repositorioDapper.ObtenerRepositorio();
+            return await connection.QueryAsync<InventarioActualResponse>(
                 "dbo.sp_InventarioActual_Listar",
                 new
                 {
                     ciclo_origen_id = cicloOrigenId,
                     producto_id = productoId,
-                    producto_nombre = productoNombre,
                     lote = lote,
-                    desde = desde,
-                    hasta = hasta,
                     solo_disponibles = soloDisponibles ? 1 : 0
                 },
                 commandType: CommandType.StoredProcedure
@@ -43,21 +37,21 @@ namespace DA
 
         public async Task<InventarioActualResponse?> ObtenerActualPorId(int inventarioId)
         {
-            return await _conn.QueryFirstOrDefaultAsync<InventarioActualResponse>(
+            using var connection = _repositorioDapper.ObtenerRepositorio();
+            return await connection.QueryFirstOrDefaultAsync<InventarioActualResponse>(
                 "dbo.sp_InventarioActual_Obtener",
                 new { inventario_id = inventarioId },
                 commandType: CommandType.StoredProcedure
             );
         }
 
-    
-    public async Task<IEnumerable<MovimientoInventarioResponse>> ListarMovimientos(
-    int inventarioId,
-    DateTime? desde,
-    DateTime? hasta
-)
+        public async Task<IEnumerable<MovimientoInventarioResponse>> ListarMovimientos(
+            int inventarioId,
+            DateTime? desde,
+            DateTime? hasta)
         {
-            return await _conn.QueryAsync<MovimientoInventarioResponse>(
+            using var connection = _repositorioDapper.ObtenerRepositorio();
+            return await connection.QueryAsync<MovimientoInventarioResponse>(
                 "dbo.sp_Inventario_Movimientos_Listar",
                 new { inventario_id = inventarioId, desde = desde, hasta = hasta },
                 commandType: CommandType.StoredProcedure

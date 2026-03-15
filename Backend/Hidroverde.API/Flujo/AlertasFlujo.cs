@@ -13,23 +13,9 @@ namespace Flujo
             _alertasDA = alertasDA;
         }
 
-        public AlertaBadgeDto ObtenerBadge()
-        {
-            return _alertasDA.ObtenerBadge();
-        }
-
-        public IEnumerable<AlertaActivaDto> ListarAlertasActivas()
-        {
-            return _alertasDA.ListarAlertasActivas();
-        }
-
-        public void AceptarAlerta(int alertaId, int empleadoId)
-        {
-            _alertasDA.AceptarAlerta(alertaId, empleadoId);
-        }
-        public void GenerarAlertasStockBajo()
-        {
-            _alertasDA.GenerarAlertasStockBajo();
-        }
+        public async Task<AlertaBadgeDto> ObtenerBadge() => await _alertasDA.ObtenerBadge();
+        public async Task<IEnumerable<AlertaActivaDto>> ListarAlertasActivas() => await _alertasDA.ListarAlertasActivas();
+        public async Task AceptarAlerta(int alertaId, int empleadoId) => await _alertasDA.AceptarAlerta(alertaId, empleadoId);
+        public async Task GenerarAlertasStockBajo() => await _alertasDA.GenerarAlertasStockBajo();
     }
 }

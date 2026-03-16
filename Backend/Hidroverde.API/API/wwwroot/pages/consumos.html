@@ -2,7 +2,9 @@
     <header class="page__header">
         <div>
             <h1>Consumos</h1>
-            <p class="muted">Registra consumos de agua y nutrientes por ciclo.</p>
+            <p class="muted">
+                Registra consumos operativos como agua, nutrientes, electricidad u otros recursos.
+            </p>
         </div>
 
         <div class="page__actions">
@@ -12,8 +14,9 @@
     </header>
 
     <div class="card" style="margin-top:14px;">
-        <div class="row" style="gap:12px;">
-            <input id="filtroCicloId" type="number" min="1" placeholder="CicloId" style="max-width:160px;">
+        <div class="row" style="gap:12px; flex-wrap:wrap;">
+            <input id="filtroCicloId" type="number" min="1" placeholder="Ciclo ID (opcional)" style="max-width:180px;">
+            <input id="filtroTipoRecursoId" type="number" min="1" placeholder="Tipo recurso ID" style="max-width:180px;">
             <input id="filtroDesde" type="date">
             <input id="filtroHasta" type="date">
 
@@ -33,59 +36,89 @@
                     <th>Fecha</th>
                     <th>Recurso</th>
                     <th>Cantidad</th>
+                    <th>Periodicidad</th>
                     <th>Ciclo</th>
                     <th>Responsable</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody id="tblConsumosBody">
-                <tr><td colspan="6" class="muted">Cargando...</td></tr>
+                <tr><td colspan="7" class="muted">Cargando...</td></tr>
             </tbody>
         </table>
     </div>
 
-    <!-- Modal (placeholder, ya lo conectamos luego) -->
-    <div class="modal" id="modalConsumo" hidden>
-        <div class="modalCard">
-            <div class="row">
-                <h3 id="modalConsumoTitle">Nuevo consumo</h3>
+    <!-- Modal consumo -->
+    <div class="modal" id="modalConsumo" hidden aria-hidden="true">
+        <div class="modalCard modalCard--consumo">
+            <div class="row modalCard__header">
+                <div>
+                    <h3 id="modalConsumoTitle">Nuevo consumo</h3>
+                    <p class="muted" id="modalConsumoSubtitle">
+                        Registra un consumo operativo de forma simple.
+                    </p>
+                </div>
                 <span class="right"></span>
-                <button class="btn" id="btnCerrarModalConsumo">Cerrar</button>
+                <button class="btn" id="btnCerrarModalConsumo" type="button">Cerrar</button>
             </div>
 
-            <div class="grid2">
-                <label>
-                    <span>CicloId *</span>
-                    <input type="number" id="consumoCicloId" min="1">
-                </label>
+            <div class="consumo-form">
+                <div class="consumo-form__section">
+                    <h4>Información principal</h4>
 
-                <label>
-                    <span>TipoRecursoId *</span>
-                    <input type="number" id="consumoTipoRecursoId" min="1">
-                </label>
+                    <div class="grid2">
+                        <label>
+                            <span>Tipo de recurso *</span>
+                            <select id="consumoTipoRecursoId">
+                                <option value="">Seleccione una opción</option>
+                            </select>
+                        </label>
 
-                <label>
-                    <span>Cantidad *</span>
-                    <input type="number" id="consumoCantidad" min="0" step="0.01">
-                </label>
+                        <label>
+                            <span>Cantidad *</span>
+                            <input type="number" id="consumoCantidad" min="0.01" step="0.01" placeholder="Ej. 500">
+                        </label>
 
-                <label>
-                    <span>Fecha *</span>
-                    <input type="date" id="consumoFecha">
-                </label>
+                        <label>
+                            <span>Fecha *</span>
+                            <input type="date" id="consumoFecha">
+                        </label>
+
+                        <label>
+                            <span>Periodicidad *</span>
+                            <select id="consumoPeriodicidad">
+                                <option value="UNICO">Único</option>
+                                <option value="SEMANAL">Semanal</option>
+                                <option value="MENSUAL">Mensual</option>
+                            </select>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="consumo-form__section">
+                    <h4>Detalle adicional</h4>
+
+                    <label>
+                        <span>Notas</span>
+                        <textarea id="consumoNotas" rows="4" placeholder="Ej. Consumo semanal de agua del área de producción"></textarea>
+                    </label>
+                </div>
             </div>
 
-            <div class="row" style="margin-top:12px; justify-content:flex-end;">
-                <button class="btn btn-primary" id="btnGuardarConsumo">Guardar</button>
+            <div class="row modalCard__footer" style="margin-top:16px; justify-content:flex-end;">
+                <button class="btn" id="btnCancelarConsumo" type="button">Cancelar</button>
+                <button class="btn btn-primary" id="btnGuardarConsumo" type="button">Guardar</button>
             </div>
         </div>
     </div>
-    <div class="modal" id="modalHistorial" hidden>
+
+    <!-- Modal historial -->
+    <div class="modal" id="modalHistorial" hidden aria-hidden="true">
         <div class="modalCard">
             <div class="row">
                 <h3>Historial de consumo</h3>
                 <span class="right"></span>
-                <button class="btn" data-close="modalHistorial">Cerrar</button>
+                <button class="btn" id="btnCerrarModalHistorial" type="button">Cerrar</button>
             </div>
 
             <table class="table" style="margin-top:12px;">
@@ -105,5 +138,4 @@
             </table>
         </div>
     </div>
-
 </section>

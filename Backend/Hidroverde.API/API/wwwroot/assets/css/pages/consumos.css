@@ -1,8 +1,183 @@
-/* consumos.css — usa el sistema global de app.css */
+/* ==========================================
+   consumos.css
+   Estilos exclusivos del módulo de consumos
+   ========================================== */
 
-/* Gráfico de consumos */
-.chart-wrap {
+/* Contenedor gráfico, si luego lo usas */
+.page-consumos .chart-wrap {
     position: relative;
     height: 260px;
     width: 100%;
+}
+
+/* ==========================================
+   Tabla y layout de consumos
+   ========================================== */
+
+.page-consumos .table td,
+.page-consumos .table th {
+    vertical-align: middle;
+}
+
+.page-consumos .page__actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* ==========================================
+   Modal exclusivo de consumos
+   ========================================== */
+
+.page-consumos #modalConsumo,
+.page-consumos #modalHistorial {
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(2px);
+}
+
+    .page-consumos #modalConsumo[hidden],
+    .page-consumos #modalHistorial[hidden] {
+        display: none !important;
+    }
+
+.page-consumos .modalCard {
+    width: min(960px, 100%);
+    max-height: calc(100vh - 48px);
+    overflow: auto;
+    border-radius: 18px;
+    padding: 20px;
+    background: #ffffff;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+}
+
+.page-consumos .modalCard--consumo {
+    width: min(760px, 100%);
+}
+
+.page-consumos .modalCard__header {
+    align-items: flex-start;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 18px;
+}
+
+    .page-consumos .modalCard__header h3 {
+        margin: 0 0 4px 0;
+    }
+
+.page-consumos .modalCard__footer {
+    padding-top: 14px;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* ==========================================
+   Formulario de consumo
+   ========================================== */
+
+.page-consumos .consumo-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.page-consumos .consumo-form__section {
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 16px;
+    background: #f8fafc;
+}
+
+    .page-consumos .consumo-form__section h4 {
+        margin: 0 0 14px 0;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+.page-consumos .consumo-form label {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 14px;
+}
+
+    .page-consumos .consumo-form label > span {
+        font-weight: 600;
+        color: #334155;
+    }
+
+.page-consumos .consumo-form input,
+.page-consumos .consumo-form select,
+.page-consumos .consumo-form textarea {
+    width: 100%;
+    border: 1px solid #cbd5e1;
+    border-radius: 12px;
+    padding: 10px 12px;
+    font: inherit;
+    background: #fff;
+    outline: none;
+    transition: border-color 0.18s ease, box-shadow 0.18s ease;
+    box-sizing: border-box;
+}
+
+.page-consumos .consumo-form textarea {
+    resize: vertical;
+    min-height: 110px;
+}
+
+    .page-consumos .consumo-form input:focus,
+    .page-consumos .consumo-form select:focus,
+    .page-consumos .consumo-form textarea:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+    }
+
+.page-consumos .consumo-form .grid2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+/* ==========================================
+   Historial
+   ========================================== */
+
+.page-consumos #modalHistorial .table {
+    margin-top: 12px;
+}
+
+/* ==========================================
+   Responsive
+   ========================================== */
+
+@media (max-width: 720px) {
+    .page-consumos #modalConsumo,
+    .page-consumos #modalHistorial {
+        padding: 12px;
+    }
+
+    .page-consumos .modalCard,
+    .page-consumos .modalCard--consumo {
+        width: 100%;
+        max-height: calc(100vh - 24px);
+        border-radius: 14px;
+        padding: 16px;
+    }
+
+    .page-consumos .consumo-form .grid2 {
+        grid-template-columns: 1fr;
+    }
+
+    .page-consumos .modalCard__header,
+    .page-consumos .modalCard__footer,
+    .page-consumos .page__actions {
+        gap: 8px;
+    }
 }

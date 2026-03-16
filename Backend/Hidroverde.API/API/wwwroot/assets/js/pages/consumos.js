@@ -1,12 +1,11 @@
-﻿// wwwroot/assets/js/pages/consumos.js
+﻿const $ = (id) => document.getElementById(id);
 
-const $ = (id) => document.getElementById(id);
-
-const EMPLEADO_ID = 1;          // fijo por ahora (tu convención actual)
+const EMPLEADO_ID = 1;
 const API_BASE = "/api/consumos";
 
 let modoEdicion = false;
 let consumoEditandoId = null;
+let tiposRecursoCache = [];
 
 /* =========================
    Helpers
@@ -20,14 +19,9 @@ function safe(v) {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 }
+
 function esc(v) {
-    if (v === null || v === undefined) return "";
-    return String(v)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+    return safe(v);
 }
 
 function fmtDateTime(v) {
@@ -40,7 +34,18 @@ function fmtDateTime(v) {
     const dd = String(d.getDate()).padStart(2, "0");
     const hh = String(d.getHours()).padStart(2, "0");
     const mi = String(d.getMinutes()).padStart(2, "0");
+
     return `${yyyy}-${mm}-${dd} ${hh}:${mi}`;
+}
+
+function fmtDateOnly(v) {
+    if (!v) return "";
+    const d = new Date(v);
+    if (isNaN(d.getTime())) return "";
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
 }
 
 function fmtCantidad(val, unidad) {
@@ -50,14 +55,23 @@ function fmtCantidad(val, unidad) {
     return `${s}${unidad ? " " + unidad : ""}`;
 }
 
+function fmtPeriodicidad(codigo) {
+    const c = String(codigo || "").toUpperCase();
+    if (c === "SEMANAL") return "Semanal";
+    if (c === "MENSUAL") return "Mensual";
+    return "Único";
+}
+
 function qsFromFilters(filters) {
     const params = new URLSearchParams();
+
     Object.entries(filters).forEach(([k, v]) => {
         if (v === null || v === undefined) return;
         const s = String(v).trim();
         if (!s) return;
         params.set(k, s);
     });
+
     const q = params.toString();
     return q ? `?${q}` : "";
 }
@@ -84,29 +98,15 @@ async function apiFetch(url, { method = "GET", body = null, headers = {} } = {})
     }
 
     const contentType = res.headers.get("content-type") || "";
-    if (contentType.includes("application/json")) return await res.json();
+    if (contentType.includes("application/json")) {
+        return await res.json();
+    }
+
     return await res.text();
 }
 
 /* =========================
-   Filtros (✅ IDs reales de tu HTML)
-   ========================= */
-function leerFiltros() {
-    return {
-        cicloId: $("filtroCicloId")?.value || "",
-        fechaDesde: $("filtroDesde")?.value || "",
-        fechaHasta: $("filtroHasta")?.value || "",
-    };
-}
-
-function limpiarFiltros() {
-    if ($("filtroCicloId")) $("filtroCicloId").value = "";
-    if ($("filtroDesde")) $("filtroDesde").value = "";
-    if ($("filtroHasta")) $("filtroHasta").value = "";
-}
-
-/* =========================
-   Modal (✅ IDs reales de tu HTML)
+   Modal
    ========================= */
 function openModal(id) {
     const el = $(id);
@@ -122,36 +122,135 @@ function closeModal(id) {
     el.setAttribute("aria-hidden", "true");
 }
 
+/* =========================
+   Filtros
+   ========================= */
+function leerFiltros() {
+    return {
+        cicloId: $("filtroCicloId")?.value || "",
+        tipoRecursoId: $("filtroTipoRecursoId")?.value || "",
+        fechaDesde: $("filtroDesde")?.value || "",
+        fechaHasta: $("filtroHasta")?.value || "",
+    };
+}
+
+function limpiarFiltros() {
+    if ($("filtroCicloId")) $("filtroCicloId").value = "";
+    if ($("filtroTipoRecursoId")) $("filtroTipoRecursoId").value = "";
+    if ($("filtroDesde")) $("filtroDesde").value = "";
+    if ($("filtroHasta")) $("filtroHasta").value = "";
+}
+
+/* =========================
+   Catálogo tipos de recurso
+   ========================= */
+function textoTipoRecurso(item) {
+    const nombre = item?.nombre ?? "Sin nombre";
+    const unidad = item?.unidad ? ` (${item.unidad})` : "";
+    const categoria = item?.categoria ? ` — ${item.categoria}` : "";
+    return `${nombre}${unidad}${categoria}`;
+}
+
+async function cargarTiposRecurso() {
+    const data = await apiFetch(`${API_BASE}/tipos-recurso`);
+    tiposRecursoCache = Array.isArray(data) ? data : [];
+    renderSelectTiposRecurso();
+}
+
+function renderSelectTiposRecurso() {
+    const select = $("consumoTipoRecursoId");
+    if (!select) return;
+
+    const actual = select.value || "";
+
+    select.innerHTML = `
+        <option value="">Seleccione una opción</option>
+        ${tiposRecursoCache
+            .map((item) => `
+                <option value="${safe(item.tipoRecursoId)}">
+                    ${safe(textoTipoRecurso(item))}
+                </option>
+            `)
+            .join("")}
+    `;
+
+    if (actual) {
+        select.value = actual;
+    }
+}
+
+/* =========================
+   Formulario modal
+   ========================= */
+function limpiarFormConsumo() {
+    if ($("consumoTipoRecursoId")) $("consumoTipoRecursoId").value = "";
+    if ($("consumoCantidad")) $("consumoCantidad").value = "";
+    if ($("consumoPeriodicidad")) $("consumoPeriodicidad").value = "UNICO";
+    if ($("consumoNotas")) $("consumoNotas").value = "";
+
+    if ($("consumoFecha")) {
+        $("consumoFecha").value = fmtDateOnly(new Date());
+    }
+}
+
 function abrirModalNuevo() {
     modoEdicion = false;
     consumoEditandoId = null;
 
     if ($("modalConsumoTitle")) $("modalConsumoTitle").textContent = "Nuevo consumo";
-
-    // defaults: si viene filtro cicloId, lo pre-cargamos
-    if ($("consumoCicloId")) $("consumoCicloId").value = $("filtroCicloId")?.value || "";
-    if ($("consumoTipoRecursoId")) $("consumoTipoRecursoId").value = "";
-    if ($("consumoCantidad")) $("consumoCantidad").value = "";
-    if ($("consumoFecha")) {
-        const hoy = new Date();
-        const yyyy = hoy.getFullYear();
-        const mm = String(hoy.getMonth() + 1).padStart(2, "0");
-        const dd = String(hoy.getDate()).padStart(2, "0");
-        $("consumoFecha").value = `${yyyy}-${mm}-${dd}`;
+    if ($("modalConsumoSubtitle")) {
+        $("modalConsumoSubtitle").textContent =
+            "Registra un consumo operativo de forma simple.";
     }
 
+    limpiarFormConsumo();
     openModal("modalConsumo");
 }
 
+function leerFormConsumoParaCrear() {
+    const tipoRecursoId = Number($("consumoTipoRecursoId")?.value || 0);
+    const cantidad = Number($("consumoCantidad")?.value || 0);
+    const fecha = $("consumoFecha")?.value || "";
+    const periodicidadCodigo = ($("consumoPeriodicidad")?.value || "UNICO").trim().toUpperCase();
+    const notas = $("consumoNotas")?.value?.trim() || null;
+
+    if (!tipoRecursoId || tipoRecursoId <= 0) {
+        throw new Error("Debes seleccionar un tipo de recurso.");
+    }
+
+    if (!Number.isFinite(cantidad) || cantidad <= 0) {
+        throw new Error("Cantidad inválida.");
+    }
+
+    if (!fecha) {
+        throw new Error("La fecha es requerida.");
+    }
+
+    if (!["UNICO", "SEMANAL", "MENSUAL"].includes(periodicidadCodigo)) {
+        throw new Error("Periodicidad inválida.");
+    }
+
+    const fechaConsumo = new Date(`${fecha}T00:00:00`).toISOString();
+
+    return {
+        cicloId: null,
+        tipoRecursoId,
+        cantidad,
+        fechaConsumo,
+        periodicidadCodigo,
+        notas,
+    };
+}
+
 /* =========================
-   Render (✅ pinta tu tabla)
+   Tabla principal
    ========================= */
 function renderTablaConsumos(items) {
     const tbody = $("tblConsumosBody");
     if (!tbody) return;
 
     if (!Array.isArray(items) || items.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="muted">Sin consumos.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="muted">Sin consumos.</td></tr>`;
         return;
     }
 
@@ -160,107 +259,82 @@ function renderTablaConsumos(items) {
             const fecha = fmtDateTime(c.fechaConsumo);
             const recurso = esc(c.recursoNombre ?? c.codigo ?? `Recurso ${c.tipoRecursoId ?? ""}`);
             const cantidad = esc(fmtCantidad(c.cantidad, c.unidad));
-            const ciclo = esc(c.cicloId);
-            const responsable = safe(c.registradoPorNombre ?? c.registradoPorEmpleadoId ?? "-");
+            const periodicidad = esc(fmtPeriodicidad(c.periodicidadCodigo));
+            const ciclo = c.cicloId ? esc(c.cicloId) : `<span class="muted">General</span>`;
+            const responsable = esc(c.registradoPorNombre ?? c.registradoPorEmpleadoId ?? "-");
 
             return `
-        <tr>
-          <td>${esc(fecha)}</td>
-          <td>${recurso}</td>
-          <td>${cantidad}</td>
-          <td>${ciclo}</td>
-          <td>${responsable}</td>
-          <td>
-            <button class="btn" data-action="editar" data-id="${esc(c.consumoId)}">Editar</button>
-            <button class="btn" data-action="historial" data-id="${esc(c.consumoId)}">Historial</button>
-          </td>
-        </tr>
-      `;
+                <tr>
+                    <td>${esc(fecha)}</td>
+                    <td>${recurso}</td>
+                    <td>${cantidad}</td>
+                    <td>${periodicidad}</td>
+                    <td>${ciclo}</td>
+                    <td>${responsable}</td>
+                    <td>
+                        <button class="btn" data-action="editar" data-id="${esc(c.consumoId)}">Editar</button>
+                        <button class="btn" data-action="historial" data-id="${esc(c.consumoId)}">Historial</button>
+                    </td>
+                </tr>
+            `;
         })
         .join("");
 }
 
 /* =========================
-   Acciones
+   Historial
+   ========================= */
+function renderHistorial(items) {
+    const tb = $("tblHistorialBody");
+    if (!tb) return;
+
+    if (!Array.isArray(items) || items.length === 0) {
+        tb.innerHTML = `<tr><td colspan="6" class="muted">Sin historial.</td></tr>`;
+        return;
+    }
+
+    tb.innerHTML = items
+        .map((h) => `
+            <tr>
+                <td>${safe(h.versionNo)}</td>
+                <td>${safe(fmtDateTime(h.fechaConsumo))}</td>
+                <td>${safe(h.cantidad)}</td>
+                <td>${safe(h.notas ?? "")}</td>
+                <td>${safe(h.motivoCambio ?? "")}</td>
+                <td>${safe(fmtDateTime(h.fechaRegistro))}</td>
+            </tr>
+        `)
+        .join("");
+}
+
+async function verHistorial(consumoId) {
+    const tb = $("tblHistorialBody");
+    if (tb) {
+        tb.innerHTML = `<tr><td colspan="6" class="muted">Cargando...</td></tr>`;
+    }
+
+    openModal("modalHistorial");
+
+    try {
+        const data = await apiFetch(`${API_BASE}/${consumoId}/historial`);
+        renderHistorial(Array.isArray(data) ? data : []);
+    } catch (err) {
+        if (tb) {
+            tb.innerHTML = `<tr><td colspan="6" class="muted">No se pudo cargar el historial.</td></tr>`;
+        }
+        alert(err?.message || String(err));
+    }
+}
+
+/* =========================
+   API acciones
    ========================= */
 async function cargarConsumos() {
     const filtros = leerFiltros();
     const url = `${API_BASE}${qsFromFilters(filtros)}`;
 
     const data = await apiFetch(url);
-    const arr = Array.isArray(data) ? data : [];
-
-    renderTablaConsumos(arr);
-}
-
-/* =========================
-   Init
-   ========================= */
-export function init() {
-    console.log("Módulo Consumos iniciado");
-
-    // botones de página (✅ existen en tu HTML)
-    $("btnRefrescarConsumos")?.addEventListener("click", () => cargarConsumos().catch((e) => alert(e.message)));
-    $("btnNuevoConsumo")?.addEventListener("click", abrirModalNuevo);
-
-    $("btnAplicarFiltros")?.addEventListener("click", () => cargarConsumos().catch((e) => alert(e.message)));
-    $("btnLimpiarFiltros")?.addEventListener("click", () => {
-        limpiarFiltros();
-        cargarConsumos().catch((e) => alert(e.message));
-    });
-
-    $("btnVerReporteDiario")?.addEventListener("click", () => alert("Pendiente: reporte diario (lo conectamos luego)"));
-    $("btnExportCsv")?.addEventListener("click", () => alert("Pendiente: export CSV (lo conectamos luego)"));
-    $("btnExportExcel")?.addEventListener("click", () => alert("Pendiente: export Excel (lo conectamos luego)"));
-
-    // modal close (✅ tu HTML usa btnCerrarModalConsumo)
-    $("btnCerrarModalConsumo")?.addEventListener("click", () => closeModal("modalConsumo"));
-
-    // Guardar (lo conectamos luego con tu endpoint POST)
-    $("btnGuardarConsumo")?.addEventListener("click", guardarConsumo);
-
-    // Delegación acciones tabla
-    document.addEventListener("click", (ev) => {
-        const btn = ev.target.closest("[data-action]");
-        if (!btn) return;
-
-        const action = btn.getAttribute("data-action");
-        const id = btn.getAttribute("data-id");
-
-        if (action === "editar") {
-            alert(`Pendiente: editar consumo #${id}`);
-            return;
-        }
-        if (action === "historial") {
-            alert(`Pendiente: historial de consumo #${id}`);
-            return;
-        }
-    });
-
-    // carga inicial
-    cargarConsumos().catch((e) => alert(e.message));
-}
-function leerFormConsumoParaCrear() {
-    const cicloId = Number($("consumoCicloId")?.value || 0);
-    const tipoRecursoId = Number($("consumoTipoRecursoId")?.value || 0);
-    const cantidad = Number($("consumoCantidad")?.value || 0);
-    const fecha = $("consumoFecha")?.value || ""; // yyyy-mm-dd
-
-    if (!cicloId || cicloId <= 0) throw new Error("CicloId es requerido.");
-    if (!tipoRecursoId || tipoRecursoId <= 0) throw new Error("TipoRecursoId es requerido.");
-    if (!Number.isFinite(cantidad) || cantidad < 0) throw new Error("Cantidad inválida.");
-    if (!fecha) throw new Error("Fecha es requerida.");
-
-    // Convertimos yyyy-mm-dd a ISO (lo que Swagger manda)
-    const fechaConsumo = new Date(`${fecha}T00:00:00`).toISOString();
-
-    return {
-        cicloId,
-        tipoRecursoId,
-        cantidad,
-        fechaConsumo,
-        notas: null // luego lo conectamos si agregas textarea
-    };
+    renderTablaConsumos(Array.isArray(data) ? data : []);
 }
 
 async function guardarConsumo() {
@@ -270,10 +344,11 @@ async function guardarConsumo() {
         const resp = await apiFetch(API_BASE, {
             method: "POST",
             body,
-            headers: { "X-Empleado-Id": String(EMPLEADO_ID) }
+            headers: {
+                "X-Empleado-Id": String(EMPLEADO_ID),
+            },
         });
 
-        // tu API puede devolver consumoId o consumo_id según mapeo
         const idCreado = resp?.consumoId ?? resp?.consumo_id ?? "(ok)";
         alert(`Consumo registrado. ID: ${idCreado}`);
 
@@ -282,25 +357,91 @@ async function guardarConsumo() {
     } catch (err) {
         alert(err?.message || String(err));
     }
-    function renderHistorial(items) {
-        const tb = document.getElementById("tblHistorialBody");
-        if (!tb) return;
+}
 
-        if (!Array.isArray(items) || items.length === 0) {
-            tb.innerHTML = `<tr><td colspan="6" class="muted">Sin historial.</td></tr>`;
+function exportarReporte(formato) {
+    const filtros = leerFiltros();
+    const suffix = formato === "excel" ? "excel" : "csv";
+    const url = `${API_BASE}/reporte-diario/export/${suffix}${qsFromFilters(filtros)}`;
+    window.open(url, "_blank");
+}
+
+async function verReporteDiario() {
+    try {
+        const filtros = leerFiltros();
+        const url = `${API_BASE}/reporte-diario${qsFromFilters(filtros)}`;
+        const data = await apiFetch(url);
+        const total = Array.isArray(data) ? data.length : 0;
+        alert(`Reporte diario generado correctamente. Registros: ${total}`);
+    } catch (err) {
+        alert(err?.message || String(err));
+    }
+}
+
+/* =========================
+   Eventos
+   ========================= */
+function bindEventosBase() {
+    $("btnRefrescarConsumos")?.addEventListener("click", () =>
+        cargarConsumos().catch((e) => alert(e.message))
+    );
+
+    $("btnNuevoConsumo")?.addEventListener("click", abrirModalNuevo);
+
+    $("btnAplicarFiltros")?.addEventListener("click", () =>
+        cargarConsumos().catch((e) => alert(e.message))
+    );
+
+    $("btnLimpiarFiltros")?.addEventListener("click", () => {
+        limpiarFiltros();
+        cargarConsumos().catch((e) => alert(e.message));
+    });
+
+    $("btnVerReporteDiario")?.addEventListener("click", () =>
+        verReporteDiario().catch((e) => alert(e.message))
+    );
+
+    $("btnExportCsv")?.addEventListener("click", () => exportarReporte("csv"));
+    $("btnExportExcel")?.addEventListener("click", () => exportarReporte("excel"));
+
+    $("btnCerrarModalConsumo")?.addEventListener("click", () => closeModal("modalConsumo"));
+    $("btnCancelarConsumo")?.addEventListener("click", () => closeModal("modalConsumo"));
+    $("btnCerrarModalHistorial")?.addEventListener("click", () => closeModal("modalHistorial"));
+
+    $("btnGuardarConsumo")?.addEventListener("click", guardarConsumo);
+
+    document.addEventListener("click", async (ev) => {
+        const btn = ev.target.closest("[data-action]");
+        if (!btn) return;
+
+        const action = btn.getAttribute("data-action");
+        const id = btn.getAttribute("data-id");
+        if (!id) return;
+
+        if (action === "editar") {
+            alert(`Edición pendiente para consumo #${id}.`);
             return;
         }
 
-        tb.innerHTML = items.map(h => `
-    <tr>
-      <td>${safe(h.versionNo)}</td>
-      <td>${safe(fmtDateTime(h.fechaConsumo))}</td>
-      <td>${safe(h.cantidad)}</td>
-      <td>${safe(h.notas ?? "")}</td>
-      <td>${safe(h.motivoCambio ?? "")}</td>
-      <td>${safe(fmtDateTime(h.fechaRegistro))}</td>
-    </tr>
-  `).join("");
+        if (action === "historial") {
+            await verHistorial(id);
+        }
+    });
+}
+
+/* =========================
+   Init
+   ========================= */
+export async function init() {
+    console.log("Módulo Consumos iniciado");
+    bindEventosBase();
+
+    try {
+        await cargarTiposRecurso();
+    } catch (err) {
+        console.error(err);
+        alert("No se pudieron cargar los tipos de recurso.");
     }
 
+    cargarConsumos().catch((e) => alert(e.message));
 }

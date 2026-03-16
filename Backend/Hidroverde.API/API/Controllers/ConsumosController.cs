@@ -16,6 +16,13 @@ namespace Hidroverde.API.Controllers
             _consumosFlujo = consumosFlujo;
         }
 
+        [HttpGet("tipos-recurso")]
+        public async Task<IActionResult> ObtenerTiposRecurso()
+        {
+            var data = await _consumosFlujo.ObtenerTiposRecurso();
+            return Ok(data);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Registrar(
             [FromHeader(Name = "X-Empleado-Id")] int empleadoId,
@@ -55,7 +62,7 @@ namespace Hidroverde.API.Controllers
 
         [HttpGet("reporte")]
         public async Task<IActionResult> Reporte(
-            [FromQuery] int cicloId,
+            [FromQuery] int? cicloId,
             [FromQuery] DateTime? fechaDesde,
             [FromQuery] DateTime? fechaHasta,
             [FromQuery] string granularidad = "DIA")
@@ -75,10 +82,6 @@ namespace Hidroverde.API.Controllers
             return Ok(r);
         }
 
-        // =========================
-        // EXPORTS (reporte diario)
-        // =========================
-
         [HttpGet("reporte-diario/export/csv")]
         public async Task<IActionResult> ExportReporteDiarioCsv(
             [FromQuery] int? cicloId,
@@ -89,7 +92,7 @@ namespace Hidroverde.API.Controllers
             var data = await _consumosFlujo.ObtenerReporteDiario(cicloId, fechaDesde, fechaHasta, tipoRecursoId);
 
             var sb = new StringBuilder();
-            sb.AppendLine("Fecha,CicloId,TipoRecursoId,Codigo,RecursoNombre,Unidad,TotalCantidad");
+            sb.AppendLine("Fecha,CicloId,TipoRecursoId,Codigo,RecursoNombre,Unidad,Periodicidad,TotalCantidad");
 
             string CsvSafe(string? s) => "\"" + (s ?? "").Replace("\"", "\"\"") + "\"";
 
@@ -102,6 +105,7 @@ namespace Hidroverde.API.Controllers
                     $"{CsvSafe(r.Codigo)}," +
                     $"{CsvSafe(r.RecursoNombre)}," +
                     $"{CsvSafe(r.Unidad)}," +
+                    $"{CsvSafe(r.PeriodicidadCodigo)}," +
                     $"{r.TotalCantidad}"
                 );
             }
@@ -130,7 +134,7 @@ namespace Hidroverde.API.Controllers
             var sb = new StringBuilder();
             sb.AppendLine("<html><head><meta charset='UTF-8'></head><body>");
             sb.AppendLine("<table border='1'>");
-            sb.AppendLine("<tr><th>Fecha</th><th>CicloId</th><th>TipoRecursoId</th><th>Codigo</th><th>RecursoNombre</th><th>Unidad</th><th>TotalCantidad</th></tr>");
+            sb.AppendLine("<tr><th>Fecha</th><th>CicloId</th><th>TipoRecursoId</th><th>Codigo</th><th>Recurso</th><th>Unidad</th><th>Periodicidad</th><th>Total</th></tr>");
 
             foreach (var r in data)
             {
@@ -141,6 +145,7 @@ namespace Hidroverde.API.Controllers
                 sb.AppendLine($"<td>{HtmlEncode(r.Codigo)}</td>");
                 sb.AppendLine($"<td>{HtmlEncode(r.RecursoNombre)}</td>");
                 sb.AppendLine($"<td>{HtmlEncode(r.Unidad)}</td>");
+                sb.AppendLine($"<td>{HtmlEncode(r.PeriodicidadCodigo)}</td>");
                 sb.AppendLine($"<td>{r.TotalCantidad}</td>");
                 sb.AppendLine("</tr>");
             }
@@ -148,7 +153,7 @@ namespace Hidroverde.API.Controllers
             sb.AppendLine("</table></body></html>");
 
             var bytes = Encoding.UTF8.GetBytes(sb.ToString());
-            var fileName = $"reporte_consumos_diario_{DateTime.Now:yyyyMMdd_HHmmss}.xls"; // Excel lo abre
+            var fileName = $"reporte_consumos_diario_{DateTime.Now:yyyyMMdd_HHmmss}.xls";
             return File(bytes, "application/vnd.ms-excel", fileName);
         }
     }

@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Abstracciones.Modelos
 {
     public class ConsumoResponse
     {
         public long ConsumoId { get; set; }
-        public int CicloId { get; set; }
+
+        // Nullable: puede no existir si es consumo general
+        public int? CicloId { get; set; }
 
         public int TipoRecursoId { get; set; }
         public string Codigo { get; set; } = string.Empty;
@@ -19,10 +17,15 @@ namespace Abstracciones.Modelos
 
         public int VersionNo { get; set; }
         public decimal Cantidad { get; set; }
-        public System.DateTime FechaConsumo { get; set; }
+        public DateTime FechaConsumo { get; set; }
+
+        // UNICO, SEMANAL, MENSUAL
+        public string PeriodicidadCodigo { get; set; } = string.Empty;
 
         public string? Notas { get; set; }
-        public System.DateTime FechaRegistro { get; set; }
+        public DateTime FechaRegistro { get; set; }
         public int RegistradoPorEmpleadoId { get; set; }
+
+        public string? RegistradoPorNombre { get; set; }
     }
 }

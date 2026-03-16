@@ -30,6 +30,7 @@ namespace DA
                     tipo_recurso_id = request.TipoRecursoId,
                     cantidad = request.Cantidad,
                     fecha_consumo = request.FechaConsumo,
+                    periodicidad_codigo = request.PeriodicidadCodigo,
                     empleado_id = empleadoId,
                     notas = request.Notas
                 },
@@ -60,7 +61,11 @@ namespace DA
             return (resultado.consumo_id, resultado.version_no);
         }
 
-        public async Task<IEnumerable<ConsumoResponse>> Obtener(int? cicloId, DateTime? fechaDesde, DateTime? fechaHasta, int? tipoRecursoId)
+        public async Task<IEnumerable<ConsumoResponse>> Obtener(
+            int? cicloId,
+            DateTime? fechaDesde,
+            DateTime? fechaHasta,
+            int? tipoRecursoId)
         {
             const string sp = "dbo.sp_Consumos_Listar";
 
@@ -92,7 +97,11 @@ namespace DA
             return resultado;
         }
 
-        public async Task<IEnumerable<ConsumoReporteResponse>> ObtenerReporte(int cicloId, DateTime? fechaDesde, DateTime? fechaHasta, string granularidad)
+        public async Task<IEnumerable<ConsumoReporteResponse>> ObtenerReporte(
+            int? cicloId,
+            DateTime? fechaDesde,
+            DateTime? fechaHasta,
+            string granularidad)
         {
             const string sp = "dbo.sp_Consumos_ReporteComparativo";
 
@@ -109,8 +118,8 @@ namespace DA
             );
 
             return resultado;
-
         }
+
         public async Task<IEnumerable<ConsumoReporteDiarioResponse>> ObtenerReporteDiario(
             int? cicloId,
             DateTime? fechaDesde,
@@ -130,8 +139,26 @@ namespace DA
             return await _sqlConnection.QueryAsync<ConsumoReporteDiarioResponse>(
                 sp,
                 parametros,
-                commandType: System.Data.CommandType.StoredProcedure
+                commandType: CommandType.StoredProcedure
             );
+        }
+
+        public async Task<IEnumerable<TipoRecursoResponse>> ObtenerTiposRecurso()
+        {
+            const string sql = @"
+                SELECT
+                    tipo_recurso_id AS TipoRecursoId,
+                    codigo          AS Codigo,
+                    nombre          AS Nombre,
+                    categoria       AS Categoria,
+                    unidad          AS Unidad,
+                    activo          AS Activo
+                FROM dbo.Tipos_Recurso
+                WHERE activo = 1
+                ORDER BY categoria, nombre;";
+
+            var resultado = await _sqlConnection.QueryAsync<TipoRecursoResponse>(sql);
+            return resultado;
         }
     }
 }

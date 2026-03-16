@@ -1,17 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Abstracciones.Modelos
 {
     public class ConsumoRequest
     {
-        public int CicloId { get; set; }
+        // Nullable:
+        // null = consumo general / operativo
+        // valor = consumo asociado a un ciclo específico
+        public int? CicloId { get; set; }
+
         public int TipoRecursoId { get; set; }
+
         public decimal Cantidad { get; set; }
-        public System.DateTime FechaConsumo { get; set; }
+
+        public DateTime FechaConsumo { get; set; }
+
+        // Valores esperados:
+        // UNICO, SEMANAL, MENSUAL
+        public string PeriodicidadCodigo { get; set; } = "UNICO";
+
         public string? Notas { get; set; }
     }
 }

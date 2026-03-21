@@ -1,0 +1,325 @@
+﻿<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Hidroverde Digital — Márgenes de Utilidad</title>
+
+    <link rel="stylesheet" href="/assets/css/app.css" />
+    <link rel="stylesheet" href="/assets/css/pages/margenesUtilidad.css" />
+</head>
+
+<body>
+    <section class="page page-margenes-utilidad">
+
+        <header class="page__header mu-hero">
+            <div class="mu-hero__content">
+                <span class="mu-hero__eyebrow">Rentabilidad</span>
+                <h1 class="page__title">Márgenes de utilidad</h1>
+            </div>
+
+            <div class="page__actions">
+                <button id="btnNuevaCompra" class="btn btn--primary">Nueva compra</button>
+                <button id="btnNuevaMerma" class="btn btn--secondary">Registrar merma</button>
+                <button id="btnVerCompras" class="btn btn--secondary">Ver compras</button>
+                <button id="btnRefrescarMargenes" class="btn btn--primary">Refrescar</button>
+            </div>
+        </header>
+
+        <section class="mu-resumen">
+            <article class="mu-card mu-card--neutral">
+                <span class="mu-card__label">Total registros</span>
+                <strong id="muTotalRegistros" class="mu-card__value">0</strong>
+            </article>
+
+            <article class="mu-card mu-card--success">
+                <span class="mu-card__label">Mejor margen %</span>
+                <strong id="muMejorMargen" class="mu-card__value">0%</strong>
+            </article>
+
+            <article class="mu-card mu-card--warning">
+                <span class="mu-card__label">Mayor merma</span>
+                <strong id="muMayorMerma" class="mu-card__value">0</strong>
+            </article>
+
+            <article class="mu-card mu-card--danger">
+                <span class="mu-card__label">Peor margen %</span>
+                <strong id="muPeorMargen" class="mu-card__value">0%</strong>
+            </article>
+
+            <article class="mu-card mu-card--info">
+                <span class="mu-card__label">Proveedor más rentable</span>
+                <strong id="muProveedorTop" class="mu-card__value">-</strong>
+            </article>
+
+            <article class="mu-card mu-card--primary">
+                <span class="mu-card__label">Producto más rentable</span>
+                <strong id="muProductoTop" class="mu-card__value">-</strong>
+            </article>
+        </section>
+
+        <section class="mu-panel">
+            <div class="mu-panel__header">
+                <h2 class="mu-panel__title">Filtros</h2>
+            </div>
+
+            <div class="mu-filtros__grid">
+                <div class="mu-filtro">
+                    <label for="txtFiltroProducto">Producto</label>
+                    <input type="text" id="txtFiltroProducto" placeholder="Ej. Lechuga Romana" />
+                </div>
+
+                <div class="mu-filtro">
+                    <label for="txtFiltroProveedor">Proveedor</label>
+                    <input type="text" id="txtFiltroProveedor" placeholder="Ej. Agroverde" />
+                </div>
+
+                <div class="mu-filtro">
+                    <label for="selOrdenMargen">Ordenar por</label>
+                    <select id="selOrdenMargen">
+                        <option value="margenDesc">Mayor margen %</option>
+                        <option value="margenAsc">Menor margen %</option>
+                        <option value="mermaDesc">Mayor merma</option>
+                        <option value="productoAsc">Producto A-Z</option>
+                        <option value="proveedorAsc">Proveedor A-Z</option>
+                    </select>
+                </div>
+
+                <div class="mu-filtro mu-filtro--acciones">
+                    <button id="btnAplicarFiltrosMargenes" class="btn btn--primary">Aplicar</button>
+                    <button id="btnLimpiarFiltrosMargenes" class="btn btn--secondary">Limpiar</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="mu-panel">
+            <div class="mu-panel__header mu-panel__header--tabla">
+                <div>
+                    <h2 class="mu-panel__title">Resumen de márgenes</h2>
+                    <p class="mu-panel__subtitle">Selecciona “Ver” para consultar el detalle.</p>
+                </div>
+            </div>
+
+            <div id="margenesEstado" class="mu-estado">Cargando márgenes...</div>
+
+            <div class="mu-tabla-wrap">
+                <table class="table mu-tabla">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Proveedor</th>
+                            <th>Comprado</th>
+                            <th>Merma</th>
+                            <th>Útil</th>
+                            <th>Costo real</th>
+                            <th>Precio base</th>
+                            <th>Margen %</th>
+                            <th>Ver</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbodyMargenesUtilidad"></tbody>
+                </table>
+            </div>
+
+            <section id="muDetallePanel" class="mu-detalle-panel" hidden>
+                <div class="mu-detalle-panel__header">
+                    <div>
+                        <h3 id="muDetalleTitulo">Detalle</h3>
+                        <p id="muDetalleSubtitulo">Selecciona un registro para ver más información.</p>
+                    </div>
+                    <button id="btnCerrarDetalleMargen" class="btn btn--secondary">Cerrar</button>
+                </div>
+
+                <div class="mu-detalle-grid">
+                    <article class="mu-detalle-card">
+                        <span>Producto</span>
+                        <strong id="muDetalleProducto">-</strong>
+                    </article>
+
+                    <article class="mu-detalle-card">
+                        <span>Proveedor</span>
+                        <strong id="muDetalleProveedor">-</strong>
+                    </article>
+
+                    <article class="mu-detalle-card">
+                        <span>Costo total</span>
+                        <strong id="muDetalleCostoTotal">₡0,00</strong>
+                    </article>
+
+                    <article class="mu-detalle-card">
+                        <span>Costo unitario inicial</span>
+                        <strong id="muDetalleCostoInicial">₡0,00</strong>
+                    </article>
+
+                    <article class="mu-detalle-card">
+                        <span>Costo unitario real</span>
+                        <strong id="muDetalleCostoReal">₡0,00</strong>
+                    </article>
+
+                    <article class="mu-detalle-card">
+                        <span>Margen unitario</span>
+                        <strong id="muDetalleMargenUnitario">₡0,00</strong>
+                    </article>
+                </div>
+
+                <div class="mu-detalle-panel__acciones">
+                    <button id="btnDetalleRegistrarMerma" class="btn btn--primary">Registrar merma</button>
+                </div>
+            </section>
+        </section>
+    </section>
+
+    <!-- MODAL NUEVA COMPRA -->
+    <section id="modalNuevaCompra" class="mu-modal" hidden>
+        <div class="mu-modal__backdrop"></div>
+
+        <div class="mu-modal__content mu-modal__content--lg">
+            <div class="mu-modal__header">
+                <div>
+                    <h3>Nueva compra</h3>
+                    <p>Registra la cabecera y el detalle inicial de la compra.</p>
+                </div>
+                <button id="btnCerrarCompra" class="btn btn--secondary">Cerrar</button>
+            </div>
+
+            <div class="mu-modal__body">
+                <div class="mu-modal__grid">
+                    <div class="mu-filtro">
+                        <label for="ncProveedorId">Proveedor</label>
+                        <select id="ncProveedorId">
+                            <option value="">Seleccione un proveedor</option>
+                        </select>
+                    </div>
+
+                    <div class="mu-info">
+                        <label>Número de factura</label>
+                        <div class="mu-info__value">
+                            Se genera automáticamente al guardar
+                        </div>
+                    </div>
+
+                    <div class="mu-filtro">
+                        <label for="ncFechaCompra">Fecha de compra</label>
+                        <input id="ncFechaCompra" type="datetime-local" />
+                    </div>
+
+                    <div class="mu-filtro">
+                        <label for="ncTotalFactura">Total factura</label>
+                        <input id="ncTotalFactura" type="number" step="0.01" placeholder="Ej. 50000" />
+                    </div>
+
+                    <div class="mu-filtro mu-filtro--full">
+                        <label for="ncObservaciones">Observaciones cabecera</label>
+                        <input id="ncObservaciones" type="text" placeholder="Opcional" />
+                    </div>
+                </div>
+
+                <div class="mu-modal__divider"></div>
+
+                <div class="mu-modal__subtitulo">Detalle de compra</div>
+
+                <div class="mu-modal__grid">
+                    <div class="mu-filtro">
+                        <label for="ncProductoId">Producto</label>
+                        <select id="ncProductoId">
+                            <option value="">Seleccione un producto</option>
+                        </select>
+                    </div>
+
+                    <div class="mu-filtro">
+                        <label for="ncUnidadId">Unidad</label>
+                        <select id="ncUnidadId">
+                            <option value="">Seleccione una unidad</option>
+                        </select>
+                    </div>
+
+                    <div class="mu-filtro">
+                        <label for="ncCantidadComprada">Cantidad comprada</label>
+                        <input id="ncCantidadComprada" type="number" step="0.01" placeholder="Cantidad de plantas compradas" />
+                    </div>
+
+                    <div class="mu-info">
+                        <label>Costo total línea</label>
+                        <div id="ncCostoTotalLineaPreview" class="mu-info__value">
+                            Se calcula desde el total de factura
+                        </div>
+                        <input id="ncCostoTotalLinea" type="hidden" />
+                    </div>
+
+                    <div class="mu-filtro mu-filtro--full">
+                        <label for="ncObservacionesDetalle">Observaciones detalle</label>
+                        <input id="ncObservacionesDetalle" type="text" placeholder="Opcional" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="mu-modal__actions">
+                <button id="btnGuardarCompra" class="btn btn--primary">Guardar compra</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODAL MERMA -->
+    <section id="modalMerma" class="mu-modal" hidden>
+        <div class="mu-modal__backdrop"></div>
+
+        <div class="mu-modal__content">
+            <div class="mu-modal__header">
+                <div>
+                    <h3>Registrar merma</h3>
+                    <p>La merma se registra sobre la compra del producto con ese proveedor.</p>
+                </div>
+                <button id="btnCerrarMerma" class="btn btn--secondary">Cerrar</button>
+            </div>
+
+            <div class="mu-modal__body">
+                <div class="mu-modal__grid">
+                    <div class="mu-info">
+                        <label>Producto</label>
+                        <div id="rmProductoNombre" class="mu-info__value">-</div>
+                    </div>
+
+                    <div class="mu-info">
+                        <label>Proveedor</label>
+                        <div id="rmProveedorNombre" class="mu-info__value">-</div>
+                    </div>
+
+                    <div class="mu-info">
+                        <label>Total comprado</label>
+                        <div id="rmCantidadComprada" class="mu-info__value">0</div>
+                    </div>
+
+                    <div class="mu-info">
+                        <label>Merma actual</label>
+                        <div id="rmCantidadMermaActual" class="mu-info__value">0</div>
+                    </div>
+
+                    <div class="mu-info">
+                        <label>Disponible para merma</label>
+                        <div id="rmDisponibleMerma" class="mu-info__value">0</div>
+                        <input id="rmDisponibleMermaRaw" type="hidden" />
+                    </div>
+
+                    <div class="mu-filtro">
+                        <label for="rmCantidadMerma">Nueva merma</label>
+                        <input id="rmCantidadMerma" type="number" step="0.01" placeholder="Ej. 5" />
+                    </div>
+
+                    <div class="mu-filtro mu-filtro--full">
+                        <label for="rmMotivo">Motivo</label>
+                        <input id="rmMotivo" type="text" placeholder="Opcional" />
+                    </div>
+                </div>
+
+                <input id="rmCompraDetalleId" type="hidden" />
+            </div>
+
+            <div class="mu-modal__actions">
+                <button id="btnGuardarMerma" class="btn btn--primary">Guardar merma</button>
+            </div>
+        </div>
+    </section>
+
+    <script type="module" src="/assets/js/pages/margenesUtilidad.js"></script>
+</body>
+</html>

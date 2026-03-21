@@ -69,6 +69,8 @@ builder.Services.AddScoped<IPlagasDA, PlagasDA>();
 builder.Services.AddScoped<IPlagasFlujo, PlagasFlujo>();
 builder.Services.AddScoped<ITorresDA, TorresDA>();
 builder.Services.AddScoped<ITorresFlujo, TorresFlujo>();
+builder.Services.AddScoped<IComprasPlantasDA, ComprasPlantasDA>();
+builder.Services.AddScoped<IComprasPlantasFlujo, ComprasPlantasFlujo>();
 
 
 Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true; // <-- aquí

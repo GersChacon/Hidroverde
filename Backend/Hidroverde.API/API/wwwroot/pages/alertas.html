@@ -1,12 +1,56 @@
-﻿<!DOCTYPE html>
-<link rel="stylesheet" href="/assets/css/app.css" />
-<script defer src="/assets/js/app.js"></script>
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
+<link rel="stylesheet" href="/assets/css/pages/alertas.css">
 
-</body>
-</html>
+<section class="page-alertas">
+    <div class="row" style="justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <div>
+            <h2>Alertas</h2>
+            <div class="muted">Notificaciones de stock bajo y eventos del sistema</div>
+        </div>
+        <button class="btn-primary" id="btnRefrescarAlertas" type="button">↺ Refrescar</button>
+    </div>
+
+    <!-- Resumen badge -->
+    <div class="alertas-resumen" id="alertasResumen" style="display:none;">
+        <span class="alerta-badge-cnt" id="alertasCntActivas">0</span>
+        <span class="muted">alertas activas</span>
+    </div>
+
+    <!-- Estado de carga -->
+    <div class="muted" id="alertasStatus" style="margin-bottom:12px;">Cargando...</div>
+
+    <!-- Lista de alertas -->
+    <div id="alertasLista">
+        <!-- Se llena con JS -->
+    </div>
+
+    <!-- Estado vacío -->
+    <div id="alertasVacio" class="card alerta-vacio" style="display:none;">
+        <div class="alerta-vacio-icon">✅</div>
+        <div class="alerta-vacio-texto">No hay alertas activas</div>
+        <div class="muted">El inventario está dentro de los límites configurados</div>
+    </div>
+</section>
+
+<!-- Modal: Aceptar alerta -->
+<div id="modalAceptar" class="modal-overlay hidden">
+    <div class="modal-box">
+        <h3>Aceptar alerta</h3>
+        <p class="muted" id="modalAceptarMsg">¿Confirmar que revisaste esta alerta?</p>
+        <div class="alerta-detail-row">
+            <span class="muted">Producto:</span>
+            <strong id="modalProducto">—</strong>
+        </div>
+        <div class="alerta-detail-row">
+            <span class="muted">Disponible:</span>
+            <span id="modalDisponible">—</span>
+        </div>
+        <div class="alerta-detail-row">
+            <span class="muted">Mínimo:</span>
+            <span id="modalMinimo">—</span>
+        </div>
+        <div class="row" style="justify-content:flex-end; gap:10px; margin-top:16px;">
+            <button class="btn-ghost" id="btnCancelarModal" type="button">Cancelar</button>
+            <button class="btn-primary" id="btnConfirmarAceptar" type="button">✔ Confirmar</button>
+        </div>
+    </div>
+</div>

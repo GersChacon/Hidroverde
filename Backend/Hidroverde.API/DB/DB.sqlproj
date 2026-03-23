@@ -221,5 +221,13 @@
     <Build Include="dbo\Stored Procedures\sp_Plagas_Catalogo_Listar.sql" />
     <Build Include="dbo\Stored Procedures\sp_Torres_Listar.sql" />
     <Build Include="dbo\Stored Procedures\sp_Torres_Disponibilidad_Listar.sql" />
+    <Build Include="dbo\Tables\Compras_Plantas_Merma.sql" />
+    <Build Include="dbo\Tables\Compras_Plantas_Detalle.sql" />
+    <Build Include="dbo\Tables\Compras_Plantas.sql" />
+    <Build Include="dbo\Stored Procedures\sp_MargenesUtilidad_Listar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_ComprasPlantasMerma_Registrar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_ComprasPlantasDetalle_Registrar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_ComprasPlantasDetalle_ObtenerParaMerma.sql" />
+    <Build Include="dbo\Stored Procedures\sp_ComprasPlantas_Registrar.sql" />
   </ItemGroup>
 </Project>

@@ -1,4 +1,4 @@
-﻿import { api } from "../lib/http.js";
+import { api } from "../lib/http.js";
 import { $ } from "../lib/dom.js";
 
 let chartPlagasInicio = null;
@@ -16,17 +16,21 @@ export async function init() {
         goTo("plagas");
     });
 
-    // Cargar KPIs (no bloquear el gráfico si falla algo)
+    // Cargar KPIs primero
     cargarKpis().catch(console.error);
 
-    // Cargar gráfico plagas
-    setTimeout(() => {
-        cargarGraficoPlagasInicio().catch((err) => {
-            console.error(err);
-            const hint = document.getElementById("plagasMiniHint");
-            if (hint) hint.textContent = "No se pudo cargar el gráfico";
+    // ✅ FIX: esperar a que el canvas esté pintado en el DOM
+    // requestAnimationFrame garantiza que el browser hizo un render cycle completo
+    // antes de intentar inicializar Chart.js sobre el canvas
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            cargarGraficoPlagasInicio().catch((err) => {
+                console.error(err);
+                const hint = document.getElementById("plagasMiniHint");
+                if (hint) hint.textContent = "No se pudo cargar el gráfico";
+            });
         });
-    }, 400);
+    });
 }
 
 /* =========================
@@ -60,11 +64,13 @@ async function cargarKpis() {
         alertasCount =
             typeof d === "number"
                 ? d
-                : typeof d?.count === "number"
-                    ? d.count
-                    : typeof d?.total === "number"
-                        ? d.total
-                        : null;
+                : typeof d?.badgeCount === "number"
+                    ? d.badgeCount
+                    : typeof d?.count === "number"
+                        ? d.count
+                        : typeof d?.total === "number"
+                            ? d.total
+                            : null;
     } catch (e) {
         console.error(e);
     }
@@ -84,9 +90,9 @@ async function cargarKpis() {
     setText("kpiAlertas", alertasCount);
     setBadge(alertasCount);
 
-    // 3) Consumos hoy (placeholder)
+    // 3) Consumos hoy
     setText("kpiConsumosHoy", "—");
-    setText("kpiConsumosHint", "Conecta el reporte diario cuando definamos su formato");
+    setText("kpiConsumosHint", "Ver módulo de consumos");
 
     setStatus("KPIs cargados");
 }
@@ -130,26 +136,28 @@ function isoDate(d) {
 }
 
 function formatPeriodoLabel(periodoISO, agrupacion) {
-    // periodoISO viene como "YYYY-MM-DD"
     if (!periodoISO) return "";
-    if (agrupacion === "ANIO") return periodoISO.slice(0, 4); // YYYY
-    if (agrupacion === "MES") return periodoISO.slice(0, 7);  // YYYY-MM
-    return periodoISO; // DIA -> YYYY-MM-DD
+    if (agrupacion === "ANIO") return periodoISO.slice(0, 4);
+    if (agrupacion === "MES") return periodoISO.slice(0, 7);
+    return periodoISO;
 }
 
 async function cargarGraficoPlagasInicio() {
+    // ✅ FIX: verificar que el canvas exista antes de continuar
+    const canvas = document.getElementById("chartPlagasInicio");
+    if (!canvas) {
+        console.warn("Canvas chartPlagasInicio no encontrado en el DOM");
+        return;
+    }
+
     await ensureChartJs();
 
-    // ✅ Para MES: usar un rango por meses (no "últimos 30 días") para que aparezcan varios meses
     const hasta = new Date();
     const desde = new Date();
-
-    // últimos 6 meses (ajusta a 3 si querés)
     desde.setMonth(hasta.getMonth() - 6);
     desde.setDate(1);
     desde.setHours(0, 0, 0, 0);
 
-    // fin del mes actual
     const finMes = new Date(hasta.getFullYear(), hasta.getMonth() + 1, 0);
     finMes.setHours(23, 59, 59, 999);
 
@@ -161,8 +169,16 @@ async function cargarGraficoPlagasInicio() {
         agrupacion
     }).toString();
 
-    const r = await api(`/api/plagas/grafica?${qs}`);
-    const data = r?.data;
+    let data = [];
+    try {
+        const r = await api(`/api/plagas/grafica?${qs}`);
+        data = r?.data ?? [];
+    } catch (e) {
+        console.error("Error cargando gráfica de plagas:", e);
+        const hint = document.getElementById("plagasMiniHint");
+        if (hint) hint.textContent = "No se pudo cargar el gráfico";
+        return;
+    }
 
     const rows = (Array.isArray(data) ? data : []).map((x) => ({
         periodo: (x.periodo || x.Periodo || "").toString().slice(0, 10),
@@ -170,12 +186,16 @@ async function cargarGraficoPlagasInicio() {
         total: x.totalCantidad ?? x.TotalCantidad ?? 0
     }));
 
-    // Labels formateados por agrupación (MES => YYYY-MM)
     const labels = [...new Set(rows.map((r) => formatPeriodoLabel(r.periodo, agrupacion)))].sort();
     const plagas = [...new Set(rows.map((r) => r.plaga))].sort();
 
-    // Dataset por plaga
-    const datasets = plagas.map((p) => {
+    // Paleta de colores consistente
+    const COLORS = [
+        "rgba(99,205,132,.9)", "rgba(99,179,237,.9)", "rgba(246,173,85,.9)",
+        "rgba(252,129,129,.9)", "rgba(154,117,255,.9)", "rgba(72,187,120,.9)"
+    ];
+
+    const datasets = plagas.map((p, i) => {
         const map = new Map(
             rows
                 .filter((r) => r.plaga === p)
@@ -185,48 +205,42 @@ async function cargarGraficoPlagasInicio() {
         return {
             label: p,
             data: labels.map((d) => map.get(d) ?? 0),
-            tension: 0.25
+            tension: 0.35,
+            borderColor: COLORS[i % COLORS.length],
+            backgroundColor: COLORS[i % COLORS.length].replace(".9)", ".15)"),
+            fill: true,
+            pointRadius: 4,
+            pointHoverRadius: 6
         };
     });
-
-    const canvas = document.getElementById("chartPlagasInicio");
-    if (!canvas) return;
 
     const options = {
         responsive: true,
         maintainAspectRatio: false,
         animation: false,
-        resizeDelay: 150,
+        resizeDelay: 100,
         plugins: { legend: { position: "bottom" } },
         scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
     };
 
-    // ✅ Si solo hay 1 mes, se ve mejor como barras
     const chartType = labels.length <= 1 ? "bar" : "line";
 
-    if (!chartPlagasInicio) {
-        chartPlagasInicio = new window.Chart(canvas, {
-            type: chartType,
-            data: { labels, datasets },
-            options
-        });
-    } else {
-        // Si cambia el tipo (bar/line), hay que recrear
-        if (chartPlagasInicio.config.type !== chartType) {
-            chartPlagasInicio.destroy();
-            chartPlagasInicio = new window.Chart(canvas, {
-                type: chartType,
-                data: { labels, datasets },
-                options
-            });
-        } else {
-            chartPlagasInicio.data.labels = labels;
-            chartPlagasInicio.data.datasets = datasets;
-            chartPlagasInicio.options = options;
-            chartPlagasInicio.update("none");
-        }
+    // ✅ FIX: destruir instancia previa si existe (evita "Canvas already in use")
+    if (chartPlagasInicio) {
+        chartPlagasInicio.destroy();
+        chartPlagasInicio = null;
     }
 
+    chartPlagasInicio = new window.Chart(canvas, {
+        type: chartType,
+        data: { labels, datasets },
+        options
+    });
+
     const hint = document.getElementById("plagasMiniHint");
-    if (hint) hint.textContent = `Últimos 6 meses · ${labels.length} meses con datos`;
+    if (hint) {
+        hint.textContent = rows.length === 0
+            ? "Sin datos en los últimos 6 meses"
+            : `Últimos 6 meses · ${labels.length} mes(es) con datos`;
+    }
 }

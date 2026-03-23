@@ -221,5 +221,6 @@
     <Build Include="dbo\Stored Procedures\sp_Plagas_Catalogo_Listar.sql" />
     <Build Include="dbo\Stored Procedures\sp_Torres_Listar.sql" />
     <Build Include="dbo\Stored Procedures\sp_Torres_Disponibilidad_Listar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_KPIs_Resumen.sql" />
   </ItemGroup>
 </Project>

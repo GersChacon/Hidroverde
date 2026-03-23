@@ -1,0 +1,211 @@
+/* kpis.css — usa variables globales de app.css */
+
+/* ── Grid de KPI cards ─────────────────────── */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+@media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: 1fr; }
+}
+
+/* ── KPI Card base ─────────────────────────── */
+.kpi-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius, 14px);
+    padding: 22px;
+    box-shadow: var(--shadow2);
+    transition: transform .15s ease, box-shadow .15s ease;
+    border-left: 4px solid transparent;
+}
+
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(0,0,0,.25);
+}
+
+.kpi-verde  { border-left-color: rgba(99,205,132,.7);  }
+.kpi-azul   { border-left-color: rgba(99,179,237,.7);  }
+.kpi-naranja{ border-left-color: rgba(246,173,85,.7);  }
+
+/* Estado: logrado / riesgo */
+.kpi-card.kpi-logrado {
+    background: linear-gradient(135deg, var(--panel), rgba(99,205,132,.06));
+}
+.kpi-card.kpi-riesgo {
+    background: linear-gradient(135deg, var(--panel), rgba(255,99,99,.06));
+}
+
+/* ── Card header ───────────────────────────── */
+.kpi-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.kpi-card-icon {
+    font-size: 26px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.kpi-card-titulo {
+    font-weight: 900;
+    font-size: 15px;
+}
+
+.kpi-card-subtitulo {
+    font-size: 12px;
+    margin-top: 2px;
+}
+
+.kpi-card-estado {
+    margin-left: auto;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* ── Números ───────────────────────────────── */
+.kpi-numeros {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 14px;
+}
+
+.kpi-actual {
+    font-size: 32px;
+    font-weight: 950;
+    line-height: 1;
+    letter-spacing: -.02em;
+}
+
+.kpi-meta-label {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 700;
+}
+
+/* ── Barra de progreso ─────────────────────── */
+.kpi-barra-wrap {
+    height: 8px;
+    background: rgba(255,255,255,.08);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.kpi-barra {
+    height: 100%;
+    border-radius: 999px;
+    transition: width .6s cubic-bezier(.4,0,.2,1);
+}
+
+.kpi-barra.barra-ok     { background: rgba(99,205,132,.9); }
+.kpi-barra.barra-warn   { background: rgba(246,173,85,.9); }
+.kpi-barra.barra-danger { background: rgba(255,99,99,.9);  }
+
+/* ── Fila inferior de la card ─────────────── */
+.kpi-pct-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+}
+
+/* ── Gráfica ───────────────────────────────── */
+.kpi-chart-wrap {
+    position: relative;
+    height: 260px;
+    width: 100%;
+}
+
+#chartKpi {
+    width: 100% !important;
+    height: 100% !important;
+    display: block;
+}
+
+/* ── Tabs de gráfica ───────────────────────── */
+.kpi-tab {
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    transition: background .12s, color .12s;
+}
+
+.kpi-tab:hover {
+    background: rgba(255,255,255,.07);
+    color: var(--text);
+}
+
+.kpi-tab.active {
+    background: rgba(255,255,255,.12);
+    color: var(--text);
+    border-color: rgba(255,255,255,.25);
+}
+
+/* ── Metas configurables ───────────────────── */
+.metas-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+@media (max-width: 700px) {
+    .metas-grid { grid-template-columns: 1fr; }
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.meta-label {
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.meta-input {
+    background: rgba(255,255,255,.06);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: var(--text);
+    font-size: 15px;
+    font-weight: 700;
+    width: 100%;
+    outline: none;
+    transition: border-color .15s;
+}
+
+.meta-input:focus {
+    border-color: rgba(99,179,237,.6);
+}
+
+/* ── Select período ────────────────────────── */
+.kpi-select {
+    background: rgba(255,255,255,.06);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 8px 12px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    outline: none;
+}
+
+.kpi-select:focus {
+    border-color: rgba(99,179,237,.6);
+}

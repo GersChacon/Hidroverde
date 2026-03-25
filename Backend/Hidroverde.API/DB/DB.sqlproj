@@ -1,226 +1,234 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <Name>DB</Name>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectVersion>4.1</ProjectVersion>
-    <ProjectGuid>{6c8f7cb5-ccf4-48b3-83e3-4c777c9d67f9}</ProjectGuid>
-    <DSP>Microsoft.Data.Tools.Schema.Sql.Sql160DatabaseSchemaProvider</DSP>
-    <OutputType>Database</OutputType>
-    <RootPath>
-    </RootPath>
-    <RootNamespace>DB</RootNamespace>
-    <AssemblyName>DB</AssemblyName>
-    <ModelCollation>1033, CI</ModelCollation>
-    <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
-    <DeployToDatabase>True</DeployToDatabase>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
-    <TargetLanguage>CS</TargetLanguage>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <SqlServerVerification>False</SqlServerVerification>
-    <IncludeCompositeObjects>True</IncludeCompositeObjects>
-    <TargetDatabaseSet>True</TargetDatabaseSet>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>bin\Release\</OutputPath>
-    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
-    <TreatWarningsAsErrors>False</TreatWarningsAsErrors>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineDebug>false</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>bin\Debug\</OutputPath>
-    <BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <DefineDebug>true</DefineDebug>
-    <DefineTrace>true</DefineTrace>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
-    <!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
-    <SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
-    <VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
-  </PropertyGroup>
-  <Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
-  <Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
-  <ItemGroup>
-    <Folder Include="Properties" />
-    <Folder Include="dbo\" />
-    <Folder Include="dbo\Tables\" />
-    <Folder Include="notif\" />
-    <Folder Include="notif\Tables\" />
-    <Folder Include="dbo\Stored Procedures\" />
-    <Folder Include="notif\Stored Procedures\" />
-    <Folder Include="Security\" />
-    <Folder Include="dbo\Functions\" />
-    <Folder Include="dbo\User Defined Types\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Build Include="dbo\Tables\Ventas.sql" />
-    <Build Include="dbo\Tables\Variedades.sql" />
-    <Build Include="dbo\Tables\Unidades_Medida.sql" />
-    <Build Include="dbo\Tables\Ubicaciones.sql" />
-    <Build Include="dbo\Tables\Torres.sql" />
-    <Build Include="dbo\Tables\Tipos_Ubicacion.sql" />
-    <Build Include="dbo\Tables\Tipos_Movimiento.sql" />
-    <Build Include="dbo\Tables\Tipos_Entrega.sql" />
-    <Build Include="dbo\Tables\Tipos_Cultivo.sql" />
-    <Build Include="dbo\Tables\Tipos_Cliente.sql" />
-    <Build Include="dbo\Tables\Roles.sql" />
-    <Build Include="dbo\Tables\Productos.sql" />
-    <Build Include="dbo\Tables\Movimientos_Inventario.sql" />
-    <Build Include="dbo\Tables\Monitoreos.sql" />
-    <Build Include="dbo\Tables\Metodos_Pago.sql" />
-    <Build Include="dbo\Tables\Inventario_Actual.sql" />
-    <Build Include="dbo\Tables\Estados_Venta.sql" />
-    <Build Include="dbo\Tables\Estados_Pago.sql" />
-    <Build Include="dbo\Tables\Estados_Ciclo.sql" />
-    <Build Include="dbo\Tables\Estados_Calidad.sql" />
-    <Build Include="dbo\Tables\Empleados.sql" />
-    <Build Include="dbo\Tables\Direcciones_Clientes.sql" />
-    <Build Include="dbo\Tables\Detalle_Ventas.sql" />
-    <Build Include="dbo\Tables\Config_Sistema.sql" />
-    <Build Include="dbo\Tables\Clientes.sql" />
-    <Build Include="dbo\Tables\Ciclos.sql" />
-    <Build Include="dbo\Tables\Categorias.sql" />
-    <Build Include="notif\Tables\Alerta.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Venta_Crear.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Venta_AgregarDetalle_DescontarInventario.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Ciclo_RegistrarSiembra.sql" />
-    <Build Include="notif\Stored Procedures\sp_Alertas_StockBajo_GenerarYListar.sql" />
-    <Build Include="notif\Stored Procedures\sp_Alertas_ListarActivas.sql" />
-    <Build Include="notif\Stored Procedures\sp_Alertas_Badge.sql" />
-    <Build Include="notif\Stored Procedures\sp_Alertas_Aceptar.sql" />
-    <Build Include="Security\notif.sql" />
-    <Build Include="dbo\Tables\Tipos_Recurso.sql" />
-    <Build Include="dbo\Tables\Consumos.sql" />
-    <Build Include="dbo\Tables\Consumo_Version.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Consumos_ReporteDiario.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Consumos_ReporteComparativo.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Consumos_Listar.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Consumo_Registrar.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Consumo_Historial.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Consumo_Editar.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Ciclos_ListarActivos.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerVariedades.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerVariedad.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerTiposCultivo.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerTipoCultivo.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerProductos.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerProducto.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerCategorias.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerCategoria.sql" />
-    <Build Include="dbo\Stored Procedures\EliminarVariedad.sql" />
-    <Build Include="dbo\Stored Procedures\EliminarTipoCultivo.sql" />
-    <Build Include="dbo\Stored Procedures\EliminarProducto.sql" />
-    <Build Include="dbo\Stored Procedures\EliminarCategoria.sql" />
-    <Build Include="dbo\Stored Procedures\EditarVariedad.sql" />
-    <Build Include="dbo\Stored Procedures\EditarTipoCultivo.sql" />
-    <Build Include="dbo\Stored Procedures\EditarProducto.sql" />
-    <Build Include="dbo\Stored Procedures\EditarCategoria.sql" />
-    <Build Include="dbo\Stored Procedures\AgregarVariedad.sql" />
-    <Build Include="dbo\Stored Procedures\AgregarTipoCultivo.sql" />
-    <Build Include="dbo\Stored Procedures\AgregarProducto.sql" />
-    <Build Include="dbo\Stored Procedures\AgregarCategoria.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Ciclo_Cancelar.sql" />
-    <Build Include="dbo\Functions\fn_ValidarCodigoPostalCR.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerTiposCliente.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerTipoCliente.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerRoles.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerRol.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerMetodosPago.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerMetodoPago.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerEstadosPago.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerEstadoPago.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerEmpleados.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerEmpleado.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerDireccionesCliente.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerClientes.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerCliente.sql" />
-    <Build Include="dbo\Stored Procedures\EliminarTipoCliente.sql" />
-    <Build Include="dbo\Stored Procedures\EliminarRol.sql" />
-    <Build Include="dbo\Stored Procedures\EliminarMetodoPago.sql" />
-    <Build Include="dbo\Stored Procedures\EliminarEstadoPago.sql" />
-    <Build Include="dbo\Stored Procedures\EliminarDireccionCliente.sql" />
-    <Build Include="dbo\Stored Procedures\EditarTipoCliente.sql" />
-    <Build Include="dbo\Stored Procedures\EditarRol.sql" />
-    <Build Include="dbo\Stored Procedures\EditarMetodoPago.sql" />
-    <Build Include="dbo\Stored Procedures\EditarEstadoPago.sql" />
-    <Build Include="dbo\Stored Procedures\EditarEmpleado.sql" />
-    <Build Include="dbo\Stored Procedures\EditarDireccionCliente.sql" />
-    <Build Include="dbo\Stored Procedures\EditarCliente.sql" />
-    <Build Include="dbo\Stored Procedures\CambiarEstadoEmpleado.sql" />
-    <Build Include="dbo\Stored Procedures\AgregarTipoCliente.sql" />
-    <Build Include="dbo\Stored Procedures\AgregarRol.sql" />
-    <Build Include="dbo\Stored Procedures\AgregarMetodoPago.sql" />
-    <Build Include="dbo\Stored Procedures\AgregarEstadoPago.sql" />
-    <Build Include="dbo\Stored Procedures\AgregarEmpleado.sql" />
-    <Build Include="dbo\Stored Procedures\AgregarDireccionCliente.sql" />
-    <Build Include="dbo\Stored Procedures\AgregarCliente.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerVentas.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerVenta.sql" />
-    <Build Include="dbo\Stored Procedures\EliminarDetalleVenta.sql" />
-    <Build Include="dbo\Stored Procedures\CrearVenta.sql" />
-    <Build Include="dbo\Stored Procedures\ConfirmarPagoVenta.sql" />
-    <Build Include="dbo\Stored Procedures\CancelarVenta.sql" />
-    <Build Include="dbo\Stored Procedures\CambiarEstadoVenta.sql" />
-    <Build Include="dbo\Stored Procedures\AgregarDetalleVenta.sql" />
-    <Build Include="dbo\User Defined Types\TVP_DetalleVenta.sql" />
-    <Build Include="dbo\Functions\fn_ValidarCodigoPostalCR.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerTiposEntrega.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerTipoEntrega.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerEstadoVenta.sql" />
-    <Build Include="dbo\Stored Procedures\ObtenerEstadosVenta.sql" />
-    <Build Include="dbo\Stored Procedures\EliminarTipoEntrega.sql" />
-    <Build Include="dbo\Stored Procedures\EliminarEstadoVenta.sql" />
-    <Build Include="dbo\Stored Procedures\EditarTipoEntrega.sql" />
-    <Build Include="dbo\Stored Procedures\EditarEstadoVenta.sql" />
-    <Build Include="dbo\Stored Procedures\AgregarTipoEntrega.sql" />
-    <Build Include="dbo\Stored Procedures\AgregarEstadoVenta.sql" />
-    <Build Include="dbo\Stored Procedures\sp_InventarioActual_Obtener.sql" />
-    <Build Include="dbo\Stored Procedures\sp_InventarioActual_Listar.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Inventario_Movimientos_Listar.sql" />
-    <Build Include="dbo\Stored Procedures\sp_DireccionesCliente_Listar.sql" />
-    <Build Include="dbo\Stored Procedures\sp_DireccionCliente_Obtener.sql" />
-    <Build Include="dbo\Stored Procedures\sp_DireccionCliente_Crear.sql" />
-    <Build Include="dbo\Stored Procedures\sp_DireccionCliente_Actualizar.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Ciclo_Cosechar.sql" />
-    <Build Include="dbo\Tables\Proveedores_Saldo.sql" />
-    <Build Include="dbo\Tables\Proveedores_Pagos.sql" />
-    <Build Include="dbo\Tables\Proveedores.sql" />
-    <Build Include="dbo\Tables\Pagos_Proveedores.sql" />
-    <Build Include="dbo\Stored Procedures\sp_ProveedorSaldo_Actualizar.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Proveedores_PendientesPago.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Proveedores_ListarConSaldo.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Proveedor_RegistrarPago.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Proveedor_RegistrarCompraMonto.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Proveedor_Pagos_ListarPorProveedor.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Proveedor_Pagos_Listar.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Proveedor_Listar.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Proveedor_Editar.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Proveedor_Crear.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Proveedor_RegistrarCompraPorNombre.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Proveedor_ListarActivos.sql" />
-    <Build Include="dbo\Tables\Plagas_Registro.sql" />
-    <Build Include="dbo\Tables\Plagas.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Plagas_Registrar.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Plagas_Listar.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Plagas_Grafica_Diaria.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Plagas_Grafica.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Plagas_Catalogo_Listar.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Torres_Listar.sql" />
-    <Build Include="dbo\Stored Procedures\sp_Torres_Disponibilidad_Listar.sql" />
-    <Build Include="dbo\Stored Procedures\sp_KPIs_Resumen.sql" />
-  </ItemGroup>
+	<PropertyGroup>
+		<Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+		<Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+		<Name>DB</Name>
+		<SchemaVersion>2.0</SchemaVersion>
+		<ProjectVersion>4.1</ProjectVersion>
+		<ProjectGuid>{6c8f7cb5-ccf4-48b3-83e3-4c777c9d67f9}</ProjectGuid>
+		<DSP>Microsoft.Data.Tools.Schema.Sql.Sql160DatabaseSchemaProvider</DSP>
+		<OutputType>Database</OutputType>
+		<RootPath>
+		</RootPath>
+		<RootNamespace>DB</RootNamespace>
+		<AssemblyName>DB</AssemblyName>
+		<ModelCollation>1033, CI</ModelCollation>
+		<DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
+		<DeployToDatabase>True</DeployToDatabase>
+		<TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+		<TargetLanguage>CS</TargetLanguage>
+		<AppDesignerFolder>Properties</AppDesignerFolder>
+		<SqlServerVerification>False</SqlServerVerification>
+		<IncludeCompositeObjects>True</IncludeCompositeObjects>
+		<TargetDatabaseSet>True</TargetDatabaseSet>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+		<OutputPath>bin\Release\</OutputPath>
+		<BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+		<TreatWarningsAsErrors>False</TreatWarningsAsErrors>
+		<DebugType>pdbonly</DebugType>
+		<Optimize>true</Optimize>
+		<DefineDebug>false</DefineDebug>
+		<DefineTrace>true</DefineTrace>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+		<OutputPath>bin\Debug\</OutputPath>
+		<BuildScriptName>$(MSBuildProjectName).sql</BuildScriptName>
+		<TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+		<DebugSymbols>true</DebugSymbols>
+		<DebugType>full</DebugType>
+		<Optimize>false</Optimize>
+		<DefineDebug>true</DefineDebug>
+		<DefineTrace>true</DefineTrace>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+	</PropertyGroup>
+	<PropertyGroup>
+		<VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+		<!-- Default to the v11.0 targets path if the targets file for the current VS version is not found -->
+		<SSDTExists Condition="Exists('$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets')">True</SSDTExists>
+		<VisualStudioVersion Condition="'$(SSDTExists)' == ''">11.0</VisualStudioVersion>
+	</PropertyGroup>
+	<Import Condition="'$(SQLDBExtensionsRefPath)' != ''" Project="$(SQLDBExtensionsRefPath)\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+	<Import Condition="'$(SQLDBExtensionsRefPath)' == ''" Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\SSDT\Microsoft.Data.Tools.Schema.SqlTasks.targets" />
+	<ItemGroup>
+		<Folder Include="Properties" />
+		<Folder Include="dbo\" />
+		<Folder Include="dbo\Tables\" />
+		<Folder Include="notif\" />
+		<Folder Include="notif\Tables\" />
+		<Folder Include="dbo\Stored Procedures\" />
+		<Folder Include="notif\Stored Procedures\" />
+		<Folder Include="Security\" />
+		<Folder Include="dbo\Functions\" />
+		<Folder Include="dbo\User Defined Types\" />
+	</ItemGroup>
+	<ItemGroup>
+		<Build Include="dbo\Tables\Ventas.sql" />
+		<Build Include="dbo\Tables\Variedades.sql" />
+		<Build Include="dbo\Tables\Unidades_Medida.sql" />
+		<Build Include="dbo\Tables\Ubicaciones.sql" />
+		<Build Include="dbo\Tables\Torres.sql" />
+		<Build Include="dbo\Tables\Tipos_Ubicacion.sql" />
+		<Build Include="dbo\Tables\Tipos_Movimiento.sql" />
+		<Build Include="dbo\Tables\Tipos_Entrega.sql" />
+		<Build Include="dbo\Tables\Tipos_Cultivo.sql" />
+		<Build Include="dbo\Tables\Tipos_Cliente.sql" />
+		<Build Include="dbo\Tables\Roles.sql" />
+		<Build Include="dbo\Tables\Productos.sql" />
+		<Build Include="dbo\Tables\Movimientos_Inventario.sql" />
+		<Build Include="dbo\Tables\Monitoreos.sql" />
+		<Build Include="dbo\Tables\Metodos_Pago.sql" />
+		<Build Include="dbo\Tables\Inventario_Actual.sql" />
+		<Build Include="dbo\Tables\Estados_Venta.sql" />
+		<Build Include="dbo\Tables\Estados_Pago.sql" />
+		<Build Include="dbo\Tables\Estados_Ciclo.sql" />
+		<Build Include="dbo\Tables\Estados_Calidad.sql" />
+		<Build Include="dbo\Tables\Empleados.sql" />
+		<Build Include="dbo\Tables\Direcciones_Clientes.sql" />
+		<Build Include="dbo\Tables\Detalle_Ventas.sql" />
+		<Build Include="dbo\Tables\Config_Sistema.sql" />
+		<Build Include="dbo\Tables\Clientes.sql" />
+		<Build Include="dbo\Tables\Ciclos.sql" />
+		<Build Include="dbo\Tables\Categorias.sql" />
+		<Build Include="notif\Tables\Alerta.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Venta_Crear.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Venta_AgregarDetalle_DescontarInventario.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Ciclo_RegistrarSiembra.sql" />
+		<Build Include="notif\Stored Procedures\sp_Alertas_StockBajo_GenerarYListar.sql" />
+		<Build Include="notif\Stored Procedures\sp_Alertas_ListarActivas.sql" />
+		<Build Include="notif\Stored Procedures\sp_Alertas_Badge.sql" />
+		<Build Include="notif\Stored Procedures\sp_Alertas_Aceptar.sql" />
+		<Build Include="Security\notif.sql" />
+		<Build Include="dbo\Tables\Tipos_Recurso.sql" />
+		<Build Include="dbo\Tables\Consumos.sql" />
+		<Build Include="dbo\Tables\Consumo_Version.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Consumos_ReporteDiario.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Consumos_ReporteComparativo.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Consumos_Listar.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Consumo_Registrar.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Consumo_Historial.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Consumo_Editar.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Ciclos_ListarActivos.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerVariedades.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerVariedad.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerTiposCultivo.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerTipoCultivo.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerProductos.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerProducto.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerCategorias.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerCategoria.sql" />
+		<Build Include="dbo\Stored Procedures\EliminarVariedad.sql" />
+		<Build Include="dbo\Stored Procedures\EliminarTipoCultivo.sql" />
+		<Build Include="dbo\Stored Procedures\EliminarProducto.sql" />
+		<Build Include="dbo\Stored Procedures\EliminarCategoria.sql" />
+		<Build Include="dbo\Stored Procedures\EditarVariedad.sql" />
+		<Build Include="dbo\Stored Procedures\EditarTipoCultivo.sql" />
+		<Build Include="dbo\Stored Procedures\EditarProducto.sql" />
+		<Build Include="dbo\Stored Procedures\EditarCategoria.sql" />
+		<Build Include="dbo\Stored Procedures\AgregarVariedad.sql" />
+		<Build Include="dbo\Stored Procedures\AgregarTipoCultivo.sql" />
+		<Build Include="dbo\Stored Procedures\AgregarProducto.sql" />
+		<Build Include="dbo\Stored Procedures\AgregarCategoria.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Ciclo_Cancelar.sql" />
+		<Build Include="dbo\Functions\fn_ValidarCodigoPostalCR.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerTiposCliente.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerTipoCliente.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerRoles.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerRol.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerMetodosPago.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerMetodoPago.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerEstadosPago.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerEstadoPago.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerEmpleados.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerEmpleado.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerDireccionesCliente.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerClientes.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerCliente.sql" />
+		<Build Include="dbo\Stored Procedures\EliminarTipoCliente.sql" />
+		<Build Include="dbo\Stored Procedures\EliminarRol.sql" />
+		<Build Include="dbo\Stored Procedures\EliminarMetodoPago.sql" />
+		<Build Include="dbo\Stored Procedures\EliminarEstadoPago.sql" />
+		<Build Include="dbo\Stored Procedures\EliminarDireccionCliente.sql" />
+		<Build Include="dbo\Stored Procedures\EditarTipoCliente.sql" />
+		<Build Include="dbo\Stored Procedures\EditarRol.sql" />
+		<Build Include="dbo\Stored Procedures\EditarMetodoPago.sql" />
+		<Build Include="dbo\Stored Procedures\EditarEstadoPago.sql" />
+		<Build Include="dbo\Stored Procedures\EditarEmpleado.sql" />
+		<Build Include="dbo\Stored Procedures\EditarDireccionCliente.sql" />
+		<Build Include="dbo\Stored Procedures\EditarCliente.sql" />
+		<Build Include="dbo\Stored Procedures\CambiarEstadoEmpleado.sql" />
+		<Build Include="dbo\Stored Procedures\AgregarTipoCliente.sql" />
+		<Build Include="dbo\Stored Procedures\AgregarRol.sql" />
+		<Build Include="dbo\Stored Procedures\AgregarMetodoPago.sql" />
+		<Build Include="dbo\Stored Procedures\AgregarEstadoPago.sql" />
+		<Build Include="dbo\Stored Procedures\AgregarEmpleado.sql" />
+		<Build Include="dbo\Stored Procedures\AgregarDireccionCliente.sql" />
+		<Build Include="dbo\Stored Procedures\AgregarCliente.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerVentas.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerVenta.sql" />
+		<Build Include="dbo\Stored Procedures\EliminarDetalleVenta.sql" />
+		<Build Include="dbo\Stored Procedures\CrearVenta.sql" />
+		<Build Include="dbo\Stored Procedures\ConfirmarPagoVenta.sql" />
+		<Build Include="dbo\Stored Procedures\CancelarVenta.sql" />
+		<Build Include="dbo\Stored Procedures\CambiarEstadoVenta.sql" />
+		<Build Include="dbo\Stored Procedures\AgregarDetalleVenta.sql" />
+		<Build Include="dbo\User Defined Types\TVP_DetalleVenta.sql" />
+		<Build Include="dbo\Functions\fn_ValidarCodigoPostalCR.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerTiposEntrega.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerTipoEntrega.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerEstadoVenta.sql" />
+		<Build Include="dbo\Stored Procedures\ObtenerEstadosVenta.sql" />
+		<Build Include="dbo\Stored Procedures\EliminarTipoEntrega.sql" />
+		<Build Include="dbo\Stored Procedures\EliminarEstadoVenta.sql" />
+		<Build Include="dbo\Stored Procedures\EditarTipoEntrega.sql" />
+		<Build Include="dbo\Stored Procedures\EditarEstadoVenta.sql" />
+		<Build Include="dbo\Stored Procedures\AgregarTipoEntrega.sql" />
+		<Build Include="dbo\Stored Procedures\AgregarEstadoVenta.sql" />
+		<Build Include="dbo\Stored Procedures\sp_InventarioActual_Obtener.sql" />
+		<Build Include="dbo\Stored Procedures\sp_InventarioActual_Listar.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Inventario_Movimientos_Listar.sql" />
+		<Build Include="dbo\Stored Procedures\sp_DireccionesCliente_Listar.sql" />
+		<Build Include="dbo\Stored Procedures\sp_DireccionCliente_Obtener.sql" />
+		<Build Include="dbo\Stored Procedures\sp_DireccionCliente_Crear.sql" />
+		<Build Include="dbo\Stored Procedures\sp_DireccionCliente_Actualizar.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Ciclo_Cosechar.sql" />
+		<Build Include="dbo\Tables\Proveedores_Saldo.sql" />
+		<Build Include="dbo\Tables\Proveedores_Pagos.sql" />
+		<Build Include="dbo\Tables\Proveedores.sql" />
+		<Build Include="dbo\Tables\Pagos_Proveedores.sql" />
+		<Build Include="dbo\Stored Procedures\sp_ProveedorSaldo_Actualizar.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Proveedores_PendientesPago.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Proveedores_ListarConSaldo.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Proveedor_RegistrarPago.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Proveedor_RegistrarCompraMonto.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Proveedor_Pagos_ListarPorProveedor.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Proveedor_Pagos_Listar.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Proveedor_Listar.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Proveedor_Editar.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Proveedor_Crear.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Proveedor_RegistrarCompraPorNombre.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Proveedor_ListarActivos.sql" />
+		<Build Include="dbo\Tables\Plagas_Registro.sql" />
+		<Build Include="dbo\Tables\Plagas.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Plagas_Registrar.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Plagas_Listar.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Plagas_Grafica_Diaria.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Plagas_Grafica.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Plagas_Catalogo_Listar.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Torres_Listar.sql" />
+		<Build Include="dbo\Stored Procedures\sp_Torres_Disponibilidad_Listar.sql" />
+		<Build Include="dbo\Tables\Compras_Plantas_Merma.sql" />
+		<Build Include="dbo\Tables\Compras_Plantas_Detalle.sql" />
+		<Build Include="dbo\Tables\Compras_Plantas.sql" />
+		<Build Include="dbo\Stored Procedures\sp_MargenesUtilidad_Listar.sql" />
+		<Build Include="dbo\Stored Procedures\sp_ComprasPlantasMerma_Registrar.sql" />
+		<Build Include="dbo\Stored Procedures\sp_ComprasPlantasDetalle_Registrar.sql" />
+		<Build Include="dbo\Stored Procedures\sp_ComprasPlantasDetalle_ObtenerParaMerma.sql" />
+		<Build Include="dbo\Stored Procedures\sp_ComprasPlantas_Registrar.sql" />
+		<Build Include="dbo\Stored Procedures\sp_KPIs_Resumen.sql" />
+	</ItemGroup>
 </Project>

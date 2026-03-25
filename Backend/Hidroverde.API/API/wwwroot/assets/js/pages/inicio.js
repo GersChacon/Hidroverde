@@ -4,24 +4,30 @@ import { $ } from "../lib/dom.js";
 let chartPlagasInicio = null;
 
 export async function init() {
-    // Navegación: usa botones del sidebar
-    const goTo = (page) =>
-        document.querySelector(`.nav button[data-page="${page}"]`)?.click();
+    // goTo dispara el click en el botón del sidebar
+    // Si el botón no existe (raro), usa un CustomEvent que app.js puede escuchar
+    const goTo = (page) => {
+        const btn = document.querySelector(`.nav button[data-page="${page}"]`);
+        if (btn) {
+            btn.click();
+        } else {
+            document.dispatchEvent(new CustomEvent("hidroverde:navigate", { detail: { page } }));
+        }
+    };
 
     $("#goCiclos")?.addEventListener("click", () => goTo("ciclos"));
     $("#goConsumos")?.addEventListener("click", () => goTo("consumos"));
     $("#goAlertas")?.addEventListener("click", () => goTo("alertas"));
+    // El badge de alertas también navega directamente a la página de alertas
+    const badge = document.getElementById("badgeAlertas");
+    if (badge) badge.addEventListener("click", () => goTo("alertas"));
     $("#goPlagas")?.addEventListener("click", (e) => {
         e.preventDefault();
         goTo("plagas");
     });
 
-    // Cargar KPIs primero
     cargarKpis().catch(console.error);
 
-    // ✅ FIX: esperar a que el canvas esté pintado en el DOM
-    // requestAnimationFrame garantiza que el browser hizo un render cycle completo
-    // antes de intentar inicializar Chart.js sobre el canvas
     requestAnimationFrame(() => {
         requestAnimationFrame(() => {
             cargarGraficoPlagasInicio().catch((err) => {
@@ -205,12 +211,10 @@ async function cargarGraficoPlagasInicio() {
         return {
             label: p,
             data: labels.map((d) => map.get(d) ?? 0),
-            tension: 0.35,
-            borderColor: COLORS[i % COLORS.length],
-            backgroundColor: COLORS[i % COLORS.length].replace(".9)", ".15)"),
-            fill: true,
-            pointRadius: 4,
-            pointHoverRadius: 6
+            backgroundColor: COLORS[i % COLORS.length],
+            borderColor: COLORS[i % COLORS.length].replace(".9)", "1)"),
+            borderWidth: 1,
+            borderRadius: 4
         };
     });
 
@@ -219,11 +223,24 @@ async function cargarGraficoPlagasInicio() {
         maintainAspectRatio: false,
         animation: false,
         resizeDelay: 100,
-        plugins: { legend: { position: "bottom" } },
-        scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+        plugins: {
+            legend: { position: "bottom" },
+            tooltip: {
+                callbacks: {
+                    footer: (items) => {
+                        const total = items.reduce((s, i) => s + i.parsed.y, 0);
+                        return `Total: ${total}`;
+                    }
+                }
+            }
+        },
+        scales: {
+            x: { stacked: true },
+            y: { stacked: true, beginAtZero: true, ticks: { precision: 0 } }
+        }
     };
 
-    const chartType = labels.length <= 1 ? "bar" : "line";
+    const chartType = "bar";
 
     // ✅ FIX: destruir instancia previa si existe (evita "Canvas already in use")
     if (chartPlagasInicio) {

@@ -9,17 +9,55 @@
         <button class="btn-primary" id="btnRefrescarAlertas" type="button">↺ Refrescar</button>
     </div>
 
-    <!-- Resumen badge -->
-    <div class="alertas-resumen" id="alertasResumen" style="display:none;">
-        <span class="alerta-badge-cnt" id="alertasCntActivas">0</span>
-        <span class="muted">alertas activas</span>
-    </div>
-
     <!-- Estado de carga -->
     <div class="muted" id="alertasStatus" style="margin-bottom:12px;">Cargando...</div>
 
+    <!-- Tarjetas resumen por severidad -->
+    <div class="alertas-summary-grid" id="alertasSummaryGrid" style="display:none;">
+        <div class="card alertas-summary-card summary-critica">
+            <div class="summary-icon">🔴</div>
+            <div class="summary-info">
+                <div class="summary-count" id="summaryCriticaCount">0</div>
+                <div class="summary-label">Críticas</div>
+                <div class="muted summary-hint">≤ 25% del mínimo</div>
+            </div>
+        </div>
+        <div class="card alertas-summary-card summary-warn">
+            <div class="summary-icon">🟡</div>
+            <div class="summary-info">
+                <div class="summary-count" id="summaryWarnCount">0</div>
+                <div class="summary-label">Advertencias</div>
+                <div class="muted summary-hint">26%–60% del mínimo</div>
+            </div>
+        </div>
+        <div class="card alertas-summary-card summary-ok">
+            <div class="summary-icon">🟢</div>
+            <div class="summary-info">
+                <div class="summary-count" id="summaryOkCount">0</div>
+                <div class="summary-label">Monitoreo</div>
+                <div class="muted summary-hint">&gt; 60% del mínimo</div>
+            </div>
+        </div>
+        <div class="card alertas-summary-card summary-total">
+            <div class="summary-icon">🔔</div>
+            <div class="summary-info">
+                <div class="summary-count" id="summaryTotalCount">0</div>
+                <div class="summary-label">Total activas</div>
+                <div class="muted summary-hint">Pendientes de revisión</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtros por severidad -->
+    <div class="alertas-filtros" id="alertasFiltros" style="display:none; margin-top:14px; margin-bottom:4px;">
+        <button class="filtro-btn active" data-filtro="todos" type="button">Todas</button>
+        <button class="filtro-btn" data-filtro="critica" type="button">🔴 Críticas</button>
+        <button class="filtro-btn" data-filtro="advertencia" type="button">🟡 Advertencias</button>
+        <button class="filtro-btn" data-filtro="ok" type="button">🟢 Monitoreo</button>
+    </div>
+
     <!-- Lista de alertas -->
-    <div id="alertasLista">
+    <div id="alertasLista" style="margin-top:12px;">
         <!-- Se llena con JS -->
     </div>
 
@@ -48,9 +86,13 @@
             <span class="muted">Mínimo:</span>
             <span id="modalMinimo">—</span>
         </div>
+        <div class="alerta-detail-row">
+            <span class="muted">Severidad:</span>
+            <span id="modalSeveridad">—</span>
+        </div>
         <div class="row" style="justify-content:flex-end; gap:10px; margin-top:16px;">
             <button class="btn-ghost" id="btnCancelarModal" type="button">Cancelar</button>
-            <button class="btn-primary" id="btnConfirmarAceptar" type="button">✔ Confirmar</button>
+            <button class="btn-primary" id="btnConfirmarAceptar" type="button">✔ Confirmar revisión</button>
         </div>
     </div>
 </div>

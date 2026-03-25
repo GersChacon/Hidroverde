@@ -1,28 +1,25 @@
-﻿const view = document.getElementById("view");
+const view = document.getElementById("view");
 const env = document.getElementById("env");
 const topTitle = document.getElementById("topTitle");
-const navButtons = document.querySelectorAll(".nav button[data-page]");
 
 env.textContent = window.location.origin;
 
 let currentPage = null;
 
 function setActive(page) {
-    navButtons.forEach(b => b.classList.toggle("active", b.dataset.page === page));
+    document.querySelectorAll(".nav button[data-page]")
+        .forEach(b => b.classList.toggle("active", b.dataset.page === page));
     topTitle.textContent = "Hidroverde · " + page.charAt(0).toUpperCase() + page.slice(1);
 }
 
 function setPageCss(page) {
-    // quitar css anterior si existe
     document.getElementById("pageCss")?.remove();
 
-    // agregar el css de esa página (si existe)
     const link = document.createElement("link");
     link.id = "pageCss";
     link.rel = "stylesheet";
     link.href = `/assets/css/pages/${page}.css?ts=${Date.now()}`;
 
-    // ✅ si no existe, no rompe
     link.onerror = () => {
         console.debug("No existe CSS para:", page);
         link.remove();
@@ -46,16 +43,13 @@ async function loadPage(page) {
 
     const html = await res.text();
 
-    // ✅ Si por alguna razón cambiaste de página mientras cargaba, no pisar
     if (currentPage !== page) return;
 
     view.innerHTML = html;
 
-    // carga el JS de la página si existe (ESM)
     try {
         const mod = await import(`/assets/js/pages/${page}.js?ts=${Date.now()}`);
 
-        // ✅ si cambiaste de página, no corras init
         if (currentPage !== page) return;
 
         if (mod?.init) mod.init();
@@ -64,7 +58,16 @@ async function loadPage(page) {
     }
 }
 
-navButtons.forEach(b => b.addEventListener("click", () => loadPage(b.dataset.page)));
+// ✅ Event delegation en el nav — captura clics en botones aunque se agreguen después
+document.querySelector(".nav").addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-page]");
+    if (btn) loadPage(btn.dataset.page);
+});
+
+// ✅ Escucha evento global de navegación (usado por páginas internas como inicio)
+document.addEventListener("hidroverde:navigate", (e) => {
+    if (e.detail?.page) loadPage(e.detail.page);
+});
 
 // inicial
 loadPage("inicio");

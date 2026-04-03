@@ -1,17 +1,13 @@
-﻿using Abstracciones.Interfaces.DA;
-using Abstracciones.Interfaces.Flujo;
-using DA;
-using DA.Repositorios;
 using Abstracciones.Interfaces.DA;
 using Abstracciones.Interfaces.Flujo;
 using DA;
+using DA.Repositorios;
 using Flujo;
-
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ── JSON ────────────────────────────────────────────────
 builder.Services.AddControllers()
     .AddJsonOptions(opts =>
     {
@@ -22,8 +18,26 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// ── CORS ────────────────────────────────────────────────
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins(
+                "http://localhost:5173",
+                "http://localhost:5174",
+                "http://localhost:3000"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
+
+// ── DI — Repositorio ────────────────────────────────────
 builder.Services.AddScoped<IRepositorioDapper, RepositorioDapper>();
 
+// ── DI — Flujo + DA ─────────────────────────────────────
 builder.Services.AddScoped<ITipoCultivoFlujo, TipoCultivoFlujo>();
 builder.Services.AddScoped<ITipoCultivoDA, TipoCultivoDA>();
 builder.Services.AddScoped<ICategoriaFlujo, CategoriaFlujo>();
@@ -38,14 +52,12 @@ builder.Services.AddScoped<IEstadoVentaDA, EstadoVentaDA>();
 builder.Services.AddScoped<IEstadoVentaFlujo, EstadoVentaFlujo>();
 builder.Services.AddScoped<ITipoEntregaDA, TipoEntregaDA>();
 builder.Services.AddScoped<ITipoEntregaFlujo, TipoEntregaFlujo>();
-
 builder.Services.AddScoped<ICiclosDA, CiclosDA>();
+builder.Services.AddScoped<ICiclosFlujo, CiclosFlujo>();
 builder.Services.AddScoped<ITiposRecursoDA, TiposRecursoDA>();
-builder.Services.AddScoped<IConsumosDA, ConsumosDA>();
+builder.Services.AddScoped<ITiposRecursoFlujo, TiposRecursoFlujo>();
 builder.Services.AddScoped<IConsumosDA, ConsumosDA>();
 builder.Services.AddScoped<IConsumosFlujo, ConsumosFlujo>();
-builder.Services.AddScoped<ICiclosFlujo, CiclosFlujo>();
-builder.Services.AddScoped<ITiposRecursoFlujo, TiposRecursoFlujo>();
 builder.Services.AddScoped<IInventarioDA, InventarioDA>();
 builder.Services.AddScoped<IInventarioFlujo, InventarioFlujo>();
 builder.Services.AddScoped<IProveedoresDA, ProveedoresDA>();
@@ -64,7 +76,6 @@ builder.Services.AddScoped<IClienteDA, ClienteDA>();
 builder.Services.AddScoped<IClienteFlujo, ClienteFlujo>();
 builder.Services.AddScoped<IVentaDA, VentaDA>();
 builder.Services.AddScoped<IVentaFlujo, VentaFlujo>();
-builder.Services.AddScoped<IProveedoresFlujo, ProveedoresFlujo>();
 builder.Services.AddScoped<IPlagasDA, PlagasDA>();
 builder.Services.AddScoped<IPlagasFlujo, PlagasFlujo>();
 builder.Services.AddScoped<ITorresDA, TorresDA>();
@@ -74,8 +85,8 @@ builder.Services.AddScoped<IComprasPlantasFlujo, ComprasPlantasFlujo>();
 builder.Services.AddScoped<IKpisDA, KpisDA>();
 builder.Services.AddScoped<IKpisFlujo, KpisFlujo>();
 
+Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
-Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true; // <-- aquí
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -86,11 +97,13 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseDefaultFiles(); // permite que / cargue index.html
-app.UseStaticFiles();  // habilita wwwroot
+// CORS debe ir antes de Authorization y MapControllers
+app.UseCors("AllowFrontend");
+
+app.UseDefaultFiles();
+app.UseStaticFiles();
 
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

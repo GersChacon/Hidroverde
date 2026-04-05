@@ -2,7 +2,7 @@ name: Publicar paquetes NuGet de Autorización
 
 on:
   push:
-    branches: [ "Gerson" ]
+    branches: [ "main" ]
     paths:
       - 'Seguridad/Seguridad.MiddlewareAutorizacion/**'
   workflow_dispatch:

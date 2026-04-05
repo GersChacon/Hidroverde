@@ -1,0 +1,89 @@
+name: Deploy Seguridad API to Azure
+
+env:
+  AZURE_WEBAPP_NAME: HidroverdeDigitalAPISeguridad
+  DOTNET_VERSION: '8.0'
+
+on:
+  push:
+    branches: [ "Gerson" ]
+    paths:
+      - 'Seguridad/Seguridad.API/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Configurar NuGet feed privado (GitHub Packages SC-701)
+        run: >
+          dotnet nuget add source
+          "https://nuget.pkg.github.com/GersChacon/index.json"
+          --name "Paquetes"
+          --username "${{ github.actor }}"
+          --password "${{ secrets.PAQUETESTOKEN }}"
+          --store-password-in-clear-text
+
+      - name: Restore dependencies
+        run: |
+          cd "Seguridad/Seguridad.API"
+          dotnet restore "Abstracciones/Abstracciones.csproj"
+          dotnet restore "DA/DA.csproj"
+          dotnet restore "Flujo/Flujo.csproj"
+          dotnet restore "Reglas/Reglas.csproj"
+          dotnet restore "Helpers/Helpers.csproj"
+          dotnet restore "API/API.csproj"
+
+      - name: Build
+        run: |
+          cd "Seguridad/Seguridad.API"
+          dotnet build "Abstracciones/Abstracciones.csproj" --configuration Release --no-restore
+          dotnet build "DA/DA.csproj"                       --configuration Release --no-restore
+          dotnet build "Flujo/Flujo.csproj"                 --configuration Release --no-restore
+          dotnet build "Reglas/Reglas.csproj"               --configuration Release --no-restore
+          dotnet build "Helpers/Helpers.csproj"             --configuration Release --no-restore
+          dotnet build "API/API.csproj"                     --configuration Release --no-restore
+
+      - name: Publish
+        run: dotnet publish "Seguridad/Seguridad.API/API/API.csproj" -c Release -o ./publish --no-restore
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: seguridad-api
+          path: ./publish
+
+  deploy:
+    permissions:
+      contents: none
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: seguridad-api
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          publish-profile: ${{ secrets.AZURE_APISEGURIDAD_PUBLISH_PROFILE }}
+          package: .

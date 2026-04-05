@@ -6,7 +6,7 @@ env:
 
 on:
   push:
-    branches: [ "Gerson" ]
+    branches: [ "main" ]
     paths:
       - 'Backend/Hidroverde.API/**'
       - '!Backend/Hidroverde.API/DB/**'
@@ -28,7 +28,7 @@ jobs:
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
-      - name: Configurar NuGet feed privado (GitHub Packages SC-701)
+      - name: Configurar NuGet feed privado (GitHub Packages)
         run: >
           dotnet nuget add source
           "https://nuget.pkg.github.com/GersChacon/index.json"

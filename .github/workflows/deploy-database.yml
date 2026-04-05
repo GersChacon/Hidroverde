@@ -1,0 +1,76 @@
+name: Deploy HidroverdeDigital Database to Azure SQL
+
+env:
+  AZURE_SQL_SERVER: gerschacondb.database.windows.net
+  AZURE_SQL_DATABASE: HidroverdeDigital
+  DACPAC_PATH: 'Backend/Hidroverde.API/DB/bin/Release/DB.dacpac'
+
+on:
+  push:
+    branches: [ "Gerson" ]
+    paths:
+      - 'Backend/Hidroverde.API/DB/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  build-and-deploy-database:
+    runs-on: windows-latest
+    environment:
+      name: 'Production-Database'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1
+
+      - name: Configurar NuGet feed privado (GitHub Packages SC-701)
+        run: |
+          nuget sources add `
+            -name "github" `
+            -source "https://nuget.pkg.github.com/GersChacon/index.json" `
+            -username ${{ github.actor }} `
+            -password ${{ secrets.GITHUB_TOKEN }} `
+            -StorePasswordInClearText
+        shell: powershell
+
+      - name: Restore NuGet packages
+        run: nuget restore "Backend/Hidroverde.API/Hidroverde.API.sln"
+
+      - name: Build Database Project
+        run: |
+          msbuild "Backend/Hidroverde.API/DB/DB.sqlproj" /p:Configuration=Release /p:Platform="Any CPU" /p:OutputPath="./bin/Release/"
+        shell: cmd
+
+      - name: Verify DACPAC file exists
+        run: |
+          if (Test-Path "${{ env.DACPAC_PATH }}") {
+            Write-Host "DACPAC found at ${{ env.DACPAC_PATH }}"
+            Get-Item "${{ env.DACPAC_PATH }}" | Format-List
+          } else {
+            Write-Error "DACPAC not found at ${{ env.DACPAC_PATH }}"
+            exit 1
+          }
+        shell: powershell
+
+      - name: Deploy to Azure SQL
+        uses: azure/sql-action@v2
+        with:
+          connection-string: ${{ secrets.AZURE_SQL_CONNECTION_STRING }}
+          path: ${{ env.DACPAC_PATH }}
+          action: 'publish'
+          arguments: '/p:DropObjectsNotInSource=false /p:BlockOnPossibleDataLoss=true /p:IgnoreRoleMembership=true'
+
+      - name: Deployment summary
+        run: |
+          Write-Host "Database deployment completed!"
+          Write-Host "Server:   ${{ env.AZURE_SQL_SERVER }}"
+          Write-Host "Database: ${{ env.AZURE_SQL_DATABASE }}"
+        shell: powershell

@@ -1,6 +1,5 @@
-CREATE TABLE [dbo].[Empleados] (
+﻿CREATE TABLE [dbo].[Empleados] (
     [empleado_id]        INT            IDENTITY (1, 1) NOT NULL,
-    [rol_id]             INT            NOT NULL,
     [cedula]             NVARCHAR (20)  NOT NULL,
     [nombre]             NVARCHAR (100) NOT NULL,
     [apellidos]          NVARCHAR (100) NOT NULL,
@@ -15,7 +14,6 @@ CREATE TABLE [dbo].[Empleados] (
     [estado]             NVARCHAR (20)  NOT NULL,
     CONSTRAINT [PK_Empleados] PRIMARY KEY CLUSTERED ([empleado_id] ASC),
     CONSTRAINT [CK_Empleados_Estado] CHECK ([estado]='LICENCIA' OR [estado]='VACACIONES' OR [estado]='INACTIVO' OR [estado]='ACTIVO'),
-    CONSTRAINT [FK_Empleados_Roles] FOREIGN KEY ([rol_id]) REFERENCES [dbo].[Roles] ([rol_id]),
     CONSTRAINT [UQ_Empleados_Cedula] UNIQUE NONCLUSTERED ([cedula] ASC),
     CONSTRAINT [UQ_Empleados_Email] UNIQUE NONCLUSTERED ([email] ASC),
     CONSTRAINT [UQ_Empleados_Usuario] UNIQUE NONCLUSTERED ([usuario_sistema] ASC)
@@ -24,9 +22,10 @@ CREATE TABLE [dbo].[Empleados] (
 
 
 
+
+
 GO
-CREATE NONCLUSTERED INDEX [IX_Empleados_RolId]
-    ON [dbo].[Empleados]([rol_id] ASC);
+
 
 
 GO

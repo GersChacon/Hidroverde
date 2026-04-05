@@ -7,7 +7,7 @@ env:
 
 on:
   push:
-    branches: [ "Gerson" ]
+    branches: [ "main" ]
     paths:
       - 'Backend/Hidroverde.API/DB/**'
   workflow_dispatch:
@@ -31,7 +31,7 @@ jobs:
       - name: Setup NuGet
         uses: NuGet/setup-nuget@v1
 
-      - name: Configurar NuGet feed privado (GitHub Packages SC-701)
+      - name: Configurar NuGet feed privado (GitHub Packages)
         run: |
           nuget sources add `
             -name "github" `

@@ -41,7 +41,7 @@ jobs:
           cd "Seguridad/Seguridad.MiddlewareAutorizacion"
           dotnet pack --configuration Release --no-build --output ./nupkgs
 
-      - name: Configurar fuente NuGet GitHub Packages SC-701
+      - name: Configurar fuente NuGet GitHub Packages
         run: >
           dotnet nuget add source
           "https://nuget.pkg.github.com/GersChacon/index.json"

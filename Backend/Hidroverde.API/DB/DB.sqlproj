@@ -233,5 +233,7 @@
     <Build Include="dbo\Tables\EmpleadoxRol.sql" />
     <Build Include="dbo\Stored Procedures\ObtenerRolesxEmpleadoLogin.sql" />
     <Build Include="dbo\Stored Procedures\ObtenerRolesxEmpleado.sql" />
+    <Build Include="dbo\Stored Procedures\RegistrarEmpleadoAuth.sql" />
+    <Build Include="dbo\Stored Procedures\ObtenerEmpleadoLogin.sql" />
   </ItemGroup>
 </Project>

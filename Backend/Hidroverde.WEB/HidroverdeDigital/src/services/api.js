@@ -1,16 +1,19 @@
 // Servicio central — campos mapeados desde los modelos C# reales
 
+const API_BASE = import.meta.env.VITE_API_URL ?? '';
+
 export function getEmpleadoId() {
   return localStorage.getItem("empleadoId") || "1";
 }
 
 export async function api(url, { method = "GET", body, cache = "no-store" } = {}) {
+  const fullUrl = url.startsWith("http") ? url : `${API_BASE}${url}`;
   const opts = { method, cache, headers: { "X-Empleado-Id": getEmpleadoId() } };
   if (body !== undefined) {
     opts.headers["Content-Type"] = "application/json";
     opts.body = JSON.stringify(body);
   }
-  const res = await fetch(url, opts);
+  const res = await fetch(fullUrl, opts);
   if (res.status === 204) return { ok: true, status: 204, data: null };
   const contentType = res.headers.get("content-type") || "";
   const payload = contentType.includes("application/json")
@@ -24,7 +27,8 @@ export async function api(url, { method = "GET", body, cache = "no-store" } = {}
 }
 
 export function exportUrl(path) {
-  return `${path}${path.includes("?") ? "&" : "?"}empleadoId=${getEmpleadoId()}`;
+  const base = import.meta.env.VITE_API_URL ?? '';
+  return `${base}${path}${path.includes("?") ? "&" : "?"}empleadoId=${getEmpleadoId()}`;
 }
 
 export const fmt = {

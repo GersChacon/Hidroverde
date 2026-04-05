@@ -14,6 +14,7 @@ using Autorizacion.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ── JWT ─────────────────────────────────────────────────
 var tokenConfiguration = builder.Configuration.GetSection("Token").Get<TokenConfiguracion>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -32,6 +33,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
+// ── JSON ────────────────────────────────────────────────
 builder.Services.AddControllers()
     .AddJsonOptions(opts =>
     {
@@ -42,6 +44,7 @@ builder.Services.AddControllers()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// ── CORS ────────────────────────────────────────────────
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -49,7 +52,8 @@ builder.Services.AddCors(options =>
         policy.WithOrigins(
                 "http://localhost:5173",
                 "http://localhost:5174",
-                "http://localhost:3000"
+                "http://localhost:3000",
+                "https://hidroverdedigitalweb-eqcbeab3e7a0eyf0.northcentralus-01.azurewebsites.net"
             )
             .AllowAnyHeader()
             .AllowAnyMethod()
@@ -57,13 +61,16 @@ builder.Services.AddCors(options =>
     });
 });
 
+// ── DI — Repositorio ────────────────────────────────────
 builder.Services.AddScoped<IRepositorioDapper, RepositorioDapper>();
 
-builder.Services.AddScoped<IEmpleadoAuthDA,   EmpleadoAuthDA>();
+// ── DI — Autenticación ──────────────────────────────────
+builder.Services.AddScoped<IEmpleadoAuthDA,    EmpleadoAuthDA>();
 builder.Services.AddScoped<IEmpleadoAuthFlujo, EmpleadoAuthFlujo>();
 builder.Services.AddScoped<IAutenticacionFlujo, AutenticacionFlujo>();
-builder.Services.AddScoped<IAutenticacionBC, AutenticacionReglas>();
+builder.Services.AddScoped<IAutenticacionBC,   AutenticacionReglas>();
 
+// ── DI — Middleware de autorización por roles ────────────
 builder.Services.AddTransient<Autorizacion.Abstracciones.Flujo.IAutorizacionFlujo,
                                Autorizacion.Flujo.AutorizacionFlujo>();
 builder.Services.AddTransient<Autorizacion.Abstracciones.DA.ISeguridadDA,
@@ -71,6 +78,7 @@ builder.Services.AddTransient<Autorizacion.Abstracciones.DA.ISeguridadDA,
 builder.Services.AddTransient<Autorizacion.Abstracciones.DA.IRepositorioDapper,
                                Autorizacion.DA.Repositorios.RepositorioDapper>();
 
+// ── DI — Flujo + DA ─────────────────────────────────────
 builder.Services.AddScoped<ITipoCultivoFlujo,     TipoCultivoFlujo>();
 builder.Services.AddScoped<ITipoCultivoDA,        TipoCultivoDA>();
 builder.Services.AddScoped<ICategoriaFlujo,       CategoriaFlujo>();

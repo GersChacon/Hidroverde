@@ -1,0 +1,21 @@
+﻿CREATE TABLE [dbo].[Empleados] (
+    [empleado_id]        INT            IDENTITY (1, 1) NOT NULL,
+    [cedula]             NVARCHAR (20)  NOT NULL,
+    [nombre]             NVARCHAR (100) NOT NULL,
+    [apellidos]          NVARCHAR (100) NOT NULL,
+    [telefono]           NVARCHAR (20)  NULL,
+    [email]              NVARCHAR (100) NOT NULL,
+    [fecha_nacimiento]   DATE           NULL,
+    [fecha_contratacion] DATE           NOT NULL,
+    [usuario_sistema]    NVARCHAR (50)  NULL,
+    [clave_hash]         NVARCHAR (255) NULL,
+    [activo]             BIT            CONSTRAINT [DF_Empleados_Activo] DEFAULT ((1)) NOT NULL,
+    [fecha_creacion]     DATETIME2 (0)  CONSTRAINT [DF_Empleados_FechaCreacion] DEFAULT (sysdatetime()) NOT NULL,
+    [estado]             NVARCHAR (20)  NOT NULL,
+    CONSTRAINT [PK_Empleados] PRIMARY KEY CLUSTERED ([empleado_id] ASC),
+    CONSTRAINT [CK_Empleados_Estado] CHECK ([estado]='LICENCIA' OR [estado]='VACACIONES' OR [estado]='INACTIVO' OR [estado]='ACTIVO'),
+    CONSTRAINT [UQ_Empleados_Cedula] UNIQUE NONCLUSTERED ([cedula] ASC),
+    CONSTRAINT [UQ_Empleados_Email] UNIQUE NONCLUSTERED ([email] ASC),
+    CONSTRAINT [UQ_Empleados_Usuario] UNIQUE NONCLUSTERED ([usuario_sistema] ASC)
+);
+

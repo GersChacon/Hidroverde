@@ -1,10 +1,10 @@
-﻿using Autorizacion.Abstracciones.Modelos;
+using Autorizacion.Abstracciones.Modelos;
 
 namespace Autorizacion.Abstracciones.Flujo
 {
     public interface IAutorizacionFlujo
     {
-        Task<Usuario> ObtenerUsuario(Usuario usuario);
-        Task<IEnumerable<Perfil>> ObtenerPerfilesxUsuario(Usuario usuario);
+        Task<Empleado> ObtenerEmpleado(Empleado empleado);
+        Task<IEnumerable<Rol>> ObtenerRolesxEmpleado(Empleado empleado);
     }
 }

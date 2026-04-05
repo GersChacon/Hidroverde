@@ -1,4 +1,4 @@
-﻿using Abstracciones.Interfaces.API;
+using Abstracciones.Interfaces.API;
 using Abstracciones.Interfaces.Flujo;
 using Abstracciones.Modelos;
 using Microsoft.AspNetCore.Mvc;
@@ -18,6 +18,29 @@ namespace API.Controllers
         {
             _empleadoFlujo = empleadoFlujo;
             _logger = logger;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Obtener()
+        {
+            var result = await _empleadoFlujo.Obtener();
+            return Ok(result);
+        }
+
+        [HttpGet("{empleadoId:int}")]
+        public async Task<IActionResult> Obtener(int empleadoId)
+        {
+            var result = await _empleadoFlujo.Obtener(empleadoId);
+            return result == null ? NotFound() : Ok(result);
+        }
+
+        // Equivalente a ObtenerPerfilesxUsuario de la referencia
+        // GET api/empleado/5/roles
+        [HttpGet("{empleadoId:int}/roles")]
+        public async Task<IActionResult> ObtenerRolesxEmpleado(int empleadoId)
+        {
+            var result = await _empleadoFlujo.ObtenerRolesxEmpleado(empleadoId);
+            return Ok(result);
         }
 
         [HttpPost]
@@ -52,20 +75,6 @@ namespace API.Controllers
 
             var result = await _empleadoFlujo.CambiarEstado(empleadoId, request.Estado);
             return Ok(result);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Obtener()
-        {
-            var result = await _empleadoFlujo.Obtener();
-            return Ok(result);
-        }
-
-        [HttpGet("{empleadoId:int}")]
-        public async Task<IActionResult> Obtener(int empleadoId)
-        {
-            var result = await _empleadoFlujo.Obtener(empleadoId);
-            return result == null ? NotFound() : Ok(result);
         }
     }
 }

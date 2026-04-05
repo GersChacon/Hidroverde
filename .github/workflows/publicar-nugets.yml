@@ -1,0 +1,59 @@
+name: Publicar paquetes NuGet de Autorización
+
+on:
+  push:
+    branches: [ "Gerson" ]
+    paths:
+      - 'Seguridad/Seguridad.MiddlewareAutorizacion/**'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0'
+
+      - name: Restaurar dependencias
+        run: |
+          cd "Seguridad/Seguridad.MiddlewareAutorizacion"
+          dotnet restore
+
+      - name: Compilar en Release
+        run: |
+          cd "Seguridad/Seguridad.MiddlewareAutorizacion"
+          dotnet build --configuration Release --no-restore
+
+      - name: Limpiar .nupkg anteriores
+        run: rm -f Seguridad/Seguridad.MiddlewareAutorizacion/nupkgs/*.nupkg
+
+      - name: Empaquetar (dotnet pack)
+        run: |
+          cd "Seguridad/Seguridad.MiddlewareAutorizacion"
+          dotnet pack --configuration Release --no-build --output ./nupkgs
+
+      - name: Configurar fuente NuGet GitHub Packages SC-701
+        run: >
+          dotnet nuget add source
+          "https://nuget.pkg.github.com/GersChacon/index.json"
+          --name "github"
+          --username ${{ github.actor }}
+          --password ${{ secrets.GITHUB_TOKEN }}
+          --store-password-in-clear-text
+
+      - name: Publicar en GitHub Packages
+        run: |
+          cd "Seguridad/Seguridad.MiddlewareAutorizacion"
+          dotnet nuget push ./nupkgs/*.nupkg \
+            --source "https://nuget.pkg.github.com/GersChacon/index.json" \
+            --api-key ${{ secrets.GITHUB_TOKEN }} \
+            --skip-duplicate

@@ -1,34 +1,36 @@
-﻿using Autorizacion.Abstracciones.DA;
+using Autorizacion.Abstracciones.DA;
 using Autorizacion.Abstracciones.Modelos;
 using Dapper;
+using System.Data;
 using System.Data.SqlClient;
-
 
 namespace Autorizacion.DA
 {
     public class SeguridadDA : ISeguridadDA
     {
-        IRepositorioDapper _repositorioDapper;
-        private SqlConnection _sqlConnection;
+        private readonly SqlConnection _sqlConnection;
 
         public SeguridadDA(IRepositorioDapper repositorioDapper)
         {
-            _repositorioDapper = repositorioDapper;
             _sqlConnection = repositorioDapper.ObtenerRepositorioDapper();
         }
 
-        public async Task<IEnumerable<Perfil>> ObtenerPerfilesxUsuario(Usuario usuario)
+        public async Task<Empleado> ObtenerInformacionEmpleado(Empleado empleado)
         {
-            string sql = @"[ObtenerPerfilesxUsuario]";
-            var resultado = await _sqlConnection.QueryAsync<Perfil>(sql, new { CorreoElectronico = usuario.CorreoElectronico, NombreUsuario = usuario.NombreUsuario });
-            return resultado;
+            var resultado = await _sqlConnection.QueryAsync<Empleado>(
+                "ObtenerEmpleadoLogin",
+                new { usuario_sistema = empleado.UsuarioSistema, email = empleado.Email },
+                commandType: CommandType.StoredProcedure);
+            return resultado.FirstOrDefault();
         }
 
-        public async Task<Usuario> ObtenerInformacionUsuario(Usuario usuario)
+        public async Task<IEnumerable<Rol>> ObtenerRolesxEmpleado(Empleado empleado)
         {
-            string sql = @"[ObtenerUsuario]";
-            var resultado = await _sqlConnection.QueryAsync<Usuario>(sql, new { CorreoElectronico = usuario.CorreoElectronico, NombreUsuario = usuario.NombreUsuario });
-            return resultado.FirstOrDefault();
+            var resultado = await _sqlConnection.QueryAsync<Rol>(
+                "ObtenerRolesxEmpleadoLogin",
+                new { usuario_sistema = empleado.UsuarioSistema },
+                commandType: CommandType.StoredProcedure);
+            return resultado;
         }
     }
 }

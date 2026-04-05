@@ -5,8 +5,8 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<Version>1.0.0</Version>
-		<PackageId>Autorizacion.Flujo.Gerson</PackageId>
-		<Authors>Gerson</Authors>
+		<PackageId>Autorizacion.Flujo.GersChacon</PackageId>
+		<Authors>GersChacon</Authors>
 		<Description>Lógica de negocio del paquete de autorización. Agrega perfiles del usuario como claims al ClaimsPrincipal</Description>
 		<RepositoryUrl>https://github.com/GersChacon/Hidroverde</RepositoryUrl>
 		<PackageReadmeFile>README.md</PackageReadmeFile>

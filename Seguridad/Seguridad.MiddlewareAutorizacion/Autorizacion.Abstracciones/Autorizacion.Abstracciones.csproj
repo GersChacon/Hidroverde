@@ -5,8 +5,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Version>1.0.0</Version>
-    <PackageId>Autorizacion.Abstracciones.Gerson</PackageId>
-    <Authors>Gerson</Authors>
+	<PackageId>Autorizacion.Abstracciones.GersChacon</PackageId>
+	<Authors>GersChacon</Authors>
     <Description>Interfaces y modelos compartidos del paquete de autorización por claims para ASP.NET Core 8</Description>
     <RepositoryUrl>https://github.com/GersChacon/Hidroverde</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>

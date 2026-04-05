@@ -1,4 +1,4 @@
-﻿using Abstracciones.Interfaces.DA;
+using Abstracciones.Interfaces.DA;
 using Abstracciones.Modelos;
 using Dapper;
 using Microsoft.Data.SqlClient;
@@ -18,28 +18,36 @@ namespace DA
         }
 
         public async Task<IEnumerable<EmpleadoResponse>> Obtener() =>
-            await _sqlConnection.QueryAsync<EmpleadoResponse>("ObtenerEmpleados", commandType: CommandType.StoredProcedure);
+            await _sqlConnection.QueryAsync<EmpleadoResponse>(
+                "ObtenerEmpleados", commandType: CommandType.StoredProcedure);
 
         public async Task<EmpleadoResponse> Obtener(int empleadoId) =>
             await _sqlConnection.QueryFirstOrDefaultAsync<EmpleadoResponse>(
-                "ObtenerEmpleado", new { empleado_id = empleadoId }, commandType: CommandType.StoredProcedure);
+                "ObtenerEmpleado", new { empleado_id = empleadoId },
+                commandType: CommandType.StoredProcedure);
+
+        // Equivalente a ObtenerPerfilesxUsuario de la referencia
+        public async Task<IEnumerable<RolResponse>> ObtenerRolesxEmpleado(int empleadoId) =>
+            await _sqlConnection.QueryAsync<RolResponse>(
+                "ObtenerRolesxEmpleado", new { empleado_id = empleadoId },
+                commandType: CommandType.StoredProcedure);
 
         public async Task<int> Agregar(EmpleadoRequest empleado) =>
             await _sqlConnection.ExecuteScalarAsync<int>("AgregarEmpleado",
                 new
                 {
-                    rol_id = empleado.RolId,
-                    cedula = empleado.Cedula,
-                    nombre = empleado.Nombre,
-                    apellidos = empleado.Apellidos,
-                    telefono = empleado.Telefono,
-                    email = empleado.Email,
-                    fecha_nacimiento = empleado.FechaNacimiento,
+                    rol_id             = empleado.RolId,
+                    cedula             = empleado.Cedula,
+                    nombre             = empleado.Nombre,
+                    apellidos          = empleado.Apellidos,
+                    telefono           = empleado.Telefono,
+                    email              = empleado.Email,
+                    fecha_nacimiento   = empleado.FechaNacimiento,
                     fecha_contratacion = empleado.FechaContratacion,
-                    usuario_sistema = empleado.UsuarioSistema,
-                    clave_hash = empleado.ClaveHash,
-                    activo = empleado.Activo,
-                    estado = empleado.Estado
+                    usuario_sistema    = empleado.UsuarioSistema,
+                    clave_hash         = empleado.ClaveHash,
+                    activo             = empleado.Activo,
+                    estado             = empleado.Estado
                 },
                 commandType: CommandType.StoredProcedure);
 
@@ -49,18 +57,18 @@ namespace DA
             return await _sqlConnection.ExecuteScalarAsync<int>("EditarEmpleado",
                 new
                 {
-                    empleado_id = empleadoId,
-                    rol_id = empleado.RolId,
-                    cedula = empleado.Cedula,
-                    nombre = empleado.Nombre,
-                    apellidos = empleado.Apellidos,
-                    telefono = empleado.Telefono,
-                    email = empleado.Email,
-                    fecha_nacimiento = empleado.FechaNacimiento,
+                    empleado_id        = empleadoId,
+                    rol_id             = empleado.RolId,
+                    cedula             = empleado.Cedula,
+                    nombre             = empleado.Nombre,
+                    apellidos          = empleado.Apellidos,
+                    telefono           = empleado.Telefono,
+                    email              = empleado.Email,
+                    fecha_nacimiento   = empleado.FechaNacimiento,
                     fecha_contratacion = empleado.FechaContratacion,
-                    usuario_sistema = empleado.UsuarioSistema,
-                    activo = empleado.Activo,
-                    estado = empleado.Estado
+                    usuario_sistema    = empleado.UsuarioSistema,
+                    activo             = empleado.Activo,
+                    estado             = empleado.Estado
                 },
                 commandType: CommandType.StoredProcedure);
         }

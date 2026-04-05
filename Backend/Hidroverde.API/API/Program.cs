@@ -1,24 +1,47 @@
 using Abstracciones.Interfaces.DA;
 using Abstracciones.Interfaces.Flujo;
+using Abstracciones.Interfaces.Reglas;
+using Abstracciones.Modelos;
 using DA;
 using DA.Repositorios;
 using Flujo;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Reglas;
+using System.Text;
 using System.Text.Json;
+using Autorizacion.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ── JSON ────────────────────────────────────────────────
+var tokenConfiguration = builder.Configuration.GetSection("Token").Get<TokenConfiguracion>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer           = true,
+            ValidateAudience         = true,
+            ValidateLifetime         = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer              = tokenConfiguration.Issuer,
+            ValidAudience            = tokenConfiguration.Audience,
+            IssuerSigningKey         = new SymmetricSecurityKey(
+                                           Encoding.UTF8.GetBytes(tokenConfiguration.key))
+        };
+    });
+
 builder.Services.AddControllers()
     .AddJsonOptions(opts =>
     {
-        opts.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        opts.JsonSerializerOptions.PropertyNamingPolicy        = JsonNamingPolicy.CamelCase;
         opts.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
     });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// ── CORS ────────────────────────────────────────────────
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -34,56 +57,66 @@ builder.Services.AddCors(options =>
     });
 });
 
-// ── DI — Repositorio ────────────────────────────────────
 builder.Services.AddScoped<IRepositorioDapper, RepositorioDapper>();
 
-// ── DI — Flujo + DA ─────────────────────────────────────
-builder.Services.AddScoped<ITipoCultivoFlujo, TipoCultivoFlujo>();
-builder.Services.AddScoped<ITipoCultivoDA, TipoCultivoDA>();
-builder.Services.AddScoped<ICategoriaFlujo, CategoriaFlujo>();
-builder.Services.AddScoped<ICategoriaDA, CategoriaDA>();
-builder.Services.AddScoped<IVariedadFlujo, VariedadFlujo>();
-builder.Services.AddScoped<IVariedadDA, VariedadDA>();
-builder.Services.AddScoped<IProductoFlujo, ProductoFlujo>();
-builder.Services.AddScoped<IProductoDA, ProductoDA>();
-builder.Services.AddScoped<IAlertasDA, AlertasDA>();
-builder.Services.AddScoped<IAlertasFlujo, AlertasFlujo>();
-builder.Services.AddScoped<IEstadoVentaDA, EstadoVentaDA>();
-builder.Services.AddScoped<IEstadoVentaFlujo, EstadoVentaFlujo>();
-builder.Services.AddScoped<ITipoEntregaDA, TipoEntregaDA>();
-builder.Services.AddScoped<ITipoEntregaFlujo, TipoEntregaFlujo>();
-builder.Services.AddScoped<ICiclosDA, CiclosDA>();
-builder.Services.AddScoped<ICiclosFlujo, CiclosFlujo>();
-builder.Services.AddScoped<ITiposRecursoDA, TiposRecursoDA>();
-builder.Services.AddScoped<ITiposRecursoFlujo, TiposRecursoFlujo>();
-builder.Services.AddScoped<IConsumosDA, ConsumosDA>();
-builder.Services.AddScoped<IConsumosFlujo, ConsumosFlujo>();
-builder.Services.AddScoped<IInventarioDA, InventarioDA>();
-builder.Services.AddScoped<IInventarioFlujo, InventarioFlujo>();
-builder.Services.AddScoped<IProveedoresDA, ProveedoresDA>();
-builder.Services.AddScoped<IProveedoresFlujo, ProveedoresFlujo>();
-builder.Services.AddScoped<IMetodoPagoDA, MetodoPagoDA>();
-builder.Services.AddScoped<IMetodoPagoFlujo, MetodoPagoFlujo>();
-builder.Services.AddScoped<IRolDA, RolDA>();
-builder.Services.AddScoped<IRolFlujo, RolFlujo>();
-builder.Services.AddScoped<ITipoClienteDA, TipoClienteDA>();
-builder.Services.AddScoped<ITipoClienteFlujo, TipoClienteFlujo>();
-builder.Services.AddScoped<IEstadoPagoDA, EstadoPagoDA>();
-builder.Services.AddScoped<IEstadoPagoFlujo, EstadoPagoFlujo>();
-builder.Services.AddScoped<IEmpleadoDA, EmpleadoDA>();
-builder.Services.AddScoped<IEmpleadoFlujo, EmpleadoFlujo>();
-builder.Services.AddScoped<IClienteDA, ClienteDA>();
-builder.Services.AddScoped<IClienteFlujo, ClienteFlujo>();
-builder.Services.AddScoped<IVentaDA, VentaDA>();
-builder.Services.AddScoped<IVentaFlujo, VentaFlujo>();
-builder.Services.AddScoped<IPlagasDA, PlagasDA>();
-builder.Services.AddScoped<IPlagasFlujo, PlagasFlujo>();
-builder.Services.AddScoped<ITorresDA, TorresDA>();
-builder.Services.AddScoped<ITorresFlujo, TorresFlujo>();
-builder.Services.AddScoped<IComprasPlantasDA, ComprasPlantasDA>();
-builder.Services.AddScoped<IComprasPlantasFlujo, ComprasPlantasFlujo>();
-builder.Services.AddScoped<IKpisDA, KpisDA>();
-builder.Services.AddScoped<IKpisFlujo, KpisFlujo>();
+builder.Services.AddScoped<IEmpleadoAuthDA,   EmpleadoAuthDA>();
+builder.Services.AddScoped<IEmpleadoAuthFlujo, EmpleadoAuthFlujo>();
+builder.Services.AddScoped<IAutenticacionFlujo, AutenticacionFlujo>();
+builder.Services.AddScoped<IAutenticacionBC, AutenticacionReglas>();
+
+builder.Services.AddTransient<Autorizacion.Abstracciones.Flujo.IAutorizacionFlujo,
+                               Autorizacion.Flujo.AutorizacionFlujo>();
+builder.Services.AddTransient<Autorizacion.Abstracciones.DA.ISeguridadDA,
+                               Autorizacion.DA.SeguridadDA>();
+builder.Services.AddTransient<Autorizacion.Abstracciones.DA.IRepositorioDapper,
+                               Autorizacion.DA.Repositorios.RepositorioDapper>();
+
+builder.Services.AddScoped<ITipoCultivoFlujo,     TipoCultivoFlujo>();
+builder.Services.AddScoped<ITipoCultivoDA,        TipoCultivoDA>();
+builder.Services.AddScoped<ICategoriaFlujo,       CategoriaFlujo>();
+builder.Services.AddScoped<ICategoriaDA,          CategoriaDA>();
+builder.Services.AddScoped<IVariedadFlujo,        VariedadFlujo>();
+builder.Services.AddScoped<IVariedadDA,           VariedadDA>();
+builder.Services.AddScoped<IProductoFlujo,        ProductoFlujo>();
+builder.Services.AddScoped<IProductoDA,           ProductoDA>();
+builder.Services.AddScoped<IAlertasDA,            AlertasDA>();
+builder.Services.AddScoped<IAlertasFlujo,         AlertasFlujo>();
+builder.Services.AddScoped<IEstadoVentaDA,        EstadoVentaDA>();
+builder.Services.AddScoped<IEstadoVentaFlujo,     EstadoVentaFlujo>();
+builder.Services.AddScoped<ITipoEntregaDA,        TipoEntregaDA>();
+builder.Services.AddScoped<ITipoEntregaFlujo,     TipoEntregaFlujo>();
+builder.Services.AddScoped<ICiclosDA,             CiclosDA>();
+builder.Services.AddScoped<ICiclosFlujo,          CiclosFlujo>();
+builder.Services.AddScoped<ITiposRecursoDA,       TiposRecursoDA>();
+builder.Services.AddScoped<ITiposRecursoFlujo,    TiposRecursoFlujo>();
+builder.Services.AddScoped<IConsumosDA,           ConsumosDA>();
+builder.Services.AddScoped<IConsumosFlujo,        ConsumosFlujo>();
+builder.Services.AddScoped<IInventarioDA,         InventarioDA>();
+builder.Services.AddScoped<IInventarioFlujo,      InventarioFlujo>();
+builder.Services.AddScoped<IProveedoresDA,        ProveedoresDA>();
+builder.Services.AddScoped<IProveedoresFlujo,     ProveedoresFlujo>();
+builder.Services.AddScoped<IMetodoPagoDA,         MetodoPagoDA>();
+builder.Services.AddScoped<IMetodoPagoFlujo,      MetodoPagoFlujo>();
+builder.Services.AddScoped<IRolDA,                RolDA>();
+builder.Services.AddScoped<IRolFlujo,             RolFlujo>();
+builder.Services.AddScoped<ITipoClienteDA,        TipoClienteDA>();
+builder.Services.AddScoped<ITipoClienteFlujo,     TipoClienteFlujo>();
+builder.Services.AddScoped<IEstadoPagoDA,         EstadoPagoDA>();
+builder.Services.AddScoped<IEstadoPagoFlujo,      EstadoPagoFlujo>();
+builder.Services.AddScoped<IEmpleadoDA,           EmpleadoDA>();
+builder.Services.AddScoped<IEmpleadoFlujo,        EmpleadoFlujo>();
+builder.Services.AddScoped<IClienteDA,            ClienteDA>();
+builder.Services.AddScoped<IClienteFlujo,         ClienteFlujo>();
+builder.Services.AddScoped<IVentaDA,              VentaDA>();
+builder.Services.AddScoped<IVentaFlujo,           VentaFlujo>();
+builder.Services.AddScoped<IPlagasDA,             PlagasDA>();
+builder.Services.AddScoped<IPlagasFlujo,          PlagasFlujo>();
+builder.Services.AddScoped<ITorresDA,             TorresDA>();
+builder.Services.AddScoped<ITorresFlujo,          TorresFlujo>();
+builder.Services.AddScoped<IComprasPlantasDA,     ComprasPlantasDA>();
+builder.Services.AddScoped<IComprasPlantasFlujo,  ComprasPlantasFlujo>();
+builder.Services.AddScoped<IKpisDA,               KpisDA>();
+builder.Services.AddScoped<IKpisFlujo,            KpisFlujo>();
 
 Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
@@ -96,14 +129,13 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-// CORS debe ir antes de Authorization y MapControllers
 app.UseCors("AllowFrontend");
-
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
+app.UseAuthentication();
+app.AutorizacionClaims();
 app.UseAuthorization();
-app.MapControllers();
 
+app.MapControllers();
 app.Run();

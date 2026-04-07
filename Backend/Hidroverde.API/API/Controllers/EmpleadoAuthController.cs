@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
-    // Equivalente a UsuarioController de la referencia
-    // Registro y consulta de credenciales de empleado
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
@@ -20,8 +18,6 @@ namespace API.Controllers
             _empleadoAuthFlujo = empleadoAuthFlujo;
         }
 
-        // Solo el rol ADMIN (rol_id = 1) puede consultar info de un empleado
-        // Equivalente a [Authorize(Roles = "1")] de la referencia
         [Authorize(Roles = "1")]
         [HttpPost("ObtenerInformacionEmpleado")]
         public async Task<IActionResult> ObtenerEmpleadoAuth([FromBody] EmpleadoAuthBase empleado)
@@ -29,8 +25,6 @@ namespace API.Controllers
             return Ok(await _empleadoAuthFlujo.ObtenerEmpleadoAuth(empleado));
         }
 
-        // Permite al empleado registrar/actualizar su usuario_sistema y clave
-        // Equivalente a RegistrarUsuario de la referencia
         [AllowAnonymous]
         [HttpPost("RegistrarEmpleado")]
         public async Task<IActionResult> PostAsync([FromBody] EmpleadoAuthBase empleado)

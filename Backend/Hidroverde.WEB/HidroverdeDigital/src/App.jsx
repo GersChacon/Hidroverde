@@ -1,5 +1,8 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Layout from "./components/Layout";
+import Layout         from "./components/Layout";
+import RutaProtegida  from "./components/RutaProtegida";
+import Login          from "./pages/Login";
+import Registro       from "./pages/Registro";
 import Inicio         from "./pages/Inicio";
 import Alertas        from "./pages/Alertas";
 import Ciclos         from "./pages/Ciclos";
@@ -18,7 +21,19 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route element={<Layout />}>
+
+        {/* Rutas públicas */}
+        <Route path="/login"    element={<Login />} />
+        <Route path="/registro" element={<Registro />} />
+
+        {/* Rutas protegidas */}
+        <Route
+          element={
+            <RutaProtegida>
+              <Layout />
+            </RutaProtegida>
+          }
+        >
           <Route path="/"                index element={<Inicio />} />
           <Route path="/alertas"         element={<Alertas />} />
           <Route path="/ciclos"          element={<Ciclos />} />
@@ -34,6 +49,7 @@ export default function App() {
           <Route path="/empleados"       element={<Empleados />} />
           <Route path="*"               element={<Navigate to="/" replace />} />
         </Route>
+
       </Routes>
     </BrowserRouter>
   );

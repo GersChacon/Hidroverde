@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { cerrarSesion } from "../services/auth";
 
 const NAV_SECTIONS = [
   {
     title: "Principal",
     items: [
-      { to: "/",           label: "Inicio",      icon: "🏠" },
-      { to: "/alertas",    label: "Alertas",     icon: "🔔" },
-      { to: "/kpis",       label: "KPIs",        icon: "🎯" },
+      { to: "/",        label: "Inicio",  icon: "🏠" },
+      { to: "/alertas", label: "Alertas", icon: "🔔" },
+      { to: "/kpis",    label: "KPIs",    icon: "🎯" },
     ],
   },
   {
@@ -38,24 +39,24 @@ const NAV_SECTIONS = [
 ];
 
 const ALL_ITEMS = NAV_SECTIONS.flatMap(s => s.items);
-
-const PAGE_TITLES = Object.fromEntries(
-  ALL_ITEMS.map(i => [i.to, i.label])
-);
+const PAGE_TITLES = Object.fromEntries(ALL_ITEMS.map(i => [i.to, i.label]));
 
 export default function Layout() {
   const { pathname } = useLocation();
-  const title = PAGE_TITLES[pathname] ?? "Hidroverde";
+  const navigate     = useNavigate();
+  const title        = PAGE_TITLES[pathname] ?? "Hidroverde";
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  // Close mobile sidebar on route change
   useEffect(() => { setMobileOpen(false); }, [pathname]);
-
-  // Lock body scroll when mobile sidebar is open
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
+
+  function handleLogout() {
+    cerrarSesion();
+    navigate("/login", { replace: true });
+  }
 
   const sidebarContent = (
     <>
@@ -74,10 +75,9 @@ export default function Layout() {
         </div>
       </div>
 
-      {/* Divider */}
       <div className="mx-4 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }} />
 
-      {/* Nav sections */}
+      {/* Nav */}
       <nav className="flex-1 flex flex-col gap-1 px-3 py-3 overflow-y-auto">
         {NAV_SECTIONS.map((section) => (
           <div key={section.title} className="mb-1">
@@ -106,7 +106,7 @@ export default function Layout() {
         ))}
       </nav>
 
-      {/* Footer */}
+      {/* Footer sidebar */}
       <div className="px-3 pb-4 shrink-0">
         <div className="mx-1 border-t mb-3" style={{ borderColor: "rgba(255,255,255,0.06)" }} />
         <a
@@ -159,6 +159,7 @@ export default function Layout() {
 
       {/* Main area */}
       <div className="md:ml-[260px] flex-1 flex flex-col min-h-screen">
+
         {/* Topbar */}
         <header
           className="sticky top-0 z-10 flex items-center justify-between px-4 md:px-6 h-14"
@@ -169,7 +170,7 @@ export default function Layout() {
           }}
         >
           <div className="flex items-center gap-3">
-            {/* Hamburger — mobile only */}
+            {/* Hamburger mobile */}
             <button
               onClick={() => setMobileOpen(true)}
               className="md:hidden w-9 h-9 flex items-center justify-center rounded-xl
@@ -192,16 +193,33 @@ export default function Layout() {
             </div>
           </div>
 
+          {/* Derecha del topbar — avatar + cerrar sesión */}
           <div className="flex items-center gap-2">
             <span className="text-[11px] text-gray-300 font-mono hidden lg:inline">
               {window.location.origin}
             </span>
+
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black text-green-700"
               style={{ background: "linear-gradient(135deg, #dcfce7, #bbf7d0)" }}
             >
               HV
             </div>
+
+            {/* Botón cerrar sesión */}
+            <button
+              onClick={handleLogout}
+              title="Cerrar sesión"
+              className="w-8 h-8 flex items-center justify-center rounded-xl
+                         hover:bg-red-50 text-gray-400 hover:text-red-500
+                         transition-colors"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+            </button>
           </div>
         </header>
 

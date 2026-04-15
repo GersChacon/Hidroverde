@@ -60,12 +60,23 @@ namespace Reglas
 
         private async Task<List<Claim>> GenerarClaims()
         {
-            return new List<Claim>
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, _empleado.EmpleadoId.ToString()),
                 new Claim(ClaimTypes.Name,            _empleado.UsuarioSistema),
                 new Claim(ClaimTypes.Email,           _empleado.Email)
             };
+
+            // Agregar roles del empleado como claims
+            var roles = await _empleadoAuthDA.ObtenerRolesxEmpleado(
+                new EmpleadoAuthBase { UsuarioSistema = _empleado.UsuarioSistema });
+
+            foreach (var rol in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, rol.Codigo));
+            }
+
+            return claims;
         }
     }
 }

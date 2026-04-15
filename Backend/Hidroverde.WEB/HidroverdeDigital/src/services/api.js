@@ -1,4 +1,3 @@
-// Servicio central — campos mapeados desde los modelos C# reales
 import { getToken } from "./auth";
 
 const API_BASE = import.meta.env.VITE_API_URL ?? "";

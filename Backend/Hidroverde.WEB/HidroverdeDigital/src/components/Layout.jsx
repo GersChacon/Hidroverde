@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { cerrarSesion } from "../services/auth";
+import { cerrarSesion, tieneRol, getUsuario } from "../services/auth";
 
 const NAV_SECTIONS = [
   {
@@ -8,35 +8,46 @@ const NAV_SECTIONS = [
     items: [
       { to: "/",        label: "Inicio",  icon: "🏠" },
       { to: "/alertas", label: "Alertas", icon: "🔔" },
-      { to: "/kpis",    label: "KPIs",    icon: "🎯" },
+      { to: "/kpis",    label: "KPIs",    icon: "🎯", roles: ["SUPERVISOR", "ADMIN"] },
     ],
   },
   {
     title: "Producción",
     items: [
-      { to: "/ciclos",          label: "Ciclos",              icon: "🌱" },
-      { to: "/inventario",      label: "Registro inventario", icon: "📦" },
-      { to: "/inventario-real", label: "Inventario",          icon: "📊" },
-      { to: "/consumos",        label: "Consumos",            icon: "💧" },
-      { to: "/plagas",          label: "Plagas",              icon: "🐛" },
+      { to: "/ciclos",          label: "Ciclos",              icon: "🌱", roles: ["OPERARIO", "SUPERVISOR", "ADMIN"] },
+      { to: "/inventario",      label: "Registro inventario", icon: "📦", roles: ["OPERARIO", "SUPERVISOR", "ADMIN"] },
+      { to: "/inventario-real", label: "Inventario",          icon: "📊", roles: ["OPERARIO", "SUPERVISOR", "ADMIN"] },
+      { to: "/consumos",        label: "Consumos",            icon: "💧", roles: ["OPERARIO", "SUPERVISOR", "ADMIN"] },
+      { to: "/plagas",          label: "Plagas",              icon: "🐛", roles: ["OPERARIO", "SUPERVISOR", "ADMIN"] },
     ],
   },
   {
     title: "Comercial",
     items: [
-      { to: "/ventas",      label: "Ventas",      icon: "💰" },
-      { to: "/clientes",    label: "Clientes",    icon: "👥" },
-      { to: "/proveedores", label: "Proveedores", icon: "🏢" },
-      { to: "/margenes",    label: "Márgenes",    icon: "📈" },
+      { to: "/ventas",      label: "Ventas",      icon: "💰", roles: ["VENTAS", "SUPERVISOR", "ADMIN"] },
+      { to: "/clientes",    label: "Clientes",    icon: "👥", roles: ["VENTAS", "SUPERVISOR", "ADMIN"] },
+      { to: "/proveedores", label: "Proveedores", icon: "🏢", roles: ["VENTAS", "SUPERVISOR", "ADMIN"] },
+      { to: "/margenes",    label: "Márgenes",    icon: "📈", roles: ["SUPERVISOR", "ADMIN"] },
     ],
   },
   {
     title: "Administración",
     items: [
-      { to: "/empleados", label: "Empleados", icon: "🧑‍💼" },
+      { to: "/empleados", label: "Empleados", icon: "🧑‍💼", roles: ["ADMIN"] },
     ],
   },
 ];
+
+function filtrarSecciones() {
+  return NAV_SECTIONS
+    .map(section => ({
+      ...section,
+      items: section.items.filter(item =>
+        !item.roles || tieneRol(...item.roles)
+      ),
+    }))
+    .filter(section => section.items.length > 0);
+}
 
 const ALL_ITEMS = NAV_SECTIONS.flatMap(s => s.items);
 const PAGE_TITLES = Object.fromEntries(ALL_ITEMS.map(i => [i.to, i.label]));
@@ -46,6 +57,9 @@ export default function Layout() {
   const navigate     = useNavigate();
   const title        = PAGE_TITLES[pathname] ?? "Hidroverde";
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navSections = filtrarSecciones();
+  const usuario = getUsuario();
 
   useEffect(() => { setMobileOpen(false); }, [pathname]);
   useEffect(() => {
@@ -79,7 +93,7 @@ export default function Layout() {
 
       {/* Nav */}
       <nav className="flex-1 flex flex-col gap-1 px-3 py-3 overflow-y-auto">
-        {NAV_SECTIONS.map((section) => (
+        {navSections.map((section) => (
           <div key={section.title} className="mb-1">
             <div
               className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest"
@@ -193,17 +207,19 @@ export default function Layout() {
             </div>
           </div>
 
-          {/* Derecha del topbar — avatar + cerrar sesión */}
+          {/* Derecha del topbar — usuario + cerrar sesión */}
           <div className="flex items-center gap-2">
-            <span className="text-[11px] text-gray-300 font-mono hidden lg:inline">
-              {window.location.origin}
-            </span>
+            {usuario && (
+              <span className="text-[11px] text-gray-400 font-mono hidden lg:inline">
+                {usuario}
+              </span>
+            )}
 
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-black text-green-700"
               style={{ background: "linear-gradient(135deg, #dcfce7, #bbf7d0)" }}
             >
-              HV
+              {usuario ? usuario.slice(0, 2).toUpperCase() : "HV"}
             </div>
 
             {/* Botón cerrar sesión */}

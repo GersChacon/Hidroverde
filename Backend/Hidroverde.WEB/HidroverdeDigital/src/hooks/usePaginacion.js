@@ -6,8 +6,6 @@ export function usePaginacion(items = [], porPagina = POR_PAGINA) {
   const [pagina, setPagina] = useState(1);
 
   const totalPaginas = Math.max(1, Math.ceil(items.length / porPagina));
-
-  // Reset a página 1 si los items cambian y la página actual queda fuera de rango
   const paginaActual = Math.min(pagina, totalPaginas);
 
   const paginados = useMemo(() => {

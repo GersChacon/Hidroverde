@@ -1,9 +1,7 @@
-// Servicio de autenticación — SHA256 + token + sesión
 
 const TOKEN_KEY    = "hv_token";
 const EMPLEADO_KEY = "empleadoId";
 
-// ── SHA256 (Web Crypto API — nativo en todos los browsers modernos) ──
 export async function sha256(texto) {
   const encoder = new TextEncoder();
   const data    = encoder.encode(texto);
@@ -13,7 +11,6 @@ export async function sha256(texto) {
     .join("");
 }
 
-// ── Sesión ───────────────────────────────────────────────────────────
 export function guardarSesion(token, empleadoId) {
   localStorage.setItem(TOKEN_KEY,    token);
   localStorage.setItem(EMPLEADO_KEY, String(empleadoId));
@@ -37,4 +34,38 @@ export function estaAutenticado() {
   } catch {
     return false;
   }
+}
+
+export function getPayload() {
+  const token = getToken();
+  if (!token) return null;
+  try {
+    return JSON.parse(atob(token.split(".")[1]));
+  } catch {
+    return null;
+  }
+}
+
+export function getRoles() {
+  const payload = getPayload();
+  if (!payload) return [];
+  const rolClaim =
+    payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] ??
+    payload.role ??
+    payload.roles ??
+    [];
+  return Array.isArray(rolClaim) ? rolClaim : [rolClaim];
+}
+
+export function tieneRol(...rolesRequeridos) {
+  if (!rolesRequeridos.length) return true;
+  const misRoles = getRoles();
+  return rolesRequeridos.some(r => misRoles.includes(r));
+}
+
+export function getUsuario() {
+  const payload = getPayload();
+  return payload?.[
+    "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"
+  ] ?? payload?.unique_name ?? payload?.name ?? "";
 }

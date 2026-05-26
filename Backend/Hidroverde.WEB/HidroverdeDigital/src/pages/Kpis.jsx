@@ -6,6 +6,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { api, fmt } from "../services/api";
 import { useChartJs } from "../hooks/useChartJs";
+import { useToast } from "../components/Toast";
 import Spinner from "../components/Spinner";
 
 const METAS_KEY = "hidroverde_metas";
@@ -41,6 +42,7 @@ const BAR_COLORS = {
 };
 
 export default function Kpis() {
+  const toast = useToast();
   const [periodo, setPeriodo]   = useState("mes_actual");
   const [loading, setLoading]   = useState(true);
   const [totales, setTotales]   = useState({});    // { cosechas: N, ventas: N, consumos: N }
@@ -144,7 +146,7 @@ export default function Kpis() {
   function guardarMetas() {
     localStorage.setItem(METAS_KEY, JSON.stringify(metasForm));
     setMetas({ ...metasForm });
-    alert("Metas guardadas ✓");
+    toast.success("Metas guardadas correctamente.");
   }
 
   const pct = (kpiKey) => {

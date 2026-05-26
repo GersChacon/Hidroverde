@@ -8,6 +8,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { api, fmt } from "../services/api";
 import { usePaginacion } from "../hooks/usePaginacion";
+import { useToast } from "../components/Toast";
+import { useConfirm } from "../components/ConfirmDialog";
 import Modal from "../components/Modal";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
@@ -179,6 +181,8 @@ function ProductoAutocomplete({ productos, onSelect, value, onChange }) {
 
 // ── Página principal ──────────────────────────────────────
 export default function Ciclos() {
+  const toast = useToast();
+  const confirm = useConfirm();
   const [ciclos, setCiclos]   = useState([]);
   const [loading, setLoading] = useState(true);
   const [busqueda, setBusqueda] = useState("");
@@ -261,7 +265,7 @@ export default function Ciclos() {
 
   function onFechaCosechaChange(val) {
     if (val && fechaSiembra && val < fechaSiembra) {
-      alert("La fecha de cosecha estimada no puede ser menor a la fecha de siembra.");
+      toast.warning("La fecha de cosecha estimada no puede ser menor a la fecha de siembra.");
       setFechaCosecha(fechaSiembra);
       return;
     }
@@ -270,10 +274,10 @@ export default function Ciclos() {
 
   async function guardar(e) {
     e.preventDefault();
-    if (!prodSeleccionado) { alert("Seleccioná un producto de la lista."); return; }
-    if (!torreId)          { alert("Seleccioná una torre en la matriz."); return; }
-    if (!fechaSiembra || !fechaCosecha) { alert("Las fechas son requeridas."); return; }
-    if (!cantidadPlantas || Number(cantidadPlantas) <= 0) { alert("La cantidad de plantas debe ser mayor a 0."); return; }
+    if (!prodSeleccionado) { toast.warning("Seleccioná un producto de la lista."); return; }
+    if (!torreId)          { toast.warning("Seleccioná una torre en la matriz."); return; }
+    if (!fechaSiembra || !fechaCosecha) { toast.warning("Las fechas son requeridas."); return; }
+    if (!cantidadPlantas || Number(cantidadPlantas) <= 0) { toast.warning("La cantidad de plantas debe ser mayor a 0."); return; }
 
     setSaving(true);
     try {
@@ -291,36 +295,48 @@ export default function Ciclos() {
           notas:                notas || null,
         },
       });
+      toast.success("Siembra registrada correctamente.");
       setShowModal(false);
       cargar();
-    } catch (err) { alert(err.message); }
+    } catch (err) { toast.error(err.message); }
     setSaving(false);
   }
 
   async function cancelar(cicloId) {
-    const motivo = prompt("Motivo de cancelación (opcional):", "Creado por error");
-    if (motivo === null) return;
-    if (!confirm("¿Seguro que deseas cancelar este ciclo?")) return;
+    const ok = await confirm("¿Seguro que deseas cancelar este ciclo? Esta acción no se puede deshacer.", {
+      title: "Cancelar ciclo",
+      okText: "Sí, cancelar ciclo",
+      cancelText: "Volver",
+      danger: true,
+    });
+    if (!ok) return;
     try {
       await api(`/api/ciclos/${cicloId}/cancelar`, {
         method: "POST",
-        body: { motivo: motivo.trim() || null },
+        body: { motivo: "Cancelado desde la UI" },
       });
+      toast.success("Ciclo cancelado.");
       cargar();
-    } catch (err) { alert(err.message); }
+    } catch (err) { toast.error(err.message); }
   }
 
   async function cosechar(ciclo) {
-    // Validar fecha estimada
+    // Bloquear cosecha si la fecha estimada no se ha cumplido
     if (ciclo.fechaCosechaEstimada) {
       const hoy = new Date(); hoy.setHours(0,0,0,0);
       const est = new Date(ciclo.fechaCosechaEstimada); est.setHours(0,0,0,0);
       if (hoy < est) {
-        const ok = confirm("Esta cosecha aún no está lista (fecha estimada no cumplida). ¿Querés cosechar de todas formas?");
-        if (!ok) return;
+        toast.warning(
+          `Aún no se puede cosechar: la fecha estimada es el ${fmt.fecha(ciclo.fechaCosechaEstimada)}.`
+        );
+        return;
       }
     }
-    if (!confirm("¿Desea cosechar este ciclo?")) return;
+    const ok = await confirm("¿Desea cosechar este ciclo? Se generará un lote de inventario.", {
+      title: "Cosechar ciclo",
+      okText: "Cosechar",
+    });
+    if (!ok) return;
     try {
       const r = await api(`/api/ciclos/${ciclo.cicloId}/cosecha`, {
         method: "POST",
@@ -331,9 +347,9 @@ export default function Ciclos() {
         },
       });
       const lote = r.data?.loteGenerado ?? r.data?.lote ?? "";
-      alert(`Cosecha exitosa.${lote ? "\nLote: " + lote : ""}`);
+      toast.success(`Cosecha exitosa.${lote ? " Lote: " + lote : ""}`);
       cargar();
-    } catch (err) { alert(err.message); }
+    } catch (err) { toast.error(err.message); }
   }
 
   const pct = (c) => {

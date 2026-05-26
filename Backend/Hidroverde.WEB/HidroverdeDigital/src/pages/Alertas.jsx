@@ -4,7 +4,8 @@
 // POST /api/Alertas/{alertaId}/aceptar
 
 import { useState, useEffect, useCallback } from "react";
-import { api, fmt } from "../services/api";
+import { api, fmt, getEmpleadoId } from "../services/api";
+import { useToast } from "../components/Toast";
 import { usePaginacion } from "../hooks/usePaginacion";
 import Paginacion from "../components/Paginacion";
 import Spinner from "../components/Spinner";
@@ -26,6 +27,7 @@ const SEV = {
 };
 
 export default function Alertas() {
+  const toast = useToast();
   const [alertas, setAlertas]   = useState([]);
   const [loading, setLoading]   = useState(true);
   const [filtro, setFiltro]     = useState("todos");
@@ -55,12 +57,18 @@ export default function Alertas() {
 
   async function aceptarAlerta() {
     if (!modal) return;
+    const empleadoId = Number(getEmpleadoId());
+    if (!empleadoId || empleadoId <= 0) {
+      toast.error("No se pudo identificar al empleado. Iniciá sesión nuevamente.");
+      return;
+    }
     setSaving(true);
     try {
-      await api(`/api/Alertas/${modal.alertaId}/aceptar`, { method: "POST" });
+      await api(`/api/Alertas/${modal.alertaId}/aceptar?empleadoId=${empleadoId}`, { method: "POST" });
+      toast.success("Alerta aceptada correctamente.");
       setModal(null);
       cargar();
-    } catch (e) { alert(e.message); }
+    } catch (e) { toast.error(e.message); }
     setSaving(false);
   }
 

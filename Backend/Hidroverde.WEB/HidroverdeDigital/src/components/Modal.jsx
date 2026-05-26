@@ -11,7 +11,7 @@ export default function Modal({ open, onClose, title, children, footer, wide = f
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-fade-in">
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 animate-fade-in">
       {/* Backdrop */}
       <div
         className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm"

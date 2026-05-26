@@ -7,6 +7,7 @@ import { api, fmt } from "../services/api";
 import { useChartJs } from "../hooks/useChartJs";
 import { usePaginacion } from "../hooks/usePaginacion";
 import Modal from "../components/Modal";
+import { useToast } from "../components/Toast";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import Paginacion from "../components/Paginacion";
@@ -52,6 +53,7 @@ function rangoDesde(tipo) {
 }
 
 export default function Plagas() {
+  const toast = useToast();
   const [registros, setRegistros]       = useState([]);
   const [graficaData, setGraficaData]   = useState([]);
   const [catalogo, setCatalogo]         = useState([]);
@@ -229,9 +231,10 @@ export default function Plagas() {
       });
       setShowModal(false);
       setForm({ fecha: new Date().toISOString().slice(0,10), plagaId: "", cantidad: 1, comentario: "" });
+      toast.success("Plaga registrada correctamente.");
       cargarTabla();
       cargarGrafico();
-    } catch (err) { alert(err.message); }
+    } catch (err) { toast.error(err.message); }
     setSaving(false);
   }
 

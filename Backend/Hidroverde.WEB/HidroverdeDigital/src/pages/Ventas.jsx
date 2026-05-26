@@ -2,12 +2,14 @@ import { useState, useEffect, useCallback } from "react";
 import { api, fmt } from "../services/api";
 import { usePaginacion } from "../hooks/usePaginacion";
 import Modal from "../components/Modal";
+import { useToast } from "../components/Toast";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import StatusBadge from "../components/StatusBadge";
 import Paginacion from "../components/Paginacion";
 
 export default function Ventas() {
+  const toast = useToast();
   const [ventas, setVentas]     = useState([]);
   const [loading, setLoading]   = useState(true);
 
@@ -74,15 +76,22 @@ export default function Ventas() {
   }
 
   function agregarLinea() {
-    setLineas(l => [...l, { productoId: "", cantidad: 1, precioUnitario: 0, notas: "" }]);
+    setLineas(l => [...l, { inventarioId: "", productoId: "", cantidad: 1, precioUnitario: 0, notas: "" }]);
   }
   function actualizarLinea(i, campo, val) {
     setLineas(l => l.map((ln, idx) => {
       if (idx !== i) return ln;
       const upd = { ...ln, [campo]: val };
-      if (campo === "productoId") {
-        const p = productos.find(x => String(x.productoId) === String(val));
-        if (p) upd.precioUnitario = p.precioBase ?? 0;
+      if (campo === "inventarioId") {
+        // Al elegir un lote de inventario, derivar el producto y su precio base
+        const inv = inventario.find(x => String(x.inventarioId) === String(val));
+        if (inv) {
+          upd.productoId = inv.productoId;
+          const p = productos.find(x => x.productoId === inv.productoId);
+          upd.precioUnitario = p?.precioBase ?? 0;
+        } else {
+          upd.productoId = "";
+        }
       }
       return upd;
     }));
@@ -94,7 +103,10 @@ export default function Ventas() {
 
   async function guardarVenta() {
     if (!nvForm.clienteId || !nvForm.vendedorId || !nvForm.tipoEntregaId || lineas.length === 0) {
-      alert("Completá los campos obligatorios y agregá al menos un producto."); return;
+      toast.warning("Completá los campos obligatorios y agregá al menos un producto."); return;
+    }
+    if (lineas.some(l => !l.inventarioId)) {
+      toast.warning("Cada línea debe tener un lote de inventario seleccionado."); return;
     }
     setSaving(true);
     try {
@@ -117,11 +129,13 @@ export default function Ventas() {
           ivaMonto:           Number(nvForm.ivaMonto),
           notas:              nvForm.notas || null,
           detalle: lineas.map(l => ({
+            inventarioId: Number(l.inventarioId),
             productoId: Number(l.productoId), cantidad: Number(l.cantidad),
             precioUnitario: Number(l.precioUnitario), notas: l.notas || null,
           })),
         },
       });
+      toast.success("Venta creada correctamente.");
       setModalNueva(false); setNv(initNv()); setLineas([]);
       cargarVentas();
     } catch (err) { alert(err.message); }
@@ -143,8 +157,9 @@ export default function Ventas() {
         method: "PATCH",
         body: { estadoVentaId: Number(ceForm.estadoVentaId), notas: ceForm.notas || null },
       });
+      toast.success("Estado de la venta actualizado.");
       setModalEstado(false); setModalDetalle(null); cargarVentas();
-    } catch (err) { alert(err.message); }
+    } catch (err) { toast.error(err.message); }
     setSaving(false);
   }
 
@@ -156,8 +171,9 @@ export default function Ventas() {
         method: "PATCH",
         body: { estadoPagoId: Number(cpForm.estadoPagoId), metodoPagoId: Number(cpForm.metodoPagoId), notas: cpForm.notas || null },
       });
+      toast.success("Pago confirmado.");
       setModalPago(false); setModalDetalle(null); cargarVentas();
-    } catch (err) { alert(err.message); }
+    } catch (err) { toast.error(err.message); }
     setSaving(false);
   }
 
@@ -169,14 +185,10 @@ export default function Ventas() {
       await api(`/api/Venta/${modalDetalle.ventaId}/cancelar`, {
         method: "POST", body: { motivo: motivo.trim() },
       });
+      toast.success("Venta cancelada.");
       setModalDetalle(null); cargarVentas();
-    } catch (err) { alert(err.message); }
+    } catch (err) { toast.error(err.message); }
   }
-
-  const stockDe = (productoId) => {
-    const it = inventario.find(i => i.productoId === Number(productoId));
-    return it?.cantidadDisponible ?? "—";
-  };
 
   const fmtCRC   = fmt.moneda;
   const fmtFecha = fmt.fecha;
@@ -350,21 +362,31 @@ export default function Ventas() {
                   </tr>
                 </thead>
                 <tbody>
-                  {lineas.map((l, i) => (
+                  {lineas.map((l, i) => {
+                    const invSel = inventario.find(x => String(x.inventarioId) === String(l.inventarioId));
+                    return (
                     <tr key={i}>
                       <td>
                         <select className="w-full px-2 py-1 rounded-lg border border-gray-200 text-sm"
-                          value={l.productoId}
-                          onChange={e => actualizarLinea(i, "productoId", e.target.value)}>
-                          <option value="">Seleccione</option>
-                          {productos.map(p => (
-                            <option key={p.productoId} value={p.productoId}>{p.nombreProducto}</option>
+                          value={l.inventarioId}
+                          onChange={e => actualizarLinea(i, "inventarioId", e.target.value)}>
+                          <option value="">Seleccione un lote</option>
+                          {inventario
+                            .filter(inv => inv.cantidadDisponible > 0)
+                            .map(inv => (
+                            <option key={inv.inventarioId} value={inv.inventarioId}>
+                              {inv.productoNombre ?? `Producto #${inv.productoId}`}
+                              {inv.lote ? ` · Lote ${inv.lote}` : ""} ({inv.cantidadDisponible} disp.)
+                            </option>
                           ))}
                         </select>
                       </td>
-                      <td className="text-xs text-gray-400">{l.productoId ? stockDe(l.productoId) : "—"}</td>
+                      <td className="text-xs text-gray-400">
+                        {invSel ? invSel.cantidadDisponible : "—"}
+                      </td>
                       <td>
                         <input type="number" min="1"
+                          max={invSel ? invSel.cantidadDisponible : undefined}
                           className="w-16 px-2 py-1 rounded-lg border border-gray-200 text-sm"
                           value={l.cantidad}
                           onChange={e => actualizarLinea(i, "cantidad", e.target.value)} />
@@ -386,7 +408,8 @@ export default function Ventas() {
                           onClick={() => eliminarLinea(i)}>✕</button>
                       </td>
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             )}

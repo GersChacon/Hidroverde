@@ -46,8 +46,12 @@ export default function Login() {
       const payload    = JSON.parse(atob(accessToken.split(".")[1]));
       const empleadoId = payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"]
                       ?? payload.nameid
-                      ?? payload.sub
-                      ?? "1";
+                      ?? payload.sub;
+
+      if (!empleadoId || Number(empleadoId) <= 0) {
+        setError("El servidor no devolvió un identificador de empleado válido. Contactá al administrador.");
+        return;
+      }
 
       guardarSesion(accessToken, empleadoId);
       navigate("/", { replace: true });

@@ -5,10 +5,16 @@
 AS
 BEGIN
     SET NOCOUNT ON;
+
     UPDATE [dbo].[Empleados]
     SET    usuario_sistema = @usuario_sistema,
            clave_hash      = @clave_hash,
            email           = @email
-    WHERE  email = @email
-    SELECT SCOPE_IDENTITY() AS empleado_id
+    WHERE  email = @email;
+
+    -- FIX: SCOPE_IDENTITY() es NULL tras un UPDATE.
+    -- Devolver el empleado_id real de la fila actualizada.
+    SELECT empleado_id AS empleado_id
+    FROM   [dbo].[Empleados]
+    WHERE  email = @email;
 END

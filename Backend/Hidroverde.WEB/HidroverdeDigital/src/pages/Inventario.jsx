@@ -56,6 +56,7 @@ export default function Inventario() {
     setEditId(p.productoId);
     setForm({
       nombreProducto: p.nombreProducto, unidadId: p.unidadId ?? "",
+      variedadId: p.variedadId ?? "",
       precioBase: p.precioBase ?? "", diasCaducidad: p.diasCaducidad ?? "",
       stockMinimo: p.stockMinimo ?? "", requiereRefrigeracion: p.requiereRefrigeracion ?? false,
       activo: p.activo ?? true, descripcion: p.descripcion ?? "", imagenUrl: p.imagenUrl ?? "",
@@ -70,6 +71,7 @@ export default function Inventario() {
         ...form,
         unidadId: Number(form.unidadId), precioBase: Number(form.precioBase),
         diasCaducidad: Number(form.diasCaducidad), stockMinimo: Number(form.stockMinimo),
+        variedadId: Number(form.variedadId) || 0,
       };
       if (editId) await api(`/api/Producto/${editId}`, { method: "PUT", body });
       else        await api("/api/Producto", { method: "POST", body });

@@ -5,7 +5,8 @@ CREATE   PROCEDURE [dbo].[sp_Ciclo_Cosechar]
     @ubicacion_id INT,          -- la elige el usuario
     @estado_calidad_codigo NVARCHAR(30), -- OPTIMO/REGULAR/etc
     @usuario_id INT,            -- empleado que hace la acción
-    @motivo NVARCHAR(MAX) = NULL
+    @motivo NVARCHAR(MAX) = NULL,
+    @permitir_anticipada BIT = 0 -- 0 = bloquea cosecha antes de la fecha estimada
 AS
 BEGIN
     SET NOCOUNT ON;
@@ -17,18 +18,26 @@ BEGIN
             @producto_id INT,
             @cantidad_plantas INT,
             @estado_ciclo_actual_id INT,
+            @fecha_cosecha_estimada DATE,
             @codigo_producto NVARCHAR(30),
             @dias_caducidad INT;
 
         SELECT
             @producto_id = c.producto_id,
             @cantidad_plantas = c.cantidad_plantas,
-            @estado_ciclo_actual_id = c.estado_ciclo_id
+            @estado_ciclo_actual_id = c.estado_ciclo_id,
+            @fecha_cosecha_estimada = c.fecha_cosecha_estimada
         FROM dbo.Ciclos c
         WHERE c.ciclo_id = @ciclo_id;
 
         IF @producto_id IS NULL
             THROW 51001, 'Ciclo no existe.', 1;
+
+        -- No permitir cosechar antes de la fecha estimada (salvo cosecha anticipada explícita)
+        IF @permitir_anticipada = 0
+           AND @fecha_cosecha_estimada IS NOT NULL
+           AND CAST(SYSDATETIME() AS DATE) < @fecha_cosecha_estimada
+            THROW 51008, 'El ciclo aún no alcanza su fecha de cosecha estimada.', 1;
 
         -- No permitir cosechar dos veces (1 inventario por ciclo)
         IF EXISTS (SELECT 1 FROM dbo.Inventario_Actual WHERE ciclo_origen_id = @ciclo_id)

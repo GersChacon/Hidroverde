@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { api, UNIDADES } from "../services/api";
 import { usePaginacion } from "../hooks/usePaginacion";
 import Modal from "../components/Modal";
+import { useToast } from "../components/Toast";
 import Spinner from "../components/Spinner";
 import EmptyState from "../components/EmptyState";
 import StatusBadge from "../components/StatusBadge";
@@ -11,7 +12,9 @@ const fmtCRC = (n) =>
   new Intl.NumberFormat("es-CR", { style: "currency", currency: "CRC" }).format(n ?? 0);
 
 export default function Inventario() {
+  const toast = useToast();
   const [productos, setProductos] = useState([]);
+  const [variedades, setVariedades] = useState([]);
   const [loading, setLoading]     = useState(true);
   const [filtros, setFiltros]     = useState({ nombre: "", unidadId: "", activo: "" });
   const [showModal, setShowModal] = useState(false);
@@ -46,9 +49,17 @@ export default function Inventario() {
 
   useEffect(() => { cargar(); }, [cargar]);
 
+  // Cargar catálogo de variedades una sola vez (para el selector del modal).
+  // El endpoint devuelve 204 si no hay ninguna, por eso el guard de Array.
+  useEffect(() => {
+    api("/api/Variedad")
+      .then(r => setVariedades(Array.isArray(r.data) ? r.data : []))
+      .catch(() => setVariedades([]));
+  }, []);
+
   function abrirNuevo() {
     setEditId(null);
-    setForm({ nombreProducto: "", unidadId: "", precioBase: "", diasCaducidad: "", stockMinimo: "", requiereRefrigeracion: false, activo: true, descripcion: "", imagenUrl: "" });
+    setForm({ nombreProducto: "", unidadId: "", variedadId: "", precioBase: "", diasCaducidad: "", stockMinimo: "", requiereRefrigeracion: false, activo: true, descripcion: "", imagenUrl: "" });
     setShowModal(true);
   }
 
@@ -65,25 +76,29 @@ export default function Inventario() {
   }
 
   async function guardar() {
+    if (!form.nombreProducto?.trim()) { toast.warning("El nombre del producto es requerido."); return; }
+    if (!form.unidadId)               { toast.warning("Seleccioná una unidad de medida."); return; }
+    if (!form.variedadId)             { toast.warning("Seleccioná una variedad."); return; }
     setSaving(true);
     try {
       const body = {
         ...form,
         unidadId: Number(form.unidadId), precioBase: Number(form.precioBase),
         diasCaducidad: Number(form.diasCaducidad), stockMinimo: Number(form.stockMinimo),
-        variedadId: Number(form.variedadId) || 0,
+        variedadId: Number(form.variedadId),
       };
       if (editId) await api(`/api/Producto/${editId}`, { method: "PUT", body });
       else        await api("/api/Producto", { method: "POST", body });
+      toast.success(editId ? "Producto actualizado." : "Producto creado correctamente.");
       setShowModal(false); cargar();
-    } catch (err) { alert(err.message); }
+    } catch (err) { toast.error(err.message); }
     setSaving(false);
   }
 
   async function eliminar(id, nombre) {
     if (!confirm(`¿Eliminar "${nombre}"?`)) return;
-    try { await api(`/api/Producto/${id}`, { method: "DELETE" }); setDetalle(null); cargar(); }
-    catch (err) { alert(err.message); }
+    try { await api(`/api/Producto/${id}`, { method: "DELETE" }); setDetalle(null); toast.success("Producto eliminado."); cargar(); }
+    catch (err) { toast.error(err.message); }
   }
 
   return (
@@ -206,6 +221,18 @@ export default function Inventario() {
             <select value={form.unidadId} onChange={e => setForm(f => ({ ...f, unidadId: e.target.value }))}>
               <option value="">Seleccione...</option>
               {UNIDADES.map(u => <option key={u.id} value={u.id}>{u.nombre}</option>)}
+            </select>
+          </label>
+          <label className="field">
+            <label>Variedad *</label>
+            <select value={form.variedadId}
+              onChange={e => setForm(f => ({ ...f, variedadId: e.target.value }))}>
+              <option value="">Seleccione una variedad</option>
+              {variedades.map(v => (
+                <option key={v.variedadId} value={v.variedadId}>
+                  {v.nombreVariedad}{v.categoriaNombre ? ` (${v.categoriaNombre})` : ""}
+                </option>
+              ))}
             </select>
           </label>
           <label className="field">

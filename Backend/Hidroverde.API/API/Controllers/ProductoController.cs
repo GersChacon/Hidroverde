@@ -28,20 +28,20 @@ namespace API.Controllers
             if (string.IsNullOrWhiteSpace(producto.NombreProducto))
                 return BadRequest("NombreProducto es requerido.");
 
-            // ✅ Unidad obligatoria (viene del dropdown)
+            // Unidad obligatoria (viene del dropdown)
             if (producto.UnidadId <= 0)
                 return BadRequest("UnidadId inválido.");
 
-            // ✅ Código: ya NO es obligatorio (lo genera la DB/SP)
-            // Si te llega algo con espacios, lo normalizamos; si está vacío, lo dejamos null.
+            // Código: ya NO es obligatorio (lo genera la DB/SP)
             producto.Codigo = string.IsNullOrWhiteSpace(producto.Codigo)
                 ? null
                 : producto.Codigo.Trim();
 
-            // ✅ Variedad: default (por ahora)
-            // Ajusta el "1" al id real de tu variedad default.
+            // Variedad obligatoria: el frontend ahora envía un selector real.
+            // Antes se forzaba a 1 por defecto, lo que asignaba mal todos
+            // los productos creados sin variedad.
             if (producto.VariedadId <= 0)
-                producto.VariedadId = 1;
+                return BadRequest("VariedadId inválido.");
 
             try
             {

@@ -32,12 +32,12 @@ export default function Ventas() {
 
   const initNv = () => ({
     clienteId: "", direccionEntregaId: "", vendedorId: "", tipoEntregaId: "",
-    fechaEntregaDate: "", fechaEntregaTime: "", ivaMonto: 0, metodoPagoId: "", notas: "",
+    fechaEntregaDate: "", fechaEntregaTime: "", metodoPagoId: "",
   });
   const [nvForm, setNv]   = useState(initNv());
   const [lineas, setLineas] = useState([]);
-  const [ceForm, setCeForm] = useState({ estadoVentaId: "", notas: "" });
-  const [cpForm, setCpForm] = useState({ estadoPagoId: "", metodoPagoId: "", notas: "" });
+  const [ceForm, setCeForm] = useState({ estadoVentaId: "" });
+  const [cpForm, setCpForm] = useState({ estadoPagoId: "" });
 
   const { paginados: ventasPag, pagina, totalPaginas, setPagina } = usePaginacion(ventas);
 
@@ -76,8 +76,25 @@ export default function Ventas() {
   }
 
   function agregarLinea() {
-    setLineas(l => [...l, { inventarioId: "", productoId: "", cantidad: 1, precioUnitario: 0, notas: "" }]);
+    setLineas(l => [...l, { inventarioId: "", productoId: "", cantidad: 1, precioUnitario: 0 }]);
   }
+
+  // El precio unitario lo fija el servidor (precio_base); aquí solo se muestra de referencia.
+  // Próximo estado logístico permitido: el activo, no cancelado, con el menor orden > actual.
+  const siguienteEstadoVenta = (orden) =>
+    estadosVenta
+      .filter(e => e.activo !== false && e.codigo !== "CANCELADO" && e.orden > (orden ?? 0))
+      .sort((a, b) => a.orden - b.orden)[0] ?? null;
+  // ¿El pago está finalizado como PAGADO? (habilita avanzar el estado logístico)
+  const pagoConfirmado = (v) => {
+    const ep = estadosPago.find(e => e.estadoPagoId === v?.estadoPagoId);
+    return !!(ep && (ep.permiteEntrega || ep.codigo === "PAGADO"));
+  };
+  // ¿El estado de pago actual es terminal? (pagado / anulado / vencido)
+  const pagoTerminal = (v) => {
+    const ep = estadosPago.find(e => e.estadoPagoId === v?.estadoPagoId);
+    return !!(ep && (ep.permiteEntrega || ["ANULADO", "VENCIDO"].includes(ep.codigo)));
+  };
   function actualizarLinea(i, campo, val) {
     setLineas(l => l.map((ln, idx) => {
       if (idx !== i) return ln;
@@ -99,11 +116,11 @@ export default function Ventas() {
   function eliminarLinea(i) { setLineas(l => l.filter((_, idx) => idx !== i)); }
 
   const subtotal = lineas.reduce((s, l) => s + (Number(l.cantidad) * Number(l.precioUnitario)), 0);
-  const total    = subtotal + Number(nvForm.ivaMonto);
+  const total    = subtotal;
 
   async function guardarVenta() {
-    if (!nvForm.clienteId || !nvForm.vendedorId || !nvForm.tipoEntregaId || lineas.length === 0) {
-      toast.warning("Completá los campos obligatorios y agregá al menos un producto."); return;
+    if (!nvForm.clienteId || !nvForm.vendedorId || !nvForm.tipoEntregaId || !nvForm.metodoPagoId || lineas.length === 0) {
+      toast.warning("Completá los campos obligatorios (incluido el método de pago) y agregá al menos un producto."); return;
     }
     if (lineas.some(l => !l.inventarioId)) {
       toast.warning("Cada línea debe tener un lote de inventario seleccionado."); return;
@@ -126,12 +143,9 @@ export default function Ventas() {
           metodoPagoId:       nvForm.metodoPagoId ? Number(nvForm.metodoPagoId) : null,
           tipoEntregaId:      Number(nvForm.tipoEntregaId),
           fechaEntrega,
-          ivaMonto:           Number(nvForm.ivaMonto),
-          notas:              nvForm.notas || null,
           detalle: lineas.map(l => ({
             inventarioId: Number(l.inventarioId),
             productoId: Number(l.productoId), cantidad: Number(l.cantidad),
-            precioUnitario: Number(l.precioUnitario), notas: l.notas || null,
           })),
         },
       });
@@ -155,7 +169,7 @@ export default function Ventas() {
     try {
       await api(`/api/Venta/${modalDetalle.ventaId}/estado`, {
         method: "PATCH",
-        body: { estadoVentaId: Number(ceForm.estadoVentaId), notas: ceForm.notas || null },
+        body: { estadoVentaId: Number(ceForm.estadoVentaId) },
       });
       toast.success("Estado de la venta actualizado.");
       setModalEstado(false); setModalDetalle(null); cargarVentas();
@@ -164,12 +178,12 @@ export default function Ventas() {
   }
 
   async function confirmarPago() {
-    if (!modalDetalle || !cpForm.estadoPagoId || !cpForm.metodoPagoId) return;
+    if (!modalDetalle || !cpForm.estadoPagoId) return;
     setSaving(true);
     try {
       await api(`/api/Venta/${modalDetalle.ventaId}/pago`, {
         method: "PATCH",
-        body: { estadoPagoId: Number(cpForm.estadoPagoId), metodoPagoId: Number(cpForm.metodoPagoId), notas: cpForm.notas || null },
+        body: { estadoPagoId: Number(cpForm.estadoPagoId), metodoPagoId: Number(modalDetalle.metodoPagoId ?? 0) },
       });
       toast.success("Pago confirmado.");
       setModalPago(false); setModalDetalle(null); cargarVentas();
@@ -306,7 +320,7 @@ export default function Ventas() {
             </label>
           </div>
 
-          {/* Fila 2: fecha, método pago, IVA, notas */}
+          {/* Fila 2: fecha y método de pago */}
           <div className="grid grid-cols-2 gap-4">
             <label className="field">
               <label>Fecha de entrega</label>
@@ -322,23 +336,13 @@ export default function Ventas() {
               </div>
             </label>
             <label className="field">
-              <label>Método de pago</label>
+              <label>Método de pago *</label>
               <select value={nvForm.metodoPagoId} onChange={e => setNv(f => ({ ...f, metodoPagoId: e.target.value }))}>
-                <option value="">Sin especificar</option>
+                <option value="">Seleccione</option>
                 {metodosPago.map(m => (
                   <option key={m.metodoPagoId} value={m.metodoPagoId}>{m.nombre}</option>
                 ))}
               </select>
-            </label>
-            <label className="field">
-              <label>IVA (₡)</label>
-              <input type="number" min="0" step="0.01" value={nvForm.ivaMonto}
-                onChange={e => setNv(f => ({ ...f, ivaMonto: e.target.value }))} />
-            </label>
-            <label className="field">
-              <label>Notas</label>
-              <input type="text" value={nvForm.notas}
-                onChange={e => setNv(f => ({ ...f, notas: e.target.value }))} />
             </label>
           </div>
 
@@ -358,7 +362,7 @@ export default function Ventas() {
                 <thead>
                   <tr>
                     <th>Producto</th><th>Stock</th><th>Cant.</th>
-                    <th>Precio unit.</th><th>Notas</th><th></th>
+                    <th>Precio unit.</th><th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -370,14 +374,23 @@ export default function Ventas() {
                         <select className="w-full px-2 py-1 rounded-lg border border-gray-200 text-sm"
                           value={l.inventarioId}
                           onChange={e => actualizarLinea(i, "inventarioId", e.target.value)}>
-                          <option value="">Seleccione un lote</option>
-                          {inventario
-                            .filter(inv => inv.cantidadDisponible > 0)
-                            .map(inv => (
-                            <option key={inv.inventarioId} value={inv.inventarioId}>
-                              {inv.productoNombre ?? `Producto #${inv.productoId}`}
-                              {inv.lote ? ` · Lote ${inv.lote}` : ""} ({inv.cantidadDisponible} disp.)
-                            </option>
+                          <option value="">Seleccione un producto</option>
+                          {Object.entries(
+                            inventario
+                              .filter(inv => inv.cantidadDisponible > 0)
+                              .reduce((acc, inv) => {
+                                const k = inv.productoNombre ?? `Producto #${inv.productoId}`;
+                                (acc[k] = acc[k] || []).push(inv);
+                                return acc;
+                              }, {})
+                          ).map(([prod, lotes]) => (
+                            <optgroup key={prod} label={prod}>
+                              {lotes.map(inv => (
+                                <option key={inv.inventarioId} value={inv.inventarioId}>
+                                  {inv.lote ? `Lote ${inv.lote}` : "Disponible"} ({inv.cantidadDisponible} disp.)
+                                </option>
+                              ))}
+                            </optgroup>
                           ))}
                         </select>
                       </td>
@@ -391,17 +404,8 @@ export default function Ventas() {
                           value={l.cantidad}
                           onChange={e => actualizarLinea(i, "cantidad", e.target.value)} />
                       </td>
-                      <td>
-                        <input type="number" step="0.01"
-                          className="w-24 px-2 py-1 rounded-lg border border-gray-200 text-sm"
-                          value={l.precioUnitario}
-                          onChange={e => actualizarLinea(i, "precioUnitario", e.target.value)} />
-                      </td>
-                      <td>
-                        <input type="text"
-                          className="w-full px-2 py-1 rounded-lg border border-gray-200 text-sm"
-                          value={l.notas}
-                          onChange={e => actualizarLinea(i, "notas", e.target.value)} />
+                      <td className="text-sm text-gray-600">
+                        {fmtCRC(l.precioUnitario)}
                       </td>
                       <td>
                         <button className="btn-danger text-xs py-0.5 px-1.5"
@@ -417,7 +421,6 @@ export default function Ventas() {
             {lineas.length > 0 && (
               <div className="flex gap-6 justify-end mt-3 text-sm font-bold text-gray-700 bg-gray-50 px-4 py-2 rounded-xl">
                 <span>Subtotal: <strong>{fmtCRC(subtotal)}</strong></span>
-                <span>IVA: <strong>{fmtCRC(nvForm.ivaMonto)}</strong></span>
                 <span>Total: <strong className="text-green-700">{fmtCRC(total)}</strong></span>
               </div>
             )}
@@ -431,10 +434,14 @@ export default function Ventas() {
         title={`Venta #${modalDetalle?.ventaId ?? ""}`} wide
         footer={
           <>
-            <button className="btn" onClick={() => { setCeForm({ estadoVentaId: "", notas: "" }); setModalEstado(true); }}>
+            <button className="btn" onClick={() => {
+              const sig = siguienteEstadoVenta(modalDetalle?.ordenEstadoVenta);
+              setCeForm({ estadoVentaId: sig ? String(sig.estadoVentaId) : "" });
+              setModalEstado(true);
+            }}>
               Cambiar estado
             </button>
-            <button className="btn" onClick={() => { setCpForm({ estadoPagoId: "", metodoPagoId: "", notas: "" }); setModalPago(true); }}>
+            <button className="btn" onClick={() => { setCpForm({ estadoPagoId: "" }); setModalPago(true); }}>
               Confirmar pago
             </button>
             <button className="btn-danger" onClick={cancelarVenta}>Cancelar venta</button>
@@ -454,7 +461,6 @@ export default function Ventas() {
                 ["Método pago",   modalDetalle.nombreMetodoPago ?? "—"],
                 ["Tipo entrega",  modalDetalle.nombreTipoEntrega ?? "—"],
                 ["Factura",       modalDetalle.numeroFactura ?? "—"],
-                ["IVA",           fmtCRC(modalDetalle.ivaMonto)],
                 ["Subtotal",      fmtCRC(modalDetalle.subtotal)],
                 ["Total",         fmtCRC(modalDetalle.total)],
               ].map(([k, v]) => (
@@ -464,13 +470,6 @@ export default function Ventas() {
                 </div>
               ))}
             </div>
-
-            {modalDetalle.notas && (
-              <div className="bg-gray-50 rounded-xl p-3 text-sm">
-                <div className="text-xs text-gray-400 font-bold uppercase mb-1">Notas</div>
-                <div className="text-gray-700">{modalDetalle.notas}</div>
-              </div>
-            )}
 
             {modalDetalle.detalle?.length > 0 && (
               <div>
@@ -506,28 +505,42 @@ export default function Ventas() {
         footer={
           <>
             <button className="btn" onClick={() => setModalEstado(false)}>Cancelar</button>
-            <button className="btn-primary" onClick={cambiarEstado} disabled={saving}>
+            <button className="btn-primary" onClick={cambiarEstado}
+              disabled={saving || !ceForm.estadoVentaId || !pagoConfirmado(modalDetalle)}>
               {saving ? "Procesando…" : "Confirmar"}
             </button>
           </>
         }
       >
         <div className="flex flex-col gap-4">
-          <label className="field">
-            <label>Nuevo estado *</label>
-            <select value={ceForm.estadoVentaId}
-              onChange={e => setCeForm(f => ({ ...f, estadoVentaId: e.target.value }))}>
-              <option value="">Seleccione</option>
-              {estadosVenta.map(e => (
-                <option key={e.estadoVentaId} value={e.estadoVentaId}>{e.nombre}</option>
-              ))}
-            </select>
-          </label>
-          <label className="field">
-            <label>Notas</label>
-            <textarea rows="2" value={ceForm.notas}
-              onChange={e => setCeForm(f => ({ ...f, notas: e.target.value }))} />
-          </label>
+          {(() => {
+            if (!pagoConfirmado(modalDetalle)) {
+              return (
+                <p className="text-sm text-amber-700 bg-amber-50 rounded-xl p-3">
+                  Primero debe confirmarse el pago como <strong>PAGADO</strong>. El estado de la
+                  venta no puede avanzar mientras el pago no esté finalizado.
+                </p>
+              );
+            }
+            const sig = siguienteEstadoVenta(modalDetalle?.ordenEstadoVenta);
+            if (!sig) {
+              return (
+                <p className="text-sm text-gray-600 bg-gray-50 rounded-xl p-3">
+                  La venta ya está en el último estado del flujo.
+                </p>
+              );
+            }
+            return (
+              <div className="text-sm">
+                <p className="text-gray-500 mb-2">El flujo avanza al estado consecutivo, sin saltar pasos:</p>
+                <div className="flex items-center gap-2">
+                  <span className="px-3 py-1 rounded-lg bg-gray-100 text-gray-500">{modalDetalle.nombreEstadoVenta}</span>
+                  <span className="text-gray-400">→</span>
+                  <span className="px-3 py-1 rounded-lg bg-green-100 text-green-800 font-bold">{sig.nombre}</span>
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </Modal>
 
@@ -536,38 +549,41 @@ export default function Ventas() {
         footer={
           <>
             <button className="btn" onClick={() => setModalPago(false)}>Cancelar</button>
-            <button className="btn-primary" onClick={confirmarPago} disabled={saving}>
+            <button className="btn-primary" onClick={confirmarPago}
+              disabled={saving || !cpForm.estadoPagoId || pagoTerminal(modalDetalle)}>
               {saving ? "Procesando…" : "Confirmar"}
             </button>
           </>
         }
       >
         <div className="flex flex-col gap-4">
-          <label className="field">
-            <label>Estado de pago *</label>
-            <select value={cpForm.estadoPagoId}
-              onChange={e => setCpForm(f => ({ ...f, estadoPagoId: e.target.value }))}>
-              <option value="">Seleccione</option>
-              {estadosPago.map(e => (
-                <option key={e.estadoPagoId} value={e.estadoPagoId}>{e.nombre}</option>
-              ))}
-            </select>
-          </label>
-          <label className="field">
-            <label>Método de pago *</label>
-            <select value={cpForm.metodoPagoId}
-              onChange={e => setCpForm(f => ({ ...f, metodoPagoId: e.target.value }))}>
-              <option value="">Seleccione</option>
-              {metodosPago.map(m => (
-                <option key={m.metodoPagoId} value={m.metodoPagoId}>{m.nombre}</option>
-              ))}
-            </select>
-          </label>
-          <label className="field">
-            <label>Notas</label>
-            <textarea rows="2" value={cpForm.notas}
-              onChange={e => setCpForm(f => ({ ...f, notas: e.target.value }))} />
-          </label>
+          {pagoTerminal(modalDetalle) ? (
+            <p className="text-sm text-gray-600 bg-gray-50 rounded-xl p-3">
+              El pago ya está finalizado (<strong>{modalDetalle?.nombreEstadoPago}</strong>) y no puede modificarse.
+            </p>
+          ) : (
+            <>
+              <label className="field">
+                <label>Nuevo estado de pago *</label>
+                <select value={cpForm.estadoPagoId}
+                  onChange={e => setCpForm(f => ({ ...f, estadoPagoId: e.target.value }))}>
+                  <option value="">Seleccione</option>
+                  {estadosPago
+                    .filter(e => e.estadoPagoId !== modalDetalle?.estadoPagoId)
+                    .map(e => (
+                      <option key={e.estadoPagoId} value={e.estadoPagoId}>{e.nombre}</option>
+                    ))}
+                </select>
+              </label>
+              <div className="field">
+                <label>Método de pago</label>
+                <div className="px-3 py-2 rounded-xl bg-gray-50 text-sm text-gray-700">
+                  {modalDetalle?.nombreMetodoPago ?? "—"}
+                  <span className="text-xs text-gray-400"> (definido al crear la venta)</span>
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </Modal>
 

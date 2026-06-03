@@ -46,8 +46,6 @@ namespace API.Controllers
                 return BadRequest("La venta debe tener al menos un producto en el detalle.");
             if (venta.Detalle.Any(d => d.Cantidad <= 0))
                 return BadRequest("La cantidad de cada producto debe ser mayor a 0.");
-            if (venta.Detalle.Any(d => d.PrecioUnitario <= 0))
-                return BadRequest("El precio unitario debe ser mayor a 0.");
 
             _logger.LogInformation("CrearVenta → FechaEntrega={FechaEntrega} Kind={Kind}",
                 venta.FechaEntrega?.ToString("o") ?? "null",

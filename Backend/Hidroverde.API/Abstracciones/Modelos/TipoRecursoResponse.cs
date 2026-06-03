@@ -13,6 +13,7 @@ namespace Abstracciones.Modelos
         public string Nombre { get; set; } = string.Empty;
         public string Categoria { get; set; } = string.Empty;
         public string Unidad { get; set; } = string.Empty;
+        public decimal CostoUnitario { get; set; }
         public bool Activo { get; set; }
     }
 }

@@ -12,8 +12,9 @@ import Spinner from "../components/Spinner";
 const METAS_KEY = "hidroverde_metas";
 
 function loadMetas() {
-  try { const r = localStorage.getItem(METAS_KEY); if (r) return JSON.parse(r); } catch (_) {}
-  return { cosechas: 10, ventas: 500000, consumos: 50 };
+  const def = { cosechas: 10, ventas: 500000, consumos: 200000, margen: 300000 };
+  try { const r = localStorage.getItem(METAS_KEY); if (r) return { ...def, ...JSON.parse(r) }; } catch (_) {}
+  return def;
 }
 
 function rangoDesdePeriodo(p) {
@@ -30,15 +31,17 @@ function rangoDesdePeriodo(p) {
 }
 
 const KPI_META = {
-  cosechas: { label: "Cosechas", sub: "Ciclos cosechados",    icon: "🌾", color: "green",  esMoneda: false },
-  ventas:   { label: "Ventas",   sub: "Ingresos del período", icon: "💰", color: "blue",   esMoneda: true  },
-  consumos: { label: "Consumos", sub: "Recursos utilizados",  icon: "🧪", color: "orange", esMoneda: false },
+  cosechas: { label: "Cosechas", sub: "Ciclos cosechados",     icon: "🌾", color: "green",  esMoneda: false },
+  ventas:   { label: "Ventas",   sub: "Ingresos pagados",       icon: "💰", color: "blue",   esMoneda: true  },
+  consumos: { label: "Costo de insumos", sub: "Consumos valorizados", icon: "🧪", color: "orange", esMoneda: true },
+  margen:   { label: "Margen",   sub: "Ventas − insumos",       icon: "📈", color: "violet", esMoneda: true  },
 };
 
 const BAR_COLORS = {
   green:  "bg-green-400",
   blue:   "bg-blue-400",
   orange: "bg-orange-400",
+  violet: "bg-violet-400",
 };
 
 export default function Kpis() {
@@ -66,8 +69,24 @@ export default function Kpis() {
       if (Array.isArray(data?.totales)) {
         data.totales.forEach(t => { tot[t.kpi?.toLowerCase()] = t.valor; });
       }
+      // Margen = ventas pagadas − costo de insumos (compuesto en cliente).
+      tot.margen = (tot.ventas ?? 0) - (tot.consumos ?? 0);
       setTotales(tot);
-      setTendencia(Array.isArray(data?.tendencia) ? data.tendencia : []);
+
+      const tend = Array.isArray(data?.tendencia) ? [...data.tendencia] : [];
+      // Tendencia de margen por mes = ventas[mes] − consumos[mes].
+      const porPeriodo = {};
+      tend.forEach(t => {
+        const k = t.kpi?.toLowerCase();
+        if (k === "ventas" || k === "consumos") {
+          porPeriodo[t.periodo] = porPeriodo[t.periodo] || { ventas: 0, consumos: 0 };
+          porPeriodo[t.periodo][k] = t.valor ?? 0;
+        }
+      });
+      Object.entries(porPeriodo).forEach(([periodo, v]) => {
+        tend.push({ kpi: "margen", periodo, valor: (v.ventas ?? 0) - (v.consumos ?? 0) });
+      });
+      setTendencia(tend);
     } catch { setTotales({}); setTendencia([]); }
     setLoading(false);
   }, [periodo]);
@@ -91,7 +110,7 @@ export default function Kpis() {
     const meta = metas[tabActivo] ?? 0;
     const metaLine = periodos.map(() => meta / Math.max(periodos.length, 1));
 
-    const colorMap = { cosechas: "#4ade80", ventas: "#60a5fa", consumos: "#fb923c" };
+    const colorMap = { cosechas: "#4ade80", ventas: "#60a5fa", consumos: "#fb923c", margen: "#a78bfa" };
     const color = colorMap[tabActivo] ?? "#4ade80";
 
     chartRef.current = new window.Chart(canvasRef.current, {
@@ -163,7 +182,7 @@ export default function Kpis() {
       <div className="flex items-end justify-between">
         <div>
           <h2 className="text-2xl font-black text-gray-900">KPIs & Metas</h2>
-          <p className="text-gray-400 text-sm">Seguimiento visual de Cosechas · Ventas · Consumos</p>
+          <p className="text-gray-400 text-sm">Seguimiento visual de Cosechas · Ventas · Costo de insumos · Margen</p>
         </div>
         <div className="flex gap-2 items-center">
           <select
@@ -179,7 +198,7 @@ export default function Kpis() {
 
       {/* KPI Cards */}
       {loading ? <Spinner /> : (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {Object.entries(KPI_META).map(([key, meta]) => {
             const actual = totales[key] ?? 0;
             const metaVal = metas[key] ?? 1;
@@ -247,7 +266,10 @@ export default function Kpis() {
         <p className="text-xs text-gray-400 text-center mt-2">
           {KPI_META[tabActivo]?.label} · {labelPeriodo[periodo]}
           {tendencia.filter(t => t.kpi?.toLowerCase() === tabActivo).length > 0
-            ? ` · Total: ${tendencia.filter(t => t.kpi?.toLowerCase() === tabActivo).reduce((s,t) => s + t.valor, 0).toLocaleString("es-CR")}`
+            ? ` · Total: ${(() => {
+                const tot = tendencia.filter(t => t.kpi?.toLowerCase() === tabActivo).reduce((s, t) => s + t.valor, 0);
+                return KPI_META[tabActivo]?.esMoneda ? fmt.moneda(tot) : tot.toLocaleString("es-CR");
+              })()}`
             : ""}
         </p>
       </div>
@@ -260,7 +282,7 @@ export default function Kpis() {
             <p className="text-xs text-gray-400 mt-0.5">Las metas se guardan localmente en tu navegador</p>
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <label className="field">
             <label>🌾 Meta cosechas (ciclos/período)</label>
             <input type="number" min="1" value={metasForm.cosechas}
@@ -272,9 +294,14 @@ export default function Kpis() {
               onChange={e => setMetasForm(f => ({ ...f, ventas: Number(e.target.value) }))} />
           </label>
           <label className="field">
-            <label>🧪 Meta consumos (registros)</label>
-            <input type="number" min="1" value={metasForm.consumos}
+            <label>🧪 Meta costo de insumos (CRC)</label>
+            <input type="number" min="1" step="1000" value={metasForm.consumos}
               onChange={e => setMetasForm(f => ({ ...f, consumos: Number(e.target.value) }))} />
+          </label>
+          <label className="field">
+            <label>📈 Meta margen (CRC)</label>
+            <input type="number" min="1" step="1000" value={metasForm.margen}
+              onChange={e => setMetasForm(f => ({ ...f, margen: Number(e.target.value) }))} />
           </label>
         </div>
         <div className="flex justify-end mt-4">

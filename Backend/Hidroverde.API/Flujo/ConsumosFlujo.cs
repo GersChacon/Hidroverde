@@ -66,5 +66,20 @@ namespace Flujo
         {
             return await _consumosDA.ObtenerTiposRecurso();
         }
+
+        public async Task<CostoCicloResponse> ObtenerCostoPorCiclo(int cicloId, DateTime? fechaDesde, DateTime? fechaHasta)
+        {
+            return await _consumosDA.ObtenerCostoPorCiclo(cicloId, fechaDesde, fechaHasta);
+        }
+
+        public async Task<int> ActualizarCostoRecurso(int tipoRecursoId, decimal costoUnitario)
+        {
+            return await _consumosDA.ActualizarCostoRecurso(tipoRecursoId, costoUnitario);
+        }
+
+        public async Task<long> Eliminar(long consumoId)
+        {
+            return await _consumosDA.Eliminar(consumoId);
+        }
     }
 }

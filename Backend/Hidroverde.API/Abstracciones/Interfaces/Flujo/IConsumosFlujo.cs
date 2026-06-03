@@ -36,5 +36,11 @@ namespace Abstracciones.Interfaces.Flujo
         );
 
         Task<IEnumerable<TipoRecursoResponse>> ObtenerTiposRecurso();
+
+        Task<CostoCicloResponse> ObtenerCostoPorCiclo(int cicloId, DateTime? fechaDesde, DateTime? fechaHasta);
+
+        Task<int> ActualizarCostoRecurso(int tipoRecursoId, decimal costoUnitario);
+
+        Task<long> Eliminar(long consumoId);
     }
 }

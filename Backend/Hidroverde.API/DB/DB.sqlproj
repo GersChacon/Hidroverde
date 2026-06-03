@@ -238,5 +238,7 @@
     <Build Include="dbo\Stored Procedures\sp_TipoRecurso_ActualizarCosto.sql" />
     <Build Include="dbo\Stored Procedures\sp_Consumos_CostoPorCiclo.sql" />
     <Build Include="dbo\Stored Procedures\sp_Consumo_Eliminar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Monitoreos_Listar.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Monitoreo_Registrar.sql" />
   </ItemGroup>
 </Project>

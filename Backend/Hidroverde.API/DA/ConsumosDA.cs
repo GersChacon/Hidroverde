@@ -152,6 +152,7 @@ namespace DA
                     nombre          AS Nombre,
                     categoria       AS Categoria,
                     unidad          AS Unidad,
+                    costo_unitario  AS CostoUnitario,
                     activo          AS Activo
                 FROM dbo.Tipos_Recurso
                 WHERE activo = 1
@@ -159,6 +160,38 @@ namespace DA
 
             var resultado = await _sqlConnection.QueryAsync<TipoRecursoResponse>(sql);
             return resultado;
+        }
+
+        public async Task<CostoCicloResponse> ObtenerCostoPorCiclo(int cicloId, DateTime? fechaDesde, DateTime? fechaHasta)
+        {
+            using var multi = await _sqlConnection.QueryMultipleAsync(
+                "dbo.sp_Consumos_CostoPorCiclo",
+                new { ciclo_id = cicloId, fecha_desde = fechaDesde, fecha_hasta = fechaHasta },
+                commandType: CommandType.StoredProcedure
+            );
+
+            var resumen = await multi.ReadFirstOrDefaultAsync<CostoCicloResponse>()
+                          ?? new CostoCicloResponse { CicloId = cicloId };
+            resumen.Detalle = (await multi.ReadAsync<CostoCicloDetalle>()).ToList();
+            return resumen;
+        }
+
+        public async Task<int> ActualizarCostoRecurso(int tipoRecursoId, decimal costoUnitario)
+        {
+            return await _sqlConnection.ExecuteScalarAsync<int>(
+                "dbo.sp_TipoRecurso_ActualizarCosto",
+                new { tipo_recurso_id = tipoRecursoId, costo_unitario = costoUnitario },
+                commandType: CommandType.StoredProcedure
+            );
+        }
+
+        public async Task<long> Eliminar(long consumoId)
+        {
+            return await _sqlConnection.ExecuteScalarAsync<long>(
+                "dbo.sp_Consumo_Eliminar",
+                new { consumo_id = consumoId },
+                commandType: CommandType.StoredProcedure
+            );
         }
     }
 }

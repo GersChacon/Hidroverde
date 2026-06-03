@@ -1,6 +1,7 @@
 ﻿using Abstracciones.Interfaces.Flujo;
 using Abstracciones.Modelos;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using System.Text;
 
 namespace Hidroverde.API.Controllers
@@ -21,6 +22,59 @@ namespace Hidroverde.API.Controllers
         {
             var data = await _consumosFlujo.ObtenerTiposRecurso();
             return Ok(data);
+        }
+
+        // Puente de costos: costo de producción de un ciclo a partir de los consumos vigentes.
+        [HttpGet("costo-ciclo/{cicloId:int}")]
+        public async Task<IActionResult> CostoPorCiclo(
+            int cicloId,
+            [FromQuery] DateTime? fechaDesde,
+            [FromQuery] DateTime? fechaHasta)
+        {
+            var data = await _consumosFlujo.ObtenerCostoPorCiclo(cicloId, fechaDesde, fechaHasta);
+            return Ok(data);
+        }
+
+        // Fija el costo unitario de un tipo de recurso (insumo de costos del puente).
+        [HttpPut("tipos-recurso/{tipoRecursoId:int}/costo")]
+        public async Task<IActionResult> ActualizarCosto(int tipoRecursoId, [FromBody] ActualizarCostoRequest request)
+        {
+            try
+            {
+                var r = await _consumosFlujo.ActualizarCostoRecurso(tipoRecursoId, request.CostoUnitario);
+                return Ok(new { tipoRecursoId = r });
+            }
+            catch (SqlException ex) when (ex.Number == 51030)
+            {
+                return BadRequest(ex.Message); // Costo negativo
+            }
+            catch (SqlException ex) when (ex.Number == 51031)
+            {
+                return NotFound(ex.Message); // Tipo de recurso inválido o inactivo
+            }
+            catch (SqlException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        // Borrado lógico de un consumo (conserva versiones para auditoría).
+        [HttpDelete("{consumoId:long}")]
+        public async Task<IActionResult> Eliminar(long consumoId)
+        {
+            try
+            {
+                await _consumosFlujo.Eliminar(consumoId);
+                return NoContent();
+            }
+            catch (SqlException ex) when (ex.Number == 51040)
+            {
+                return NotFound(ex.Message); // No existe o ya inactivo
+            }
+            catch (SqlException ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost]

@@ -235,5 +235,8 @@
     <Build Include="dbo\Stored Procedures\ObtenerRolesxEmpleado.sql" />
     <Build Include="dbo\Stored Procedures\RegistrarEmpleadoAuth.sql" />
     <Build Include="dbo\Stored Procedures\ObtenerEmpleadoLogin.sql" />
+    <Build Include="dbo\Stored Procedures\sp_TipoRecurso_ActualizarCosto.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Consumos_CostoPorCiclo.sql" />
+    <Build Include="dbo\Stored Procedures\sp_Consumo_Eliminar.sql" />
   </ItemGroup>
 </Project>

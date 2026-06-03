@@ -26,6 +26,12 @@ export default function Consumos() {
   const [reporte, setReporte]           = useState([]);
   const [loadingRep, setLoadingRep]     = useState(false);
 
+  // Puente de costos
+  const [costoCiclo, setCostoCiclo]     = useState(null);
+  const [modalCostos, setModalCostos]   = useState(false);
+  const [costosEdit, setCostosEdit]     = useState({});
+  const [savingCostos, setSavingCostos] = useState(false);
+
   const { paginados, pagina, totalPaginas, setPagina, total } = usePaginacion(consumos);
 
   const buildQs = useCallback(() => {
@@ -45,8 +51,22 @@ export default function Consumos() {
       const r = await api(`/api/consumos${qs ? "?" + qs : ""}`);
       setConsumos(Array.isArray(r.data) ? r.data : []);
     } catch { setConsumos([]); }
+
+    // Puente de costos: si se filtra por ciclo, traemos su costo de producción.
+    if (filtros.cicloId) {
+      try {
+        const cp = new URLSearchParams();
+        if (filtros.desde) cp.set("fechaDesde", filtros.desde);
+        if (filtros.hasta) cp.set("fechaHasta", filtros.hasta);
+        const cqs = cp.toString();
+        const rc = await api(`/api/consumos/costo-ciclo/${Number(filtros.cicloId)}${cqs ? "?" + cqs : ""}`);
+        setCostoCiclo(rc.data);
+      } catch { setCostoCiclo(null); }
+    } else {
+      setCostoCiclo(null);
+    }
     setLoading(false);
-  }, [buildQs, setPagina]);
+  }, [buildQs, setPagina, filtros]);
 
   useEffect(() => { cargar(); }, [cargar]);
   useEffect(() => {
@@ -102,6 +122,29 @@ export default function Consumos() {
     window.open(`/api/consumos/reporte-diario/export/${tipo}${qs ? "?" + qs : ""}`, "_blank");
   }
 
+  function abrirCostos() {
+    const init = {};
+    tiposRecurso.forEach(t => { init[t.tipoRecursoId] = t.costoUnitario ?? 0; });
+    setCostosEdit(init);
+    setModalCostos(true);
+  }
+  async function guardarCostos() {
+    setSavingCostos(true);
+    try {
+      for (const t of tiposRecurso) {
+        const val = Number(costosEdit[t.tipoRecursoId] ?? 0);
+        if (val !== Number(t.costoUnitario ?? 0)) {
+          await api(`/api/consumos/tipos-recurso/${t.tipoRecursoId}/costo`, { method: "PUT", body: { costoUnitario: val } });
+        }
+      }
+      const r = await api("/api/consumos/tipos-recurso");
+      setTiposRecurso(Array.isArray(r.data) ? r.data : []);
+      setModalCostos(false);
+      cargar();
+    } catch (err) { alert(err.message); }
+    setSavingCostos(false);
+  }
+
   const periLabel = { UNICO: "Único", SEMANAL: "Semanal", MENSUAL: "Mensual" };
 
   return (
@@ -114,6 +157,7 @@ export default function Consumos() {
         </div>
         <div className="page-actions">
           <button className="btn-primary" onClick={abrirNuevo}>+ Nuevo consumo</button>
+          <button className="btn" onClick={abrirCostos}>₡ Costos de recursos</button>
           <button className="btn" onClick={cargar}>↺ Refrescar</button>
         </div>
       </div>
@@ -154,6 +198,41 @@ export default function Consumos() {
           </div>
         </div>
       </div>
+
+      {/* Puente de costos: costo de producción del ciclo filtrado */}
+      {filtros.cicloId && costoCiclo && (
+        <div className="card bg-green-50 border border-green-100">
+          <div className="flex items-start justify-between flex-wrap gap-4">
+            <div>
+              <div className="text-xs text-gray-500 font-semibold uppercase tracking-wide">
+                Costo de producción · Ciclo #{costoCiclo.cicloId}
+              </div>
+              <div className="text-3xl font-extrabold text-green-700 mt-1">{fmt.moneda(costoCiclo.costoTotal)}</div>
+              <div className="text-xs text-gray-400">{costoCiclo.cantidadConsumos} consumo(s) considerados</div>
+            </div>
+            {costoCiclo.detalle?.length > 0 && (
+              <table className="data-table" style={{ minWidth: 320 }}>
+                <thead><tr><th>Recurso</th><th className="text-right">Cantidad</th><th className="text-right">Costo unit.</th><th className="text-right">Costo</th></tr></thead>
+                <tbody>
+                  {costoCiclo.detalle.map(d => (
+                    <tr key={d.tipoRecursoId}>
+                      <td className="font-semibold">{d.recursoNombre}</td>
+                      <td className="text-right">{d.cantidad} <span className="text-gray-400 text-xs">{d.unidad}</span></td>
+                      <td className="text-right">{fmt.moneda(d.costoUnitario)}</td>
+                      <td className="text-right font-bold">{fmt.moneda(d.costo)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+          {costoCiclo.costoTotal === 0 && (
+            <p className="text-xs text-amber-600 mt-3">
+              El costo da ₡0 porque los recursos aún no tienen costo unitario asignado. Definílos en <strong>Costos de recursos</strong>.
+            </p>
+          )}
+        </div>
+      )}
 
       {/* Tabla */}
       <div className="card overflow-x-auto">
@@ -203,7 +282,7 @@ export default function Consumos() {
           <label className="field col-span-2"><label>Tipo de recurso *</label>
             <select value={form.tipoRecursoId} onChange={e => setForm(f => ({ ...f, tipoRecursoId: e.target.value }))}>
               <option value="">Seleccione</option>
-              {tiposRecurso.map(t => <option key={t.tipoRecursoId ?? t.id} value={t.tipoRecursoId ?? t.id}>{t.nombre}</option>)}
+              {tiposRecurso.map(t => <option key={t.tipoRecursoId ?? t.id} value={t.tipoRecursoId ?? t.id}>{t.nombre}{t.costoUnitario ? ` · ${fmt.moneda(t.costoUnitario)}/${t.unidad}` : ""}</option>)}
             </select>
           </label>
           <label className="field"><label>Cantidad *</label><input type="number" step="0.01" min="0.01" placeholder="Ej. 500" value={form.cantidad} onChange={e => setForm(f => ({ ...f, cantidad: e.target.value }))} /></label>
@@ -248,6 +327,31 @@ export default function Consumos() {
           </table>
         )}
       </Modal>
+      {/* Modal costos de recursos */}
+      <Modal open={modalCostos} onClose={() => setModalCostos(false)} title="Costos de recursos"
+        footer={<><button className="btn" onClick={() => setModalCostos(false)}>Cancelar</button><button className="btn-primary" onClick={guardarCostos} disabled={savingCostos}>{savingCostos ? "Guardando…" : "Guardar costos"}</button></>}>
+        <p className="text-sm text-gray-500 mb-3">Definí el costo por unidad de cada recurso. Con esto se calcula el costo de producción de cada ciclo.</p>
+        {tiposRecurso.length === 0 ? <EmptyState icon="₡" title="Sin recursos" /> : (
+          <table className="data-table">
+            <thead><tr><th>Recurso</th><th>Unidad</th><th className="text-right">Costo unitario (₡)</th></tr></thead>
+            <tbody>
+              {tiposRecurso.map(t => (
+                <tr key={t.tipoRecursoId}>
+                  <td className="font-semibold">{t.nombre}</td>
+                  <td className="text-gray-400 text-xs">{t.unidad}</td>
+                  <td className="text-right">
+                    <input type="number" step="0.01" min="0"
+                      className="w-28 px-2 py-1 rounded-lg border border-gray-200 text-sm text-right"
+                      value={costosEdit[t.tipoRecursoId] ?? 0}
+                      onChange={e => setCostosEdit(c => ({ ...c, [t.tipoRecursoId]: e.target.value }))} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </Modal>
+
     </div>
   );
 }
